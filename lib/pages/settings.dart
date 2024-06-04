@@ -10,8 +10,22 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
-    return const Center(
-        child: Text("Settings Page")
+    return const Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 10, top: 10, bottom: 20),
+          child: Text('Settings', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+        ),
+        Column(
+          children: [
+            Center(
+                child: Text("Settings")
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

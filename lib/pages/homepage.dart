@@ -35,19 +35,19 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Column(
                     children: [
-                      Text("${amountSpent > 0 ? '+' : ''}\$$amountSpent", style: const TextStyle(fontSize: 22)),
+                      Text("${amountSpent > 0 ? '+' : ''}\$$amountSpent", style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w500)),
                       const Text("Spent"),
                     ],
                   ),
                   Column(
                     children: [
-                      Text("${amountEarned > 0 ? '+' : ''}\$$amountEarned", style: const TextStyle(fontSize: 22)),
+                      Text("${amountEarned > 0 ? '+' : ''}\$$amountEarned", style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w500)),
                       const Text("Earned"),
                     ],
                   ),
                   Column(
                     children: [
-                      Text("${difference > 0 ? '+' : ''}\$$difference", style: const TextStyle(fontSize: 22)),
+                      Text("${difference > 0 ? '+' : ''}\$$difference", style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w500)),
                       const Text("Difference"),
                     ],
                   )

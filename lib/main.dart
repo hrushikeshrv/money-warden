@@ -38,17 +38,17 @@ class _MoneyWardenState extends State<MoneyWarden> {
       theme: ThemeData(
           fontFamily: 'Poppins',
           useMaterial3: true,
-          colorScheme: const ColorScheme.dark()
+          colorScheme: const ColorScheme.light()
       ),
       home: Scaffold(
         bottomNavigationBar: Padding(
           padding: const EdgeInsets.only(bottom: 15),
           child: GNav(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              color: Colors.grey[500],
-              activeColor: Colors.grey.shade50,
+              color: Colors.grey.shade500,
+              activeColor: Colors.grey.shade900,
               // tabActiveBorder: Border.all(color: Colors.grey.shade600),
-              tabBackgroundColor: Colors.grey.shade800,
+              tabBackgroundColor: Colors.grey.shade300,
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 17),
               gap: 7,
               onTabChange: (index) => navigateBottomBar(index),
@@ -66,7 +66,7 @@ class _MoneyWardenState extends State<MoneyWarden> {
             child: pages[currentPage],
           ),
         ),
-        backgroundColor: Colors.grey[900],
+        backgroundColor: Colors.grey.shade50,
       ),
       debugShowCheckedModeBanner: false,
     );

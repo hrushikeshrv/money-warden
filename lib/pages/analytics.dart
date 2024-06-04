@@ -10,8 +10,22 @@ class AnalyticsPage extends StatefulWidget {
 class _AnalyticsPageState extends State<AnalyticsPage> {
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text("Analytics Page"),
+    return const Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(left: 10, top: 10, bottom: 20),
+          child: Text('Summary', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+        ),
+        Column(
+          children: [
+            Center(
+                child: Text("Analytics Page")
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
