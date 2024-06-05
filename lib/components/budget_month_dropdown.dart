@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 
+List<String> budgetMonths = [
+  "May 2024",
+  "June 2024",
+];
+
 class BudgetMonthDropdown extends StatefulWidget {
   const BudgetMonthDropdown({super.key});
 
@@ -9,10 +14,14 @@ class BudgetMonthDropdown extends StatefulWidget {
 
 class _BudgetMonthDropdownState extends State<BudgetMonthDropdown> {
   final TextEditingController budgetMonthController = TextEditingController();
-  List<DropdownMenuEntry> budgetMonths = [
-    DropdownMenuEntry(value: 'May 2024', label: "May 2024"),
-    DropdownMenuEntry(value: 'June 2024', label: 'June 2024')
-  ];
+
+  String? _currentBudgetMonth = budgetMonths.first;
+
+  void setCurrentBudgetMonth(String? value) {
+    setState(() {
+      _currentBudgetMonth = value;
+    });
+  }
 
   @override
   initState() {
@@ -22,16 +31,17 @@ class _BudgetMonthDropdownState extends State<BudgetMonthDropdown> {
 
   @override
   Widget build(BuildContext context) {
-    return DropdownMenu(
-        inputDecorationTheme: const InputDecorationTheme(
-          filled: true,
-          contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-          labelStyle: TextStyle(color: Colors.grey),
-        ),
-        controller: budgetMonthController,
-        requestFocusOnTap: true,
-        label: const Text('Month'),
-        dropdownMenuEntries: budgetMonths
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: DropdownButton<String>(
+        items: budgetMonths.map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem(value: value, child: Text(value, style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold)));
+        }).toList(),
+        value: _currentBudgetMonth,
+        onChanged: setCurrentBudgetMonth,
+        iconEnabledColor: Theme.of(context).colorScheme.primary,
+        // isExpanded: true,
+      ),
     );
   }
 }

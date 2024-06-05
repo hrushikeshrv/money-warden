@@ -10,12 +10,12 @@ class TransactionsPage extends StatefulWidget {
 class _TransactionsPageState extends State<TransactionsPage> {
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return const Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 10, top: 10, bottom: 20),
+          padding: EdgeInsets.only(left: 10, top: 10, bottom: 20),
           child: Text('Transactions', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
         ),
         Column(

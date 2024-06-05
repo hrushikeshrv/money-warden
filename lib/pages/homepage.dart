@@ -16,18 +16,21 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(10),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
+          const Padding(
+            padding: EdgeInsets.only(bottom: 20),
+            child: Text('Money Warden', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+          ),
           const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 BudgetMonthDropdown()
               ]
           ),
-          const SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
             child: Row(

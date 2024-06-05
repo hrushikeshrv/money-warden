@@ -1,9 +1,10 @@
-import 'package:money_warden/pages/analytics.dart';
-import 'package:money_warden/pages/settings.dart';
-import 'package:money_warden/pages/transaction_crud.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'pages/homepage.dart';
+
+import 'package:money_warden/pages/analytics.dart';
+import 'package:money_warden/pages/homepage.dart';
+import 'package:money_warden/pages/settings.dart';
+import 'package:money_warden/pages/transaction_crud.dart';
 
 void main() {
   runApp(MoneyWarden());
@@ -18,10 +19,10 @@ class MoneyWarden extends StatefulWidget {
 
 class _MoneyWardenState extends State<MoneyWarden> {
   final List pages = [
-    HomePage(),
-    TransactionsPage(),
-    AnalyticsPage(),
-    SettingsPage(),
+    const HomePage(),
+    const TransactionsPage(),
+    const AnalyticsPage(),
+    const SettingsPage(),
   ];
 
   int currentPage = 0;
@@ -36,37 +37,46 @@ class _MoneyWardenState extends State<MoneyWarden> {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-          fontFamily: 'Poppins',
-          useMaterial3: true,
-          colorScheme: const ColorScheme.light()
+        fontFamily: 'Poppins',
+        colorScheme: const ColorScheme.light().copyWith(
+          primary: const Color(0xFF2DBA4B),
+          onPrimary: const Color(0xFFFFFFFF),
+          secondary: const Color(0xFF2DBBA1),
+          onSecondary: const Color(0xFFFFFFFF),
+          surface: const Color(0xFFFEF7FF),
+          surfaceDim: const Color(0xFFE1E1E1),
+          onSurface: const Color(0xFF1D1B20),
+        ),
       ),
-      home: Scaffold(
-        bottomNavigationBar: Padding(
-          padding: const EdgeInsets.only(bottom: 15),
-          child: GNav(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              color: Colors.grey.shade500,
-              activeColor: Colors.grey.shade900,
-              // tabActiveBorder: Border.all(color: Colors.grey.shade600),
-              tabBackgroundColor: Colors.grey.shade300,
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 17),
-              gap: 7,
-              onTabChange: (index) => navigateBottomBar(index),
-              tabs: const [
-                GButton(icon: Icons.home, text: "Home"),
-                GButton(icon: Icons.monetization_on, text: "Transactions"),
-                GButton(icon: Icons.auto_graph, text: "Summary"),
-                GButton(icon: Icons.settings, text: "Settings")
-              ]
-          ),
-        ),
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: pages[currentPage],
-          ),
-        ),
-        backgroundColor: Colors.grey.shade50,
+      home: Builder(
+        builder: (context) {
+          return Scaffold(
+            bottomNavigationBar: Padding(
+              padding: const EdgeInsets.only(bottom: 15),
+              child: GNav(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  color: Theme.of(context).colorScheme.secondary,
+                  activeColor: Theme.of(context).colorScheme.onPrimary,
+                  tabBackgroundColor: Theme.of(context).colorScheme.primary,
+                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 17),
+                  gap: 7,
+                  onTabChange: (index) => navigateBottomBar(index),
+                  tabs: const [
+                    GButton(icon: Icons.home, text: "Home"),
+                    GButton(icon: Icons.monetization_on, text: "Transactions"),
+                    GButton(icon: Icons.auto_graph, text: "Summary"),
+                    GButton(icon: Icons.settings, text: "Settings")
+                  ]
+              ),
+            ),
+            body: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: pages[currentPage],
+              ),
+            ),
+          );
+        }
       ),
       debugShowCheckedModeBanner: false,
     );
