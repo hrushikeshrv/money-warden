@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
 import 'package:money_warden/theme/theme.dart';
@@ -8,7 +9,13 @@ import 'package:money_warden/pages/homepage.dart';
 import 'package:money_warden/pages/settings.dart';
 import 'package:money_warden/pages/transaction_crud.dart';
 
-void main() {
+import 'firebase_options.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options:DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MoneyWarden());
 }
 
@@ -20,6 +27,8 @@ class MoneyWarden extends StatefulWidget {
 }
 
 class _MoneyWardenState extends State<MoneyWarden> {
+
+
   final List pages = [
     const HomePage(),
     const TransactionsPage(),
