@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:money_warden/components/mw_app_bar.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -14,10 +15,7 @@ class _SettingsPageState extends State<SettingsPage> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 10, top: 10, bottom: 20),
-          child: Text('Settings', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-        ),
+        MwAppBar(text: 'Settings', assetImagePath: 'assets/images/logo.png'),
         Column(
           children: [
             Center(

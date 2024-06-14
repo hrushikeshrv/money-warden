@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:money_warden/components/mw_app_bar.dart';
 
 class TransactionsPage extends StatefulWidget {
   const TransactionsPage({super.key});
@@ -14,10 +15,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: EdgeInsets.only(left: 10, top: 10, bottom: 20),
-          child: Text('Transactions', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-        ),
+        MwAppBar(text: 'Transactions', assetImagePath: 'assets/images/logo.png'),
         Column(
           children: [
             Center(

@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "872517935357",
+    "project_id": "money-warden",
+    "storage_bucket": "money-warden.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:872517935357:android:272a11ec6a2c75335cde94",
+        "android_client_info": {
+          "package_name": "in.hrus.moneywarden.money_warden"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "872517935357-nh6sagjt0b49sjrbals4plo8tkeb8ec8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "in.hrus.moneywarden.money_warden",
+            "certificate_hash": "fdae78fcd3e92178129643be7b1217b1b6f6b0d0"
+          }
+        },
+        {
+          "client_id": "872517935357-8cfcibjq5a2vrku6hu05qejf8sk444u8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHhpNzU1eASwkrr0ehbcKKeuDunV0ISio"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "872517935357-8cfcibjq5a2vrku6hu05qejf8sk444u8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "872517935357-9qppganjl5kf73o4l5doinpnbdo3unpk.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "in.hrus.moneywarden.moneyWarden"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,25 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:money_warden/components/mw_app_bar.dart';
 
-class AnalyticsPage extends StatefulWidget {
-  const AnalyticsPage({super.key});
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
   @override
-  State<AnalyticsPage> createState() => _AnalyticsPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _AnalyticsPageState extends State<AnalyticsPage> {
+class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return const Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        MwAppBar(text: 'Analytics', assetImagePath: 'assets/images/logo.png'),
         Column(
           children: [
             Center(
-                child: Text("Analytics Page")
+                child: Text("Log in using your Google account.")
             ),
           ],
         ),

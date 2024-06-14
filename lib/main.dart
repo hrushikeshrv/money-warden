@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
+import 'package:money_warden/theme/theme.dart';
+
 import 'package:money_warden/pages/analytics.dart';
 import 'package:money_warden/pages/homepage.dart';
 import 'package:money_warden/pages/settings.dart';
 import 'package:money_warden/pages/transaction_crud.dart';
 
 void main() {
-  runApp(MoneyWarden());
+  runApp(const MoneyWarden());
 }
 
 class MoneyWarden extends StatefulWidget {
-  MoneyWarden({super.key});
+  const MoneyWarden({super.key});
 
   @override
   State<MoneyWarden> createState() => _MoneyWardenState();
@@ -38,19 +40,12 @@ class _MoneyWardenState extends State<MoneyWarden> {
     return MaterialApp(
       theme: ThemeData(
         fontFamily: 'Poppins',
-        colorScheme: const ColorScheme.light().copyWith(
-          primary: const Color(0xFF2DBA4B),
-          onPrimary: const Color(0xFFFFFFFF),
-          secondary: const Color(0xFF2DBBA1),
-          onSecondary: const Color(0xFFFFFFFF),
-          surface: const Color(0xFFFEF7FF),
-          surfaceDim: const Color(0xFFE1E1E1),
-          onSurface: const Color(0xFF1D1B20),
-        ),
+        colorScheme: defaultColorScheme,
       ),
       home: Builder(
         builder: (context) {
           return Scaffold(
+            backgroundColor: Theme.of(context).colorScheme.surface,
             bottomNavigationBar: Padding(
               padding: const EdgeInsets.only(bottom: 15),
               child: GNav(
