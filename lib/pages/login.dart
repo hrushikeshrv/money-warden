@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:money_warden/components/mw_action_button.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:googleapis/sheets/v4.dart' as sheets;
+
+import 'package:money_warden/components/mw_action_button.dart';
+import 'package:money_warden/services/auth.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -38,7 +39,9 @@ class _LoginPageState extends State<LoginPage> {
                     child: MwActionButton(
                       assetImagePath: 'assets/images/google-g.png',
                       text: 'Log In Using Your Google Account',
-                      onTap: () {
+                      onTap: () async {
+                        final GoogleSignInAccount account = await AuthService().signIn();
+                        print(account);
                       }
                     ),
                   ),

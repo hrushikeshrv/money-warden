@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+
+import 'package:money_warden/services/auth.dart';
 import 'package:money_warden/pages/login.dart';
-
 import 'package:money_warden/theme/theme.dart';
-
 import 'package:money_warden/pages/analytics.dart';
 import 'package:money_warden/pages/homepage.dart';
 import 'package:money_warden/pages/settings.dart';
@@ -29,7 +30,7 @@ class MoneyWarden extends StatefulWidget {
 }
 
 class _MoneyWardenState extends State<MoneyWarden> {
-
+  GoogleSignInAccount? _currentUser;
 
   final List pages = [
     const HomePage(),
@@ -46,6 +47,15 @@ class _MoneyWardenState extends State<MoneyWarden> {
     });
   }
 
+  void initState() {
+    super.initState();
+    AuthService.googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) async {
+      setState(() {
+        _currentUser = account;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -53,10 +63,9 @@ class _MoneyWardenState extends State<MoneyWarden> {
         fontFamily: 'Poppins',
         colorScheme: defaultColorScheme,
       ),
-      home: StreamBuilder(
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
+      home: Builder(
+        builder: (context) {
+          if (_currentUser != null) {
             return Scaffold(
               backgroundColor: Theme
                   .of(context)
