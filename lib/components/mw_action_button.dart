@@ -20,7 +20,7 @@ class _MwActionButtonState extends State<MwActionButton> {
         color: Theme.of(context).colorScheme.surfaceDim,
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: Theme.of(context).colorScheme.inverseSurface, width: 2),
-        boxShadow: const [BoxShadow(color: Color(0x33000000), blurRadius: 2)],
+        boxShadow: const [BoxShadow(color: Color(0x55000000), blurRadius: 4, offset: Offset(2, 2))],
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 15),

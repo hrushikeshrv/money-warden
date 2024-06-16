@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
 import 'package:money_warden/services/auth.dart';
@@ -47,6 +46,7 @@ class _MoneyWardenState extends State<MoneyWarden> {
     });
   }
 
+  @override
   void initState() {
     super.initState();
     AuthService.googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) async {
@@ -63,9 +63,18 @@ class _MoneyWardenState extends State<MoneyWarden> {
         fontFamily: 'Poppins',
         colorScheme: defaultColorScheme,
       ),
+      routes: {
+        'homepage': (context) => const HomePage(),
+        'login': (context) => const LoginPage(),
+        'transactions': (context) => const TransactionsPage(),
+        'analytics': (context) => const AnalyticsPage(),
+        'settings': (context) => const SettingsPage(),
+      },
       home: Builder(
         builder: (context) {
-          if (_currentUser != null) {
+          final GoogleSignInAccount? user = _currentUser;
+          print(user);
+          if (user != null) {
             return Scaffold(
               backgroundColor: Theme
                   .of(context)
@@ -93,8 +102,7 @@ class _MoneyWardenState extends State<MoneyWarden> {
                     onTabChange: (index) => navigateBottomBar(index),
                     tabs: const [
                       GButton(icon: Icons.home, text: "Home"),
-                      GButton(
-                          icon: Icons.monetization_on, text: "Transactions"),
+                      GButton(icon: Icons.monetization_on, text: "Transactions"),
                       GButton(icon: Icons.auto_graph, text: "Summary"),
                       GButton(icon: Icons.settings, text: "Settings")
                     ]

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:money_warden/components/mw_action_button.dart';
 import 'package:money_warden/services/auth.dart';
@@ -40,8 +39,7 @@ class _LoginPageState extends State<LoginPage> {
                       assetImagePath: 'assets/images/google-g.png',
                       text: 'Log In Using Your Google Account',
                       onTap: () async {
-                        final GoogleSignInAccount account = await AuthService().signIn();
-                        print(account);
+                        await AuthService().signIn();
                       }
                     ),
                   ),
