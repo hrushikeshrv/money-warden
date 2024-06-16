@@ -39,7 +39,7 @@ class _LoginPageState extends State<LoginPage> {
                       assetImagePath: 'assets/images/google-g.png',
                       text: 'Log In Using Your Google Account',
                       onTap: () async {
-                        await AuthService().signIn();
+                        await AuthService.signIn();
                       }
                     ),
                   ),

@@ -31,7 +31,11 @@ class AuthService {
   }
 
   /// Sign a user in using their Google account
-  signIn() {
+  static signIn() {
     return googleSignIn.signIn();
+  }
+
+  static signOut() {
+    return googleSignIn.signOut();
   }
 }

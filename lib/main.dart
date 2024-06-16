@@ -76,9 +76,9 @@ class _MoneyWardenState extends State<MoneyWarden> {
       home: FutureBuilder(
         future: _previousUser,
         builder: (context, snapshot) {
-          return Builder(
-            builder: (context) {
-              if (snapshot.hasData) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return Builder(
+              builder: (context) {
                 final GoogleSignInAccount? user = _currentUser;
                 if (user != null) {
                   return Scaffold(
@@ -110,7 +110,8 @@ class _MoneyWardenState extends State<MoneyWarden> {
                             GButton(icon: Icons.home, text: "Home"),
                             GButton(icon: Icons.monetization_on,
                                 text: "Transactions"),
-                            GButton(icon: Icons.auto_graph, text: "Summary"),
+                            GButton(
+                                icon: Icons.auto_graph, text: "Summary"),
                             GButton(icon: Icons.settings, text: "Settings")
                           ]
                       ),
@@ -137,12 +138,13 @@ class _MoneyWardenState extends State<MoneyWarden> {
                     ),
                   );
                 }
+
               }
-              else {
-                return const SplashScreen();
-              }
-            }
-          );
+            );
+          }
+          else {
+            return const SplashScreen();
+          }
         },
       ),
       debugShowCheckedModeBanner: false,
