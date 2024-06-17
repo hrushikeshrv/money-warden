@@ -1,6 +1,7 @@
+import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-// import 'package:googleapis/drive/v3.dart' as drive;
 import 'package:googleapis/sheets/v4.dart' as sheets;
+import 'package:googleapis_auth/googleapis_auth.dart' as auth show AuthClient;
 
 class AuthService {
   static final googleSignIn = GoogleSignIn(
@@ -31,11 +32,15 @@ class AuthService {
   }
 
   /// Sign a user in using their Google account
-  static signIn() {
+  static Future<GoogleSignInAccount?> signIn() {
     return googleSignIn.signIn();
   }
 
-  static signOut() {
+  static Future<GoogleSignInAccount?> signOut() {
     return googleSignIn.signOut();
+  }
+
+  static Future<auth.AuthClient?> getAuthenticatedClient() async {
+    return googleSignIn.authenticatedClient();
   }
 }

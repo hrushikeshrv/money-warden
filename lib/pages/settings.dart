@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
 import 'package:money_warden/services/auth.dart';
+import 'package:money_warden/services/sheets.dart';
 import 'package:money_warden/components/heading1.dart';
 import 'package:money_warden/components/settings_tile.dart';
 import 'package:money_warden/components/mw_app_bar.dart';
+import 'package:money_warden/components/user_sheets_list.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -38,7 +40,11 @@ class _SettingsPageState extends State<SettingsPage> {
                 leading: const Icon(Icons.request_page),
                 title: 'Choose Google Sheet',
                 subtitle: 'Choose the sheet to write budget data to',
-                onTap: () {},
+                onTap: () async {
+                  showBottomSheet(context: context, builder: (context) => const UserSheetsList());
+                  var api = await SheetsService.getApiClient();
+                  print(await SheetsService.getUserSpreadsheets(api));
+                },
               ),
               SettingsTile(
                 leading: const Icon(Icons.logout),
