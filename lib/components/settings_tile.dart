@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 
+/// A tile representing a single option in shown on the
+/// settings page.
 class SettingsTile extends StatefulWidget {
   final Icon leading;
   final VoidCallback onTap;

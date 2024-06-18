@@ -16,10 +16,11 @@ class SheetsService {
     return DriveApi(client as Client);
   }
 
-  /// Returns an instance of List\<File\> containing
-  /// all Google Sheets a user has.
-  static getUserSpreadsheets(DriveApi api) async {
-    var sheets = await api.files.list(q: "mimeType='application/vnd.google-apps.spreadsheet'");
-    return sheets.files;
+  /// Returns a Future<FileList>? with
+  /// a FileList instance containing all Google Sheets a user has
+  /// access to (not just the sheets they own).
+  static Future<FileList>? getUserSpreadsheets(DriveApi? api) async {
+    api ??= await SheetsService.getDriveApiClient();
+    return await api!.files.list(q: "mimeType='application/vnd.google-apps.spreadsheet'");
   }
 }

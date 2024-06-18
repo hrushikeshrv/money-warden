@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:money_warden/services/auth.dart';
-import 'package:money_warden/services/sheets.dart';
 import 'package:money_warden/components/heading1.dart';
 import 'package:money_warden/components/settings_tile.dart';
 import 'package:money_warden/components/mw_app_bar.dart';
@@ -39,13 +38,11 @@ class _SettingsPageState extends State<SettingsPage> {
                 leading: const Icon(Icons.request_page),
                 title: 'Choose Google Sheet',
                 subtitle: 'Choose the sheet to write budget data to',
-                onTap: () async {
-                  var api = await SheetsService.getDriveApiClient();
-                  var files = await SheetsService.getUserSpreadsheets(api);
+                onTap: () {
                   showModalBottomSheet(
                     context: context,
                     isScrollControlled: true,
-                    builder: (context) => UserSheetsList(sheets: files,)
+                    builder: (context) => const UserSheetsList()
                   );
                 },
               ),

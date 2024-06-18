@@ -12,7 +12,7 @@ class MwWarning extends StatelessWidget {
       padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: const Color(0xFFF2EFAC),
+        color: const Color(0xFFFFF9AE),
       ),
       child: Column(
         children: [
