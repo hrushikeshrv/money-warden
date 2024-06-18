@@ -1,13 +1,14 @@
 import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis/sheets/v4.dart' as sheets;
+import 'package:googleapis/drive/v3.dart' as drive;
 import 'package:googleapis_auth/googleapis_auth.dart' as auth show AuthClient;
 
 class AuthService {
   static final googleSignIn = GoogleSignIn(
     scopes: <String>[
       sheets.SheetsApi.spreadsheetsScope,
-      // drive.DriveApi.driveFileScope,
+      drive.DriveApi.driveReadonlyScope,
     ]
   );
 

@@ -26,8 +26,9 @@ class _SettingsPageState extends State<SettingsPage> {
         const MwAppBar(text: 'Settings', assetImagePath: 'assets/images/logo.png'),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: ListView(
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
             children: [
               const Heading1(text: 'Account'),
               SettingsTile(
@@ -41,9 +42,13 @@ class _SettingsPageState extends State<SettingsPage> {
                 title: 'Choose Google Sheet',
                 subtitle: 'Choose the sheet to write budget data to',
                 onTap: () async {
-                  showBottomSheet(context: context, builder: (context) => const UserSheetsList());
-                  var api = await SheetsService.getApiClient();
-                  print(await SheetsService.getUserSpreadsheets(api));
+                  var api = await SheetsService.getDriveApiClient();
+                  var files = await SheetsService.getUserSpreadsheets(api);
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    builder: (context) => UserSheetsList(sheets: files,)
+                  );
                 },
               ),
               SettingsTile(
@@ -67,6 +72,14 @@ class _SettingsPageState extends State<SettingsPage> {
                 leading: Icon(Icons.list, color: Theme.of(context).colorScheme.primary),
                 title: 'Manage Income Categories',
                 subtitle: 'Create or update income categories',
+                onTap: () {},
+              ),
+
+              const Heading1(text: 'Preferences'),
+              SettingsTile(
+                leading: const Icon(Icons.attach_money),
+                title: 'Default Currency',
+                subtitle: 'Choose your default currency',
                 onTap: () {},
               ),
             ],

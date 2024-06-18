@@ -88,9 +88,10 @@ class _MoneyWardenState extends State<MoneyWarden> {
                         .colorScheme
                         .surface,
                     bottomNavigationBar: Padding(
-                      padding: const EdgeInsets.only(bottom: 15),
+                      padding: const EdgeInsets.only(bottom: 5),
                       child: GNav(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          backgroundColor: Theme.of(context).colorScheme.surface,
                           color: Theme
                               .of(context)
                               .colorScheme
