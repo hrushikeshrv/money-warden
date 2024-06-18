@@ -19,16 +19,14 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return ListView(
       children: [
         const MwAppBar(text: 'Settings', assetImagePath: 'assets/images/logo.png'),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: ListView(
-            scrollDirection: Axis.vertical,
-            shrinkWrap: true,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Heading1(text: 'Account'),
               SettingsTile(
