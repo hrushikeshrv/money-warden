@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-
 import 'package:googleapis/drive/v3.dart';
+import 'package:money_warden/models/budget_sheet.dart';
+import 'package:provider/provider.dart';
+
 import 'package:money_warden/components/pill_container.dart';
 
 
@@ -66,6 +68,7 @@ class _SpreadsheetTileState extends State<SpreadsheetTile> {
       subtitle: subtitleChildren.isNotEmpty
           ? Row(children: subtitleChildren,)
           : null,
+      trailing: Provider.of<BudgetSheet>(context).spreadsheetId == widget.sheet.id ? const Icon(Icons.check) : null,
       onTap: widget.onTap,
       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
       shape: Border(bottom: BorderSide(

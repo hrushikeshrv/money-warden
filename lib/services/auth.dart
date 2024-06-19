@@ -57,6 +57,7 @@ class AuthService {
     data['user'] = previousUser;
     data['spreadsheetId'] = spreadsheetId;
     data['spreadsheetName'] = spreadsheetName;
+    data['sharedPreferences'] = prefs;
     return data;
   }
 }

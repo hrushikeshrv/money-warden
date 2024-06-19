@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:googleapis/drive/v3.dart';
+import 'package:provider/provider.dart';
+
+import 'package:money_warden/models/budget_sheet.dart';
 import 'package:money_warden/components/heading1.dart';
 import 'package:money_warden/components/mw_warning.dart';
 import 'package:money_warden/components/spreadsheet_tile.dart';
@@ -43,15 +46,20 @@ class _UserSheetsListState extends State<UserSheetsList> {
                       Text('The sheet you select must be in the correct format for Money Warden to be able to work with it.')
                     ]
                   ),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    itemBuilder: (_, index) {
-                      return SpreadsheetTile(
-                        sheet: sheets!.files![index],
-                        onTap: () {},
-                      );
-                    },
-                    itemCount: sheets!.files!.length,
+                  Expanded(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemBuilder: (_, index) {
+                        return SpreadsheetTile(
+                          sheet: sheets!.files![index],
+                          onTap: () {
+                            Provider.of<BudgetSheet>(context).setSpreadsheetId(sheets.files![index].id!);
+                            Provider.of<BudgetSheet>(context).setSpreadsheetName(sheets.files![index].name!);
+                          },
+                        );
+                      },
+                      itemCount: sheets!.files!.length,
+                    ),
                   )
                 ]
               ),

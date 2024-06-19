@@ -95,7 +95,8 @@ class _MoneyWardenState extends State<MoneyWarden> {
                   return ChangeNotifierProvider<BudgetSheet>(
                     create: (context) => BudgetSheet(
                       spreadsheetId: snapshot.data?['spreadsheetId'],
-                      spreadsheetName: snapshot.data?['spreadsheetName']
+                      spreadsheetName: snapshot.data?['spreadsheetName'],
+                      sharedPreferences: snapshot.data?['sharedPreferences'],
                     ),
                     child: Scaffold(
                       backgroundColor: Theme
