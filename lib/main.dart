@@ -3,15 +3,17 @@ import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sig
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:money_warden/pages/splash_screen.dart';
+import 'package:provider/provider.dart';
 
-import 'package:money_warden/services/auth.dart';
+import 'package:money_warden/models/budget_sheet.dart';
 import 'package:money_warden/pages/login.dart';
-import 'package:money_warden/theme/theme.dart';
 import 'package:money_warden/pages/analytics.dart';
 import 'package:money_warden/pages/homepage.dart';
 import 'package:money_warden/pages/settings.dart';
+import 'package:money_warden/pages/splash_screen.dart';
 import 'package:money_warden/pages/transaction_crud.dart';
+import 'package:money_warden/services/auth.dart';
+import 'package:money_warden/theme/theme.dart';
 
 import 'firebase_options.dart';
 
@@ -32,7 +34,7 @@ class MoneyWarden extends StatefulWidget {
 
 class _MoneyWardenState extends State<MoneyWarden> {
   GoogleSignInAccount? _currentUser;
-  Future<GoogleSignInAccount?>? _previousUser;
+  Future<Map<String, dynamic>>? _previousAuth;
 
   final List pages = [
     const HomePage(),
@@ -52,7 +54,7 @@ class _MoneyWardenState extends State<MoneyWarden> {
   @override
   void initState() {
     super.initState();
-    _previousUser = AuthService.googleSignIn.signInSilently();
+    _previousAuth = AuthService.initializeAuth();
     AuthService.googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) async {
       setState(() {
         _currentUser = account;
@@ -60,6 +62,9 @@ class _MoneyWardenState extends State<MoneyWarden> {
     });
   }
 
+  /// First tries to sign the user in silently and shows a splash screen
+  /// while doing that. If silent sign in is successful, we show the homepage,
+  /// otherwise, we show the login page.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -74,54 +79,65 @@ class _MoneyWardenState extends State<MoneyWarden> {
         'analytics': (context) => const AnalyticsPage(),
         'settings': (context) => const SettingsPage(),
       },
+      // Try to sign the user in silently and show the splash screen in the
+      // mean time
       home: FutureBuilder(
-        future: _previousUser,
+        future: _previousAuth,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
+          // If silent sign in request was completed, show either the
+          // homepage or the login page depending on whether the silent
+          // sign in request was successful.
+          if (snapshot.hasData) {
             return Builder(
               builder: (context) {
                 final GoogleSignInAccount? user = _currentUser;
                 if (user != null) {
-                  return Scaffold(
-                    backgroundColor: Theme
-                        .of(context)
-                        .colorScheme
-                        .surface,
-                    bottomNavigationBar: Padding(
-                      padding: const EdgeInsets.only(bottom: 5),
-                      child: GNav(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          backgroundColor: Theme.of(context).colorScheme.surface,
-                          color: Theme
-                              .of(context)
-                              .colorScheme
-                              .secondary,
-                          activeColor: Theme
-                              .of(context)
-                              .colorScheme
-                              .onPrimary,
-                          tabBackgroundColor: Theme
-                              .of(context)
-                              .colorScheme
-                              .primary,
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 12, horizontal: 17),
-                          gap: 7,
-                          onTabChange: (index) => navigateBottomBar(index),
-                          tabs: const [
-                            GButton(icon: Icons.home, text: "Home"),
-                            GButton(icon: Icons.monetization_on,
-                                text: "Transactions"),
-                            GButton(
-                                icon: Icons.auto_graph, text: "Summary"),
-                            GButton(icon: Icons.settings, text: "Settings")
-                          ]
-                      ),
+                  return ChangeNotifierProvider<BudgetSheet>(
+                    create: (context) => BudgetSheet(
+                      spreadsheetId: snapshot.data?['spreadsheetId'],
+                      spreadsheetName: snapshot.data?['spreadsheetName']
                     ),
-                    body: SafeArea(
-                      child: Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: pages[currentPage],
+                    child: Scaffold(
+                      backgroundColor: Theme
+                          .of(context)
+                          .colorScheme
+                          .surface,
+                      bottomNavigationBar: Padding(
+                        padding: const EdgeInsets.only(bottom: 5),
+                        child: GNav(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            backgroundColor: Theme.of(context).colorScheme.surface,
+                            color: Theme
+                                .of(context)
+                                .colorScheme
+                                .secondary,
+                            activeColor: Theme
+                                .of(context)
+                                .colorScheme
+                                .onPrimary,
+                            tabBackgroundColor: Theme
+                                .of(context)
+                                .colorScheme
+                                .primary,
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 12, horizontal: 17),
+                            gap: 7,
+                            onTabChange: (index) => navigateBottomBar(index),
+                            tabs: const [
+                              GButton(icon: Icons.home, text: "Home"),
+                              GButton(icon: Icons.monetization_on,
+                                  text: "Transactions"),
+                              GButton(
+                                  icon: Icons.auto_graph, text: "Summary"),
+                              GButton(icon: Icons.settings, text: "Settings")
+                            ]
+                        ),
+                      ),
+                      body: SafeArea(
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: pages[currentPage],
+                        ),
                       ),
                     ),
                   );

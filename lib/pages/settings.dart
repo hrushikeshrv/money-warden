@@ -27,7 +27,7 @@ class _SettingsPageState extends State<SettingsPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Heading1(text: 'Account'),
+              const Heading1(text: 'Spreadsheet & Account'),
               SettingsTile(
                 leading: const Icon(Icons.sync),
                 title: 'Sync',

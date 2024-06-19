@@ -33,10 +33,12 @@ class _SettingsTileState extends State<SettingsTile> {
       trailing: widget.trailing,
       onTap: widget.onTap,
       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-      shape: Border(bottom: BorderSide(
-        color: Theme.of(context).colorScheme.inverseSurface,
-        width: 2
-      ))
+      shape: Border(
+        bottom: BorderSide(
+          color: Theme.of(context).colorScheme.inverseSurface,
+          width: 2,
+        )
+      )
     );
   }
 }
