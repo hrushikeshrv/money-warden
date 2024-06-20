@@ -55,8 +55,8 @@ class AuthService {
     String? spreadsheetId = prefs.getString('spreadsheetId');
     String? spreadsheetName = prefs.getString('spreadsheetName');
     data['user'] = previousUser;
-    data['spreadsheetId'] = spreadsheetId;
-    data['spreadsheetName'] = spreadsheetName;
+    data['spreadsheetId'] = spreadsheetId ?? '';
+    data['spreadsheetName'] = spreadsheetName ?? '';
     data['sharedPreferences'] = prefs;
     return data;
   }

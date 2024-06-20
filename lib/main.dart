@@ -12,6 +12,7 @@ import 'package:money_warden/pages/homepage.dart';
 import 'package:money_warden/pages/settings.dart';
 import 'package:money_warden/pages/splash_screen.dart';
 import 'package:money_warden/pages/transaction_crud.dart';
+import 'package:money_warden/pages/user_sheets_list.dart';
 import 'package:money_warden/services/auth.dart';
 import 'package:money_warden/theme/theme.dart';
 
@@ -78,12 +79,14 @@ class _MoneyWardenState extends State<MoneyWarden> {
         'transactions': (context) => const TransactionsPage(),
         'analytics': (context) => const AnalyticsPage(),
         'settings': (context) => const SettingsPage(),
+        'user_sheets_list': (context) => const UserSheetsList(),
       },
       // Try to sign the user in silently and show the splash screen in the
       // mean time
       home: FutureBuilder(
         future: _previousAuth,
         builder: (context, snapshot) {
+          print(snapshot.data);
           // If silent sign in request was completed, show either the
           // homepage or the login page depending on whether the silent
           // sign in request was successful.
@@ -92,11 +95,11 @@ class _MoneyWardenState extends State<MoneyWarden> {
               builder: (context) {
                 final GoogleSignInAccount? user = _currentUser;
                 if (user != null) {
-                  return ChangeNotifierProvider<BudgetSheet>(
+                  return ChangeNotifierProvider(
                     create: (context) => BudgetSheet(
-                      spreadsheetId: snapshot.data?['spreadsheetId'],
-                      spreadsheetName: snapshot.data?['spreadsheetName'],
-                      sharedPreferences: snapshot.data?['sharedPreferences'],
+                      spreadsheetId: snapshot.data!['spreadsheetId'],
+                      spreadsheetName: snapshot.data!['spreadsheetName'],
+                      sharedPreferences: snapshot.data!['sharedPreferences']
                     ),
                     child: Scaffold(
                       backgroundColor: Theme

@@ -4,7 +4,6 @@ import 'package:money_warden/services/auth.dart';
 import 'package:money_warden/components/heading1.dart';
 import 'package:money_warden/components/settings_tile.dart';
 import 'package:money_warden/components/mw_app_bar.dart';
-import 'package:money_warden/components/user_sheets_list.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -41,11 +40,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   title: 'Choose Google Sheet',
                   subtitle: 'Choose the sheet to write budget data to',
                   onTap: () {
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      builder: (context) => const UserSheetsList()
-                    );
+                    Navigator.of(context).pushNamed('user_sheets_list');
                   },
                 ),
                 SettingsTile(
