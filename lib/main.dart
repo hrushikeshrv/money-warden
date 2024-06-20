@@ -95,53 +95,46 @@ class _MoneyWardenState extends State<MoneyWarden> {
               builder: (context) {
                 final GoogleSignInAccount? user = _currentUser;
                 if (user != null) {
-                  return ChangeNotifierProvider(
-                    create: (context) => BudgetSheet(
-                      spreadsheetId: snapshot.data!['spreadsheetId'],
-                      spreadsheetName: snapshot.data!['spreadsheetName'],
-                      sharedPreferences: snapshot.data!['sharedPreferences']
-                    ),
-                    child: Scaffold(
-                      backgroundColor: Theme
-                          .of(context)
-                          .colorScheme
-                          .surface,
-                      bottomNavigationBar: Padding(
-                        padding: const EdgeInsets.only(bottom: 5),
-                        child: GNav(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            backgroundColor: Theme.of(context).colorScheme.surface,
-                            color: Theme
-                                .of(context)
-                                .colorScheme
-                                .secondary,
-                            activeColor: Theme
-                                .of(context)
-                                .colorScheme
-                                .onPrimary,
-                            tabBackgroundColor: Theme
-                                .of(context)
-                                .colorScheme
-                                .primary,
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 12, horizontal: 17),
-                            gap: 7,
-                            onTabChange: (index) => navigateBottomBar(index),
-                            tabs: const [
-                              GButton(icon: Icons.home, text: "Home"),
-                              GButton(icon: Icons.monetization_on,
-                                  text: "Transactions"),
-                              GButton(
-                                  icon: Icons.auto_graph, text: "Summary"),
-                              GButton(icon: Icons.settings, text: "Settings")
-                            ]
-                        ),
+                  return Scaffold(
+                    backgroundColor: Theme
+                        .of(context)
+                        .colorScheme
+                        .surface,
+                    bottomNavigationBar: Padding(
+                      padding: const EdgeInsets.only(bottom: 5),
+                      child: GNav(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        backgroundColor: Theme.of(context).colorScheme.surface,
+                        color: Theme
+                            .of(context)
+                            .colorScheme
+                            .secondary,
+                        activeColor: Theme
+                            .of(context)
+                            .colorScheme
+                            .onPrimary,
+                        tabBackgroundColor: Theme
+                            .of(context)
+                            .colorScheme
+                            .primary,
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 12, horizontal: 17),
+                        gap: 7,
+                        onTabChange: (index) => navigateBottomBar(index),
+                        tabs: const [
+                          GButton(icon: Icons.home, text: "Home"),
+                          GButton(icon: Icons.monetization_on,
+                              text: "Transactions"),
+                          GButton(
+                              icon: Icons.auto_graph, text: "Summary"),
+                          GButton(icon: Icons.settings, text: "Settings")
+                        ]
                       ),
-                      body: SafeArea(
-                        child: Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: pages[currentPage],
-                        ),
+                    ),
+                    body: SafeArea(
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: pages[currentPage],
                       ),
                     ),
                   );
@@ -153,14 +146,13 @@ class _MoneyWardenState extends State<MoneyWarden> {
                         .colorScheme
                         .surface,
                     body: const SafeArea(
-                        child: Padding(
-                          padding: EdgeInsets.all(10),
-                          child: LoginPage(),
-                        )
+                      child: Padding(
+                        padding: EdgeInsets.all(10),
+                        child: LoginPage(),
+                      )
                     ),
                   );
                 }
-
               }
             );
           }

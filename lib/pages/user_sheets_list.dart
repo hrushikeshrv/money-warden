@@ -29,55 +29,50 @@ class _UserSheetsListState extends State<UserSheetsList> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: FutureBuilder(
-          future: sheets,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              var sheets = snapshot.data;
-              return Container(
-                padding: const EdgeInsets.only(top: 10, left: 30, right: 30),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const Heading1(text: 'Your Spreadsheets'),
-                    const SizedBox(height: 10),
-                    const MwWarning(
-                      children: [
-                        Text('The sheet you select must be in the correct format for Money Warden to be able to work with it.')
-                      ]
-                    ),
-                    Expanded(
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemBuilder: (_, index) {
-                          return SpreadsheetTile(
-                            sheet: sheets!.files![index],
-                            onTap: () {
-                              // Provider.of<BudgetSheet>(context, listen: false).setSpreadsheetId(sheets.files![index].id!);
-                              // Provider.of<BudgetSheet>(context, listen: false).setSpreadsheetName(sheets.files![index].name!);
-                            },
-                          );
-                        },
-                        itemCount: sheets!.files!.length,
-                      ),
-                    )
-                  ]
-                ),
-              );
-            }
-            return Container(
-              padding: const EdgeInsets.only(top: 10, left: 30, right: 30),
-              child: const Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
+        child: Container(
+          padding: const EdgeInsets.only(top: 10, left: 30, right: 30),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Heading1(text: 'Your Spreadsheets'),
+              const SizedBox(height: 10),
+              const MwWarning(
                 children: [
-                  Heading1(text: 'Your Spreadsheets'),
-                  SizedBox(height: 10),
-                  Expanded(child: Center(child: CircularProgressIndicator()))
+                  Text('The sheet you select must be in the correct format for Money Warden to be able to work with it.')
                 ]
               ),
-            );
-          }
+              const SizedBox(height: 10),
+              Expanded(
+                child: FutureBuilder(
+                  future: sheets,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      var sheets = snapshot.data;
+                      return Expanded(
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemBuilder: (_, index) {
+                            return SpreadsheetTile(
+                              sheet: sheets.files![index],
+                              onTap: () {
+                                // Provider.of<BudgetSheet>(context, listen: false).setSpreadsheetId(sheets.files![index].id!);
+                                // Provider.of<BudgetSheet>(context, listen: false).setSpreadsheetName(sheets.files![index].name!);
+                              },
+                            );
+                          },
+                          itemCount: sheets!.files!.length,
+                        ),
+                      );
+                    }
+                    else {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                  }
+                )
+              )
+            ]
+          ),
         ),
       ),
     );

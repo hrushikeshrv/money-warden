@@ -68,7 +68,7 @@ class _SpreadsheetTileState extends State<SpreadsheetTile> {
       subtitle: subtitleChildren.isNotEmpty
           ? Row(children: subtitleChildren,)
           : null,
-      trailing: Provider.of<BudgetSheet>(context).spreadsheetId == widget.sheet.id ? const Icon(Icons.check) : null,
+      // trailing: Provider.of<BudgetSheet>(context).spreadsheetId == widget.sheet.id ? const Icon(Icons.check) : null,
       onTap: widget.onTap,
       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
       shape: Border(bottom: BorderSide(
