@@ -56,8 +56,9 @@ class _UserSheetsListState extends State<UserSheetsList> {
                             return SpreadsheetTile(
                               sheet: sheets.files![index],
                               onTap: () {
-                                // Provider.of<BudgetSheet>(context, listen: false).setSpreadsheetId(sheets.files![index].id!);
-                                // Provider.of<BudgetSheet>(context, listen: false).setSpreadsheetName(sheets.files![index].name!);
+                                Provider.of<BudgetSheet>(context, listen: false).setSpreadsheetId(sheets.files![index].id!);
+                                Provider.of<BudgetSheet>(context, listen: false).setSpreadsheetName(sheets.files![index].name!);
+                                Navigator.of(context).pop();
                               },
                             );
                           },
