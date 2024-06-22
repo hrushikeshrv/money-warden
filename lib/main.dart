@@ -93,7 +93,6 @@ class _MoneyWardenState extends State<MoneyWarden> {
           home: FutureBuilder(
             future: _previousAuth,
             builder: (context, snapshot) {
-              print(snapshot.data);
               // If silent sign in request was completed, show either the
               // homepage or the login page depending on whether the silent
               // sign in request was successful.

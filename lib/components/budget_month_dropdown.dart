@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-List<String> budgetMonths = [
-  "May 2024",
-  "June 2024",
-];
+import 'package:money_warden/models/budget_sheet.dart';
 
 class BudgetMonthDropdown extends StatefulWidget {
   const BudgetMonthDropdown({super.key});
@@ -14,8 +12,10 @@ class BudgetMonthDropdown extends StatefulWidget {
 
 class _BudgetMonthDropdownState extends State<BudgetMonthDropdown> {
   final TextEditingController budgetMonthController = TextEditingController();
-
-  String? _currentBudgetMonth = budgetMonths.first;
+  List<String> budgetMonths = [
+    'Loading...',
+  ];
+  String? _currentBudgetMonth;
 
   void setCurrentBudgetMonth(String? value) {
     setState(() {
@@ -26,11 +26,12 @@ class _BudgetMonthDropdownState extends State<BudgetMonthDropdown> {
   @override
   initState() {
     super.initState();
-    // TODO - Get the list of sheets from the Google Sheet and populate the budgetMonths list.
   }
 
   @override
   Widget build(BuildContext context) {
+    _currentBudgetMonth ??= budgetMonths.first;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: DropdownButton<String>(

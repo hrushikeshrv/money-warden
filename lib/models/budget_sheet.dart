@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:money_warden/services/sheets.dart';
+
 /// Global state for the chosen budget spreadsheet
 class BudgetSheet extends ChangeNotifier {
   String? spreadsheetId;
@@ -27,9 +29,8 @@ class BudgetSheet extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Returns a list of sheet names for all the
-  /// months in the chosen budget spreadsheet.
-  List<String> getBudgetMonths() {
-
+  void getBudgetMonths() async {
+    budgetMonths = await SheetsService.getBudgetMonths(null);
+    notifyListeners();
   }
 }
