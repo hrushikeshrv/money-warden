@@ -10,6 +10,7 @@ class BudgetSheet extends ChangeNotifier {
   SharedPreferences? sharedPreferences;
   bool budgetMonthsInitialized = false;
   List<String> budgetMonths = ['Loading...'];
+  String _currentBudgetMonth = '';
 
   BudgetSheet({ required this.spreadsheetId, required this.spreadsheetName, required this.sharedPreferences });
 
@@ -30,11 +31,21 @@ class BudgetSheet extends ChangeNotifier {
     notifyListeners();
   }
 
-  void getBudgetMonths() async {
-    if (!budgetMonthsInitialized) {
+  /// Fetch all sheets in the user's selected budget sheet
+  /// and populate this.budgetMonths
+  void getBudgetMonths({ bool forceUpdate = false }) async {
+    if (!budgetMonthsInitialized || forceUpdate) {
       budgetMonths = await SheetsService.getBudgetMonths(null);
       budgetMonthsInitialized = true;
       notifyListeners();
     }
+  }
+
+  String get currentBudgetMonth => _currentBudgetMonth;
+  set currentBudgetMonth(month) => _currentBudgetMonth = month;
+
+  void setCurrentBudgetMonth(month) {
+    _currentBudgetMonth = month;
+    notifyListeners();
   }
 }

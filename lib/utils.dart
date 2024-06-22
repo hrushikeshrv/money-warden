@@ -24,3 +24,11 @@ bool isMonthName(String title) {
     && double.tryParse(_[1]) != null
   );
 }
+
+
+/// Takes a list of budget months and returns the
+/// current month if it exists in the list of budget months.
+/// Otherwise, returns the month closest to the current month.
+String getCurrentOrClosestMonth(List<String> budgetMonths) {
+  return '';
+}

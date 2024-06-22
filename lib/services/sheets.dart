@@ -50,10 +50,9 @@ class SheetsService {
 
     for (var sheet in sheets) {
       if (isMonthName(sheet.properties!.title ?? '')) {
-        print(sheet.properties!.title);
         sheetNames.add(sheet.properties!.title ?? '');
+        print('Found month ${sheet.properties!.title}');
       }
-      print('${sheet.properties!.title} is not valid');
     }
     return sheetNames;
   }

@@ -11,28 +11,13 @@ class BudgetMonthDropdown extends StatefulWidget {
 }
 
 class _BudgetMonthDropdownState extends State<BudgetMonthDropdown> {
-  final TextEditingController budgetMonthController = TextEditingController();
-  String? _currentBudgetMonth;
-
-  void setCurrentBudgetMonth(String? value) {
-    setState(() {
-      _currentBudgetMonth = value;
-    });
-  }
-
-  @override
-  initState() {
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
-
     return Consumer<BudgetSheet>(
       builder: (context, budgetSheet, child) {
         List<String> budgetMonths = budgetSheet.budgetMonths;
-        if (!budgetMonths.contains(_currentBudgetMonth)) {
-          _currentBudgetMonth = budgetMonths.first;
+        if (!budgetMonths.contains(budgetSheet.currentBudgetMonth)) {
+          budgetSheet.currentBudgetMonth = budgetMonths.first;
         }
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -42,8 +27,8 @@ class _BudgetMonthDropdownState extends State<BudgetMonthDropdown> {
                   child: Text(value, style: const TextStyle(
                       fontSize: 30, fontWeight: FontWeight.bold)));
             }).toList(),
-            value: _currentBudgetMonth,
-            onChanged: setCurrentBudgetMonth,
+            value: budgetSheet.currentBudgetMonth,
+            onChanged: budgetSheet.setCurrentBudgetMonth,
             iconEnabledColor: Theme
                 .of(context)
                 .colorScheme
