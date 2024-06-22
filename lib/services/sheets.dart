@@ -34,6 +34,7 @@ class SheetsService {
   static Future<List<String>> getBudgetMonths(SheetsApi? api) async {
     api ??= await getSheetsApiClient();
     var prefs = await SharedPreferences.getInstance();
+    print('Getting sheets');
 
     String? spreadsheetId = prefs.getString('spreadsheetId');
     if (spreadsheetId == null) {
@@ -49,8 +50,10 @@ class SheetsService {
 
     for (var sheet in sheets) {
       if (isMonthName(sheet.properties!.title ?? '')) {
+        print(sheet.properties!.title);
         sheetNames.add(sheet.properties!.title ?? '');
       }
+      print('${sheet.properties!.title} is not valid');
     }
     return sheetNames;
   }

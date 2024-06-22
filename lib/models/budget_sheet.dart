@@ -8,7 +8,8 @@ class BudgetSheet extends ChangeNotifier {
   String? spreadsheetId;
   String? spreadsheetName;
   SharedPreferences? sharedPreferences;
-  List<String>? budgetMonths;
+  bool budgetMonthsInitialized = false;
+  List<String> budgetMonths = ['Loading...'];
 
   BudgetSheet({ required this.spreadsheetId, required this.spreadsheetName, required this.sharedPreferences });
 
@@ -30,7 +31,10 @@ class BudgetSheet extends ChangeNotifier {
   }
 
   void getBudgetMonths() async {
-    budgetMonths = await SheetsService.getBudgetMonths(null);
-    notifyListeners();
+    if (!budgetMonthsInitialized) {
+      budgetMonths = await SheetsService.getBudgetMonths(null);
+      budgetMonthsInitialized = true;
+      notifyListeners();
+    }
   }
 }

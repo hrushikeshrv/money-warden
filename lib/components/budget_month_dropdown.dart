@@ -12,9 +12,6 @@ class BudgetMonthDropdown extends StatefulWidget {
 
 class _BudgetMonthDropdownState extends State<BudgetMonthDropdown> {
   final TextEditingController budgetMonthController = TextEditingController();
-  List<String> budgetMonths = [
-    'Loading...',
-  ];
   String? _currentBudgetMonth;
 
   void setCurrentBudgetMonth(String? value) {
@@ -30,19 +27,31 @@ class _BudgetMonthDropdownState extends State<BudgetMonthDropdown> {
 
   @override
   Widget build(BuildContext context) {
-    _currentBudgetMonth ??= budgetMonths.first;
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: DropdownButton<String>(
-        items: budgetMonths.map<DropdownMenuItem<String>>((String value) {
-          return DropdownMenuItem(value: value, child: Text(value, style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold)));
-        }).toList(),
-        value: _currentBudgetMonth,
-        onChanged: setCurrentBudgetMonth,
-        iconEnabledColor: Theme.of(context).colorScheme.primary,
-        // isExpanded: true,
-      ),
+    return Consumer<BudgetSheet>(
+      builder: (context, budgetSheet, child) {
+        List<String> budgetMonths = budgetSheet.budgetMonths;
+        if (!budgetMonths.contains(_currentBudgetMonth)) {
+          _currentBudgetMonth = budgetMonths.first;
+        }
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: DropdownButton<String>(
+            items: budgetMonths.map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem(value: value,
+                  child: Text(value, style: const TextStyle(
+                      fontSize: 30, fontWeight: FontWeight.bold)));
+            }).toList(),
+            value: _currentBudgetMonth,
+            onChanged: setCurrentBudgetMonth,
+            iconEnabledColor: Theme
+                .of(context)
+                .colorScheme
+                .primary,
+            // isExpanded: true,
+          ),
+        );
+      }
     );
   }
 }

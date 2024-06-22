@@ -6,7 +6,16 @@ bool isMonthName(String title) {
   List<String> monthNames = [
     'Jan', 'January',
     'Feb', 'February',
-
+    'Mar', 'March',
+    'Apr', 'April',
+    'May',
+    'Jun', 'June',
+    'Jul', 'July',
+    'Aug', 'August',
+    'Sep', 'Sept', 'September',
+    'Oct', 'October',
+    'Nov', 'November',
+    'Dec', 'December',
   ];
   List<String> _ = title.split(' ');
   return (

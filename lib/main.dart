@@ -104,6 +104,7 @@ class _MoneyWardenState extends State<MoneyWarden> {
                       budget.spreadsheetId = snapshot.data!['spreadsheetId'];
                       budget.spreadsheetName = snapshot.data!['spreadsheetName'];
                       budget.sharedPreferences = snapshot.data!['sharedPreferences'];
+                      budget.getBudgetMonths();
 
                       return Scaffold(
                         backgroundColor: Theme
