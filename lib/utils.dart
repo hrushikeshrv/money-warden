@@ -32,3 +32,12 @@ bool isMonthName(String title) {
 String getCurrentOrClosestMonth(List<String> budgetMonths) {
   return '';
 }
+
+
+/// Parses a date in the format dd/mm/yyyy and
+/// returns a DateTime object. Throws a FormatException
+/// if the date cannot be parsed.
+DateTime parseDate(String date) {
+  date = date.replaceAll('/', '-');
+  return DateTime.parse(date);
+}

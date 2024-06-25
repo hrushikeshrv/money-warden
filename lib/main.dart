@@ -104,7 +104,17 @@ class _MoneyWardenState extends State<MoneyWarden> {
                       budget.spreadsheetId = snapshot.data!['spreadsheetId'];
                       budget.spreadsheetName = snapshot.data!['spreadsheetName'];
                       budget.sharedPreferences = snapshot.data!['sharedPreferences'];
-                      budget.getBudgetMonths();
+
+                      // TODO: Check if a spreadsheet has been selected and show users an instructions page if not.
+                      if (
+                        snapshot.data!['spreadsheetId'] != null
+                        && snapshot.data!['spreadsheetId'] != ''
+                      ) {
+                        budget.initBudgetData();
+                      }
+                      else {
+                        // Redirect users to instructions page.
+                      }
 
                       return Scaffold(
                         backgroundColor: Theme

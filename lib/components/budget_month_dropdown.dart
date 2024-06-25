@@ -15,7 +15,7 @@ class _BudgetMonthDropdownState extends State<BudgetMonthDropdown> {
   Widget build(BuildContext context) {
     return Consumer<BudgetSheet>(
       builder: (context, budgetSheet, child) {
-        List<String> budgetMonths = budgetSheet.budgetMonths;
+        List<String> budgetMonths = budgetSheet.budgetMonthNames;
         if (!budgetMonths.contains(budgetSheet.currentBudgetMonth)) {
           budgetSheet.currentBudgetMonth = budgetMonths.first;
         }

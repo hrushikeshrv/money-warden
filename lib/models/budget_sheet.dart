@@ -2,17 +2,29 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:money_warden/services/sheets.dart';
+import 'package:money_warden/models/budget_month.dart';
 
 /// Global state for the chosen budget spreadsheet
 class BudgetSheet extends ChangeNotifier {
   String? spreadsheetId;
   String? spreadsheetName;
   SharedPreferences? sharedPreferences;
-  bool budgetMonthsInitialized = false;
-  List<String> budgetMonths = ['Loading...'];
+  bool budgetInitialized = false;
+  List<String> budgetMonthNames = ['Loading...'];
   String _currentBudgetMonth = '';
 
+  List<BudgetMonth> budgetMonths = [];
+
   BudgetSheet({ required this.spreadsheetId, required this.spreadsheetName, required this.sharedPreferences });
+
+  /// Fetch and parse all budget data from the budget spreadsheet.
+  void initBudgetData({ bool forceUpdate = false }) async {
+    if (!budgetInitialized || forceUpdate) {
+      await getBudgetMonthNames();
+      budgetInitialized = true;
+      notifyListeners();
+    }
+  }
 
   void setSpreadsheetId(String spreadsheetId) {
     this.spreadsheetId = spreadsheetId;
@@ -33,12 +45,8 @@ class BudgetSheet extends ChangeNotifier {
 
   /// Fetch all sheets in the user's selected budget sheet
   /// and populate this.budgetMonths
-  void getBudgetMonths({ bool forceUpdate = false }) async {
-    if (!budgetMonthsInitialized || forceUpdate) {
-      budgetMonths = await SheetsService.getBudgetMonths(null);
-      budgetMonthsInitialized = true;
-      notifyListeners();
-    }
+  Future<void> getBudgetMonthNames({ bool forceUpdate = false }) async {
+    budgetMonthNames = await SheetsService.getBudgetMonthNames(null);
   }
 
   String get currentBudgetMonth => _currentBudgetMonth;
@@ -48,4 +56,5 @@ class BudgetSheet extends ChangeNotifier {
     _currentBudgetMonth = month;
     notifyListeners();
   }
+
 }
