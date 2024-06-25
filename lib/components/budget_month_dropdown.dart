@@ -16,9 +16,6 @@ class _BudgetMonthDropdownState extends State<BudgetMonthDropdown> {
     return Consumer<BudgetSheet>(
       builder: (context, budgetSheet, child) {
         List<String> budgetMonths = budgetSheet.budgetMonthNames;
-        if (!budgetMonths.contains(budgetSheet.currentBudgetMonth)) {
-          budgetSheet.currentBudgetMonth = budgetMonths.first;
-        }
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: DropdownButton<String>(
@@ -27,8 +24,8 @@ class _BudgetMonthDropdownState extends State<BudgetMonthDropdown> {
                   child: Text(value, style: const TextStyle(
                       fontSize: 30, fontWeight: FontWeight.bold)));
             }).toList(),
-            value: budgetSheet.currentBudgetMonth,
-            onChanged: budgetSheet.setCurrentBudgetMonth,
+            value: budgetSheet.currentBudgetMonthName,
+            onChanged: budgetSheet.setCurrentBudgetMonthName,
             iconEnabledColor: Theme
                 .of(context)
                 .colorScheme

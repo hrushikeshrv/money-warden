@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:money_warden/utils.dart';
 import 'package:money_warden/services/sheets.dart';
 import 'package:money_warden/models/budget_month.dart';
 
@@ -10,10 +11,18 @@ class BudgetSheet extends ChangeNotifier {
   String? spreadsheetName;
   SharedPreferences? sharedPreferences;
   bool budgetInitialized = false;
-  List<String> budgetMonthNames = ['Loading...'];
-  String _currentBudgetMonth = '';
 
-  List<BudgetMonth> budgetMonths = [];
+  List<String> budgetMonthNames = ['Loading...'];
+  String _currentBudgetMonthName = 'Loading...';
+
+  Map<String, BudgetMonth> budgetData = {};
+
+  BudgetMonth? get currentBudgetMonthData {
+    if (budgetData.containsKey(currentBudgetMonthName)) {
+      return budgetData[currentBudgetMonthName];
+    }
+    return null;
+  }
 
   BudgetSheet({ required this.spreadsheetId, required this.spreadsheetName, required this.sharedPreferences });
 
@@ -21,6 +30,8 @@ class BudgetSheet extends ChangeNotifier {
   void initBudgetData({ bool forceUpdate = false }) async {
     if (!budgetInitialized || forceUpdate) {
       await getBudgetMonthNames();
+      currentBudgetMonthName = getCurrentOrClosestMonth(budgetMonthNames);
+      await getBudgetMonthData(month: currentBudgetMonthName);
       budgetInitialized = true;
       notifyListeners();
     }
@@ -49,12 +60,20 @@ class BudgetSheet extends ChangeNotifier {
     budgetMonthNames = await SheetsService.getBudgetMonthNames(null);
   }
 
-  String get currentBudgetMonth => _currentBudgetMonth;
-  set currentBudgetMonth(month) => _currentBudgetMonth = month;
+  String get currentBudgetMonthName => _currentBudgetMonthName;
+  set currentBudgetMonthName(month) => _currentBudgetMonthName = month;
 
-  void setCurrentBudgetMonth(month) {
-    _currentBudgetMonth = month;
+  void setCurrentBudgetMonthName(month) {
+    _currentBudgetMonthName = month;
     notifyListeners();
   }
 
+  Future<BudgetMonth> getBudgetMonthData({ required String month, bool forceUpdate = false }) async {
+    if (!forceUpdate && budgetData.containsKey(month)) {
+      return Future<BudgetMonth>.value(budgetData[month]);
+    }
+    var budgetMonth = await SheetsService.getBudgetMonthData(spreadsheetId!, month, null);
+    budgetData[month] = budgetMonth;
+    return budgetMonth;
+  }
 }

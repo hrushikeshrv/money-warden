@@ -13,52 +13,63 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int amountSpent = 9999;
-  int amountEarned = 9999;
-  int difference = 0;
-
   @override
   Widget build(BuildContext context) {
     return Consumer<BudgetSheet>(
-      builder: (context, budget, child) => Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          const MwAppBar(text: 'Money Warden', assetImagePath: 'assets/images/logo.png'),
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              BudgetMonthDropdown()
-            ]
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  children: [
-                    Text("${amountSpent > 0 ? '+' : ''}\$$amountSpent", style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w500)),
-                    const Text("Spent"),
-                  ],
-                ),
-                Column(
-                  children: [
-                    Text("${amountEarned > 0 ? '+' : ''}\$$amountEarned", style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w500)),
-                    const Text("Earned"),
-                  ],
-                ),
-                Column(
-                  children: [
-                    Text("${difference > 0 ? '+' : ''}\$$difference", style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w500)),
-                    const Text("Difference"),
-                  ],
-                )
-              ]
+      builder: (context, budget, child) {
+        double? amountSpent = budget.currentBudgetMonthData?.monthExpenseAmount;
+        double? amountEarned = budget.currentBudgetMonthData?.monthIncomeAmount;
+        double? difference = budget.currentBudgetMonthData?.monthDifferenceAmount;
+
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            const MwAppBar(
+                text: 'Money Warden', assetImagePath: 'assets/images/logo.png'),
+            const Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  BudgetMonthDropdown()
+                ]
             ),
-          )
-        ],
-      ),
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround ,
+                children: [
+                  Column(
+                    children: [
+                      amountSpent == null ?
+                        const CircularProgressIndicator()
+                      : Text("\$$amountSpent", style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w500)),
+                      const Text("Spent"),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      amountEarned == null ?
+                        const CircularProgressIndicator()
+                      : Text("\$$amountEarned", style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w500)),
+                      const Text("Earned"),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      difference == null ?
+                        const CircularProgressIndicator()
+                      : Text("${difference > 0 ? '+' : ''}\$$difference",
+                          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w500)),
+                      const Text("Difference"),
+                    ],
+                  )
+                ]
+              ),
+            )
+          ],
+        );
+      }
     );
   }
 }

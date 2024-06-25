@@ -38,7 +38,6 @@ class SheetsService {
   static Future<List<String>> getBudgetMonthNames(SheetsApi? api) async {
     api ??= await getSheetsApiClient();
     var prefs = await SharedPreferences.getInstance();
-    print('Getting sheets');
 
     String? spreadsheetId = prefs.getString('spreadsheetId');
     if (spreadsheetId == null) {
@@ -55,7 +54,6 @@ class SheetsService {
     for (var sheet in sheets) {
       if (isMonthName(sheet.properties!.title ?? '')) {
         sheetNames.add(sheet.properties!.title ?? '');
-        print('Found month ${sheet.properties!.title}');
       }
     }
     return sheetNames;
@@ -66,12 +64,12 @@ class SheetsService {
   ///
   /// IMPORTANT: Assumes the passed month exists in the budget spreadsheet,
   /// and throws an exception if it doesn't.
-  Future<BudgetMonth> getBudgetMonthData(String spreadsheetId, String month, int year, SheetsApi? api) async {
+  static Future<BudgetMonth> getBudgetMonthData(String spreadsheetId, String month, SheetsApi? api) async {
     api ??= await getSheetsApiClient();
     BudgetMonth budgetMonth = BudgetMonth(name: month);
     var valuesResponse = await api.spreadsheets.values.batchGet(
       spreadsheetId,
-      ranges: ["'$month $year'!A4:D", "'$month $year'!E4:H"],
+      ranges: ["'$month'!A4:D", "'$month'!E4:H"],
       majorDimension: "ROWS"
     );
     var valueRanges = valuesResponse.valueRanges;

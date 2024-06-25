@@ -30,7 +30,7 @@ bool isMonthName(String title) {
 /// current month if it exists in the list of budget months.
 /// Otherwise, returns the month closest to the current month.
 String getCurrentOrClosestMonth(List<String> budgetMonths) {
-  return '';
+  return budgetMonths[0];
 }
 
 
