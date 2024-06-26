@@ -26,14 +26,9 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const MwAppBar(
-                text: 'Money Warden', assetImagePath: 'assets/images/logo.png'),
-            const Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  BudgetMonthDropdown()
-                ]
+              assetImagePath: 'assets/images/logo.png',
+              child: BudgetMonthDropdown()
             ),
-            const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
               child: Row(
@@ -63,24 +58,22 @@ class _HomePageState extends State<HomePage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Row(
+                  Column(
                     children: [
-                      // The trending up or trending down icon
-                      difference == null ?
-                          const Text('-')
-                          : difference > 0 ? Icon(Icons.trending_up, color: Colors.green.shade500) : Icon(Icons.trending_down, color: Colors.red.shade600),
-                      const SizedBox(width: 5),
-
-                      // The actual value
-                      difference == null ?
-                          const SizedBox(height: 15, width: 15, child: Center(child: CircularProgressIndicator()))
-                          : Text("${difference > 0 ? '+' : '-'}\$${difference.abs()}",
-                          style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600,
-                              color: difference > 0 ? Colors.green.shade500 : Colors.red.shade600
-                          )
+                      Row(
+                        children: [
+                          difference == null ?
+                              const SizedBox(height: 15, width: 15, child: Center(child: CircularProgressIndicator()))
+                              : Text("${difference > 0 ? '+' : '-'}\$${difference.abs()}",
+                              style: TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w600,
+                                  color: difference > 0 ? Colors.green.shade500 : Colors.red.shade600
+                              )
+                          ),
+                        ],
                       ),
+                      const Text("Balance"),
                     ],
                   ),
                   GestureDetector(

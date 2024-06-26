@@ -22,7 +22,8 @@ class _BudgetMonthDropdownState extends State<BudgetMonthDropdown> {
             items: budgetMonths.map<DropdownMenuItem<String>>((String value) {
               return DropdownMenuItem(value: value,
                   child: Text(value, style: const TextStyle(
-                      fontSize: 30, fontWeight: FontWeight.bold)));
+                    fontSize: 26, fontWeight: FontWeight.bold
+                  )));
             }).toList(),
             value: budgetSheet.currentBudgetMonthName,
             onChanged: budgetSheet.setCurrentBudgetMonthName,
@@ -31,6 +32,7 @@ class _BudgetMonthDropdownState extends State<BudgetMonthDropdown> {
                 .colorScheme
                 .primary,
             // isExpanded: true,
+            underline: Container(),
           ),
         );
       }

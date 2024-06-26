@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:money_warden/components/budget_month_dropdown.dart';
 import 'package:money_warden/components/mw_app_bar.dart';
 
 class AnalyticsPage extends StatefulWidget {
@@ -15,7 +16,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        MwAppBar(text: 'Analytics', assetImagePath: 'assets/images/logo.png'),
+        MwAppBar(assetImagePath: 'assets/images/logo.png', child: BudgetMonthDropdown()),
         Column(
           children: [
             Center(

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 class MwAppBar extends StatelessWidget {
-  final String text;
+  final Widget child;
   final String assetImagePath;
 
-  const MwAppBar({super.key, required this.text, required this.assetImagePath});
+  const MwAppBar({super.key, required this.child, required this.assetImagePath});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class MwAppBar extends StatelessWidget {
         children: [
           Image.asset(assetImagePath, height: 45,),
           const SizedBox(width: 10),
-          Text(text, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+          child
         ],
       ),
     );
