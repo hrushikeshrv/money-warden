@@ -89,7 +89,7 @@ class SheetsService {
       ) {
         var txn = Transaction(
           time: parseDate(expense[0] as String),
-          amount: double.parse(expense[1].toString()),
+          amount: parseAmount(expense[1].toString()),
           transactionType: TransactionType.expense
         );
         if (expense[2] != null && expense[2] != '') {
@@ -111,7 +111,7 @@ class SheetsService {
       ) {
         var txn = Transaction(
             time: parseDate(income[0] as String),
-            amount: double.parse(income[1].toString()),
+            amount: parseAmount(income[1].toString()),
             transactionType: TransactionType.income
         );
         if (income[2] != null && income[2] != '') {

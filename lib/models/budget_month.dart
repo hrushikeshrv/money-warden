@@ -30,6 +30,6 @@ class BudgetMonth {
   /// Returns the difference between this month's income
   /// and expenses
   double get monthDifferenceAmount {
-    return monthExpenseAmount - monthIncomeAmount;
+    return monthIncomeAmount - monthExpenseAmount;
   }
 }
