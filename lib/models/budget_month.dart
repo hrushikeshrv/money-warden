@@ -32,4 +32,10 @@ class BudgetMonth {
   double get monthDifferenceAmount {
     return monthIncomeAmount - monthExpenseAmount;
   }
+
+  /// Returns the percentage of this month's income
+  /// spent
+  double get percentIncomeSpent {
+    return (monthExpenseAmount * 100) / monthIncomeAmount;
+  }
 }

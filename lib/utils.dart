@@ -3,6 +3,7 @@
 /// short form (Jan) or long form (January). The year must
 /// be a number
 bool isMonthName(String title) {
+  // TODO: add tests
   List<String> monthNames = [
     'Jan', 'January',
     'Feb', 'February',
@@ -30,6 +31,7 @@ bool isMonthName(String title) {
 /// current month if it exists in the list of budget months.
 /// Otherwise, returns the month closest to the current month.
 String getCurrentOrClosestMonth(List<String> budgetMonths) {
+  // TODO: add tests
   return budgetMonths[0];
 }
 
@@ -43,6 +45,7 @@ String getCurrentOrClosestMonth(List<String> budgetMonths) {
 /// 23 May 2024
 /// 23/05/2024
 DateTime parseDate(String date) {
+  // TODO: add tests
   var months = {
     'Jan': '01', 'January': '01',
     'Feb': '02', 'February': '02',
@@ -79,9 +82,30 @@ DateTime parseDate(String date) {
 /// Parses an amount from the sheet which may have custom formatting
 /// (such as a currency prefix or commas), and returns a double.
 double parseAmount(String amount) {
+  // TODO: add tests
   amount = amount.replaceAll(',', '');
   if (!['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].contains(amount[0])) {
     amount = amount.substring(1);
   }
   return double.parse(amount);
+}
+
+
+/// Formats a double as an amount by inserting commas
+/// in the right places
+String formatMoney(double amount) {
+  // TODO: add tests
+  List<String> result = [];
+  var characters = amount.toString().split('.')[0].split('').reversed.toList();
+  for (int i = 0; i < characters.length; i++) {
+    result.add(characters[i]);
+    if (i > 0 && i < characters.length - 1 && (i + 1) % 3 == 0) {
+      result.add(',');
+    }
+  }
+  String stringResult = result.reversed.join('');
+  if (amount.toString().split('.').length > 1) {
+    stringResult += '.${amount.toString().split('.')[1]}';
+  }
+  return stringResult;
 }

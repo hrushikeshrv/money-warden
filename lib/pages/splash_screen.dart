@@ -20,7 +20,9 @@ class SplashScreen extends StatelessWidget {
             children: [
               Image.asset('assets/images/logo.png', height: 120),
               const Text('Money Warden', style: TextStyle(fontSize: 34, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
-              const SizedBox(height: 10),
+              const SizedBox(height: 5),
+              Center(child: Text("Connecting", style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold))),
+              const SizedBox(height: 20),
               const Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
