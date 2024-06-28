@@ -150,6 +150,12 @@ class _MoneyWardenState extends State<MoneyWarden> {
                             ]
                           ),
                         ),
+                        floatingActionButtonLocation: FloatingActionButtonLocation.miniEndDocked,
+                        floatingActionButton: FloatingActionButton(
+                          backgroundColor: Theme.of(context).colorScheme.primary,
+                          onPressed: () {},
+                          child: const Icon(Icons.payments_outlined),
+                        ),
                         body: SafeArea(
                           child: Padding(
                             padding: const EdgeInsets.all(10),
