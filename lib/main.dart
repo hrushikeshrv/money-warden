@@ -121,40 +121,22 @@ class _MoneyWardenState extends State<MoneyWarden> {
                             .of(context)
                             .colorScheme
                             .surface,
-                        bottomNavigationBar: Padding(
-                          padding: const EdgeInsets.only(bottom: 5),
-                          child: GNav(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            backgroundColor: Theme.of(context).colorScheme.surface,
-                            color: Theme
-                                .of(context)
-                                .colorScheme
-                                .secondary,
-                            activeColor: Theme
-                                .of(context)
-                                .colorScheme
-                                .onPrimary,
-                            tabBackgroundColor: Theme
-                                .of(context)
-                                .colorScheme
-                                .primary,
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 12, horizontal: 17),
-                            gap: 7,
-                            onTabChange: (index) => navigateBottomBar(index),
-                            tabs: const [
-                              GButton(icon: Icons.home, text: "Home"),
-                              GButton(icon: Icons.monetization_on, text: "Transactions"),
-                              GButton(icon: Icons.auto_graph, text: "Summary"),
-                              GButton(icon: Icons.settings, text: "Settings")
-                            ]
-                          ),
+                        bottomNavigationBar: NavigationBar(
+                          destinations: const [
+                            NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
+                            NavigationDestination(icon: Icon(Icons.monetization_on), label: 'Transactions'),
+                            NavigationDestination(icon: Icon(Icons.auto_graph), label: 'Analytics'),
+                            NavigationDestination(icon: Icon(Icons.settings), label: 'Settings')
+                          ],
+                          selectedIndex: currentPage,
+                          onDestinationSelected: navigateBottomBar,
+                          indicatorColor: Theme.of(context).colorScheme.primary,
                         ),
-                        floatingActionButtonLocation: FloatingActionButtonLocation.miniEndDocked,
+                        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
                         floatingActionButton: FloatingActionButton(
                           backgroundColor: Theme.of(context).colorScheme.primary,
                           onPressed: () {},
-                          child: const Icon(Icons.payments_outlined),
+                          child: Icon(Icons.payments_outlined, color: Theme.of(context).colorScheme.onSurface),
                         ),
                         body: SafeArea(
                           child: Padding(
