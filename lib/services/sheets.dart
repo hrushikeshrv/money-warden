@@ -59,7 +59,7 @@ class SheetsService {
     return sheetNames;
   }
 
-  /// Return a BudgetMonth instance populated with data from the
+  /// Returns a BudgetMonth instance populated with data from the
   /// corresponding sheet in the spreadsheet with the passed spreadsheetId.
   ///
   /// IMPORTANT: Assumes the passed month exists in the budget spreadsheet,
@@ -104,6 +104,7 @@ class SheetsService {
         break;
       }
     }
+    budgetMonth.expenses.sort((Transaction a, Transaction b) => b.time.compareTo(a.time));
     for (var income in incomes) {
       if (
       income[0] != null && income[0] != ''
@@ -126,6 +127,7 @@ class SheetsService {
         break;
       }
     }
+    budgetMonth.income.sort((Transaction a, Transaction b) => b.time.compareTo(a.time));
     return budgetMonth;
   }
 }

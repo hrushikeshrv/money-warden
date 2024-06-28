@@ -58,7 +58,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   },
                   trailing: userPhotoUrl != null ? CircleAvatar(backgroundImage: NetworkImage(userPhotoUrl!), radius: 25) : null,
                 ),
-          
+
+                const SizedBox(height: 20),
                 const Heading1(text: 'Categories'),
                 SettingsTile(
                   leading: Icon(Icons.list, color: Theme.of(context).colorScheme.error),
@@ -72,7 +73,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   subtitle: 'Create or update income categories',
                   onTap: () {},
                 ),
-          
+
+                const SizedBox(height: 20),
                 const Heading1(text: 'Preferences'),
                 SettingsTile(
                   leading: const Icon(Icons.attach_money),

@@ -11,7 +11,7 @@ import 'package:money_warden/pages/analytics.dart';
 import 'package:money_warden/pages/homepage.dart';
 import 'package:money_warden/pages/settings.dart';
 import 'package:money_warden/pages/splash_screen.dart';
-import 'package:money_warden/pages/transaction_crud.dart';
+import 'package:money_warden/pages/transactions.dart';
 import 'package:money_warden/pages/user_sheets_list.dart';
 import 'package:money_warden/services/auth.dart';
 import 'package:money_warden/theme/theme.dart';

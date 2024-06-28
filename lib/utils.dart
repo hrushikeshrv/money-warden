@@ -109,3 +109,15 @@ String formatMoney(double amount) {
   }
   return stringResult;
 }
+
+/// Formats a DateTime object into a friendly string
+String formatDateTime(DateTime dateTime) {
+  List<String> months = [
+    'January', 'February', 'March', 'April', 'May', 'June', 'July',
+    'August', 'September', 'October', 'November', 'December'
+  ];
+  List<String> weekdays = [
+    'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'
+  ];
+  return '${weekdays[dateTime.weekday-1]}, ${dateTime.day} ${months[dateTime.month-1]} ${dateTime.year}';
+}
