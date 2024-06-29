@@ -26,7 +26,7 @@ class _BudgetMonthDropdownState extends State<BudgetMonthDropdown> {
                   )));
             }).toList(),
             value: budgetSheet.currentBudgetMonthName,
-            onChanged: budgetSheet.setCurrentBudgetMonthName,
+            onChanged: budgetSheet.setCurrentBudgetMonth,
             iconEnabledColor: Theme
                 .of(context)
                 .colorScheme

@@ -46,67 +46,65 @@ class _HomePageState extends State<HomePage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Column(
-                          children: [
-                            amountSpent == null ?
-                            const CircularProgressIndicator()
-                                : Text("\$${formatMoney(amountSpent)}", style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600)),
-                            const Text("Spent"),
-                          ],
+                        Expanded(
+                          child: Column(
+                            children: [
+                              amountSpent == null ?
+                              const CircularProgressIndicator()
+                                  : Text("\$${formatMoney(amountSpent)}", style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600)),
+                              const Text("Spent"),
+                            ],
+                          ),
                         ),
-                        const SizedBox(width: 50),
-                        Column(
-                          children: [
-                            amountEarned == null ?
-                            const CircularProgressIndicator()
-                                : Text("\$${formatMoney(amountEarned)}", style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600)),
-                            const Text("Earned"),
-                          ],
+                        Expanded(
+                          child: Column(
+                            children: [
+                              amountEarned == null ?
+                              const CircularProgressIndicator()
+                                  : Text("\$${formatMoney(amountEarned)}", style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600)),
+                              const Text("Earned"),
+                            ],
+                          ),
                         ),
                       ]
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Column(
-                          children: [
-                            Row(
-                              children: [
-                                difference == null ?
-                                const CircularProgressIndicator()
-                                    : Text("${difference > 0 ? '+ ' : '- '}\$${formatMoney(difference.abs())}",
-                                    style: TextStyle(
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.w600,
-                                        color: difference > 0 ? Colors.green.shade500 : Colors.red.shade600
-                                    )
-                                ),
-                              ],
-                            ),
-                            const Text("Balance"),
-                          ],
+                        Expanded(
+                          child: Column(
+                            children: [
+                              difference == null ?
+                              const CircularProgressIndicator()
+                                  : Text("${difference > 0 ? '+ ' : difference < 0 ? '- ' : ''}\$${formatMoney(difference.abs())}",
+                                  style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.w600,
+                                      color: difference > 0 ? Colors.green.shade500 : Colors.red.shade600
+                                  )
+                              ),
+                              const Text("Balance"),
+                            ],
+                          ),
                         ),
-                        const SizedBox(width: 60),
-                        Column(
-                          children: [
-                            Row(
-                              children: [
-                                percentSpent == null ?
-                                const CircularProgressIndicator()
-                                    : Text("$percentSpent %",
-                                    style: TextStyle(
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.w600,
-                                        color: percentSpent < 90.0 ? Colors.green.shade500 : Colors.red.shade600
-                                    )
-                                ),
-                              ],
-                            ),
-                            const Text("% Spent"),
-                          ],
+                        Expanded(
+                          child: Column(
+                            children: [
+                              percentSpent == null ?
+                              const CircularProgressIndicator()
+                                  : Text("$percentSpent %",
+                                  style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.w600,
+                                      color: percentSpent < 90.0 ? Colors.green.shade500 : Colors.red.shade600
+                                  )
+                              ),
+                              const Text("% Spent"),
+                            ],
+                          ),
                         ),
                       ]
                     ),
@@ -163,14 +161,19 @@ class _HomePageState extends State<HomePage> {
                   const SizedBox(height: 10),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 5),
-                    child: ListView.builder(
-                      itemCount: budget.currentBudgetMonthData == null ? 0 : budget.currentBudgetMonthData!.recentTransactions.length,
-                      shrinkWrap: true,
-                      physics: const ClampingScrollPhysics(),
-                      itemBuilder: (BuildContext context, int index) {
-                        return TransactionTile(transaction: budget.currentBudgetMonthData?.recentTransactions[index]);
-                      },
-                    ),
+                    child: budget.currentBudgetMonthData != null && budget.currentBudgetMonthData!.recentTransactions.isEmpty
+                        ? const Padding(
+                          padding: EdgeInsets.only(top: 20),
+                          child: Center(child: Text('No transactions yet 💸', style: TextStyle(fontSize: 17))),
+                        )
+                        : ListView.builder(
+                          itemCount: budget.currentBudgetMonthData == null ? 0 : budget.currentBudgetMonthData!.recentTransactions.length,
+                          shrinkWrap: true,
+                          physics: const ClampingScrollPhysics(),
+                          itemBuilder: (BuildContext context, int index) {
+                            return TransactionTile(transaction: budget.currentBudgetMonthData?.recentTransactions[index]);
+                          },
+                        ),
                   ),
 
                   // To make sure content isn't overlapped by the FAB

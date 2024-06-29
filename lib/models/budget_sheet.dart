@@ -15,7 +15,7 @@ class BudgetSheet extends ChangeNotifier {
   List<String> budgetMonthNames = ['Loading...'];
   String _currentBudgetMonthName = 'Loading...';
 
-  Map<String, BudgetMonth> budgetData = {};
+  Map<String, BudgetMonth?> budgetData = {};
 
   BudgetMonth? get currentBudgetMonthData {
     if (budgetData.containsKey(currentBudgetMonthName)) {
@@ -63,17 +63,23 @@ class BudgetSheet extends ChangeNotifier {
   String get currentBudgetMonthName => _currentBudgetMonthName;
   set currentBudgetMonthName(month) => _currentBudgetMonthName = month;
 
-  void setCurrentBudgetMonthName(month) {
+  void setCurrentBudgetMonth(month) {
     _currentBudgetMonthName = month;
+    if (!budgetData.containsKey(month)) {
+      budgetData[month] = null;
+      getBudgetMonthData(month: month);
+    }
     notifyListeners();
   }
 
   Future<BudgetMonth> getBudgetMonthData({ required String month, bool forceUpdate = false }) async {
-    if (!forceUpdate && budgetData.containsKey(month)) {
+    print('Getting budget data for $month');
+    if (!forceUpdate && budgetData.containsKey(month) && budgetData[month] != null) {
       return Future<BudgetMonth>.value(budgetData[month]);
     }
     var budgetMonth = await SheetsService.getBudgetMonthData(spreadsheetId!, month, null);
     budgetData[month] = budgetMonth;
+    notifyListeners();
     return budgetMonth;
   }
 }

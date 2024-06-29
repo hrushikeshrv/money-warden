@@ -75,12 +75,8 @@ class SheetsService {
     var valueRanges = valuesResponse.valueRanges;
     var expenses = valueRanges?[0].values;
     var incomes = valueRanges?[1].values;
-    if (expenses == null) {
-      throw NullSpreadsheetValueException("Couldn't fetch expenses from spreadsheet ID: $spreadsheetId");
-    }
-    if (incomes == null) {
-      throw NullSpreadsheetValueException("Couldn't fetch incomes from spreadsheet ID: $spreadsheetId");
-    }
+    expenses ??= [];
+    incomes ??= [];
 
     for (var expense in expenses) {
       if (

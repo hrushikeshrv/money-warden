@@ -36,6 +36,7 @@ class BudgetMonth {
   /// Returns the percentage of this month's income
   /// spent
   double get percentIncomeSpent {
+    if (monthIncomeAmount == 0) return 0;
     return double.parse(((monthExpenseAmount * 100) / monthIncomeAmount).toStringAsFixed(1));
   }
 

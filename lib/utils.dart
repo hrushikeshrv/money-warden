@@ -112,6 +112,7 @@ String formatMoney(double amount) {
 
 /// Formats a DateTime object into a friendly string
 String formatDateTime(DateTime dateTime) {
+  // TODO: add tests
   List<String> months = [
     'January', 'February', 'March', 'April', 'May', 'June', 'July',
     'August', 'September', 'October', 'November', 'December'
