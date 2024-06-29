@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:money_warden/models/transaction.dart';
 
 /// Global state for a single month's sheet in the chosen budget
@@ -43,12 +45,24 @@ class BudgetMonth {
   /// Returns up to the 7 most recent transactions in descending order
   /// of their date. Includes both expenses and incomes.
   List<Transaction> get recentTransactions {
-    int nRecentTransactions = 7;
+    return getOrderedTransactions(7);
+  }
+
+  List<Transaction> get orderedTransactions {
+    return getOrderedTransactions(null);
+  }
+
+  /// Returns up to maxTransactions transactions in descending order
+  /// of their date. Includes both expenses and incomes
+  List<Transaction> getOrderedTransactions(int? maxTransactions) {
+    // TODO: add tests
+    List<Transaction> transactions = [];
     int expenseIdx = 0;
     int incomeIdx = 0;
-    List<Transaction> transactions = [];
-
-    for (int i = 0; i < nRecentTransactions; i++) {
+    while (true) {
+      if (maxTransactions != null && expenseIdx + incomeIdx >= maxTransactions) {
+        break;
+      }
       if (expenseIdx < expenses.length && incomeIdx < income.length) {
         if (expenses[expenseIdx].time.isAfter(income[incomeIdx].time)) {
           transactions.add(expenses[expenseIdx]);
@@ -66,6 +80,9 @@ class BudgetMonth {
       else if (incomeIdx < income.length) {
         transactions.add(income[incomeIdx]);
         incomeIdx++;
+      }
+      else {
+        break;
       }
     }
     return transactions;
