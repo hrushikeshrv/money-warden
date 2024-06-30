@@ -1,5 +1,7 @@
-import 'dart:math';
+import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
 
+import 'package:money_warden/utils.dart';
 import 'package:money_warden/models/transaction.dart';
 
 /// Global state for a single month's sheet in the chosen budget
@@ -86,5 +88,73 @@ class BudgetMonth {
       }
     }
     return transactions;
+  }
+
+  /// Returns a map mapping a category name to information
+  /// about expenses in that category in this month.
+  ///
+  /// Example format -
+  /// ```
+  /// {
+  ///   'Category 1': {
+  ///     'name': 'Category 1',
+  ///     'amount': 200.0,
+  ///     'backgroundColor': Color(0xFFABCDEF)
+  ///   },
+  ///   ...
+  /// }
+  /// ```
+  Map<String, Map<String, dynamic>> getExpensesByCategory() {
+    // TODO: add tests
+    Map<String, Map<String, dynamic>> data = {};
+    for (var expense in expenses) {
+      String categoryName = expense.category?.name ?? 'Uncategorized';
+      if (!data.containsKey(categoryName)) {
+        data[categoryName] = {
+          'name': categoryName,
+          'amount': 0.0,
+          'backgroundColor': expense.category?.backgroundColor ?? getRandomGraphColor()
+        };
+      }
+      data[categoryName]!['amount'] = data[categoryName]!['amount'] + expense.amount;
+    }
+    // If no transactions yet, add an "Uncategorized"
+    // category as a placeholder
+    if (data.keys.isEmpty) {
+      data['Uncategorized'] = {
+        'name': 'Uncategorized',
+        'amount': 1.0,
+        'backgroundColor': getRandomGraphColor()
+      };
+    }
+    return data;
+  }
+
+  /// Returns a list of FL Chart's `PieChartSectionData` instances
+  /// containing different categories of spending and their corresponding
+  /// amounts
+  List<PieChartSectionData> getExpensesByCategorySectionData() {
+    List<PieChartSectionData> data = [];
+    var categories = getExpensesByCategory();
+    for (var cat in categories.keys) {
+      data.add(PieChartSectionData(
+        title: categories[cat]!['name'],
+        value: categories[cat]!['amount'],
+        color: categories[cat]!['backgroundColor'],
+        radius: 150,
+        borderSide: const BorderSide(
+          width: 3,
+          color: Colors.black,
+        ),
+        showTitle: false
+      ));
+    }
+    data.sort((a, b) {
+      if (a.value > b.value) {
+        return 1;
+      }
+      return -1;
+    });
+    return data;
   }
 }

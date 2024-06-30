@@ -1,3 +1,6 @@
+import 'dart:math';
+import 'package:flutter/material.dart';
+
 /// Returns true if the title is a String of the format
 /// \<MonthName\> \<YearName\>. The month name can be in
 /// short form (Jan) or long form (January). The year must
@@ -121,4 +124,24 @@ String formatDateTime(DateTime dateTime) {
     'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'
   ];
   return '${weekdays[dateTime.weekday-1]}, ${dateTime.day} ${months[dateTime.month-1]} ${dateTime.year}';
+}
+
+
+Color getRandomGraphColor() {
+  List<Color> colors = const [
+    Color(0xFF2DBA4B),
+    Color(0xFF2DBBA1),
+    Color(0xFF07E1B9),
+    Color(0xFF4643C4),
+    Color(0xFFC0B32D),
+    Color(0xFFB7443E),
+    Color(0xFFD7822C),
+    Color(0xFFA930D2),
+    Color(0xFFCB1FA3),
+    Color(0xFFE01478),
+    Color(0xFFC0E32E),
+    Color(0xFF59C518),
+    Color(0xFF583DC5),
+  ];
+  return colors[Random().nextInt(colors.length)];
 }

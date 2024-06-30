@@ -73,7 +73,6 @@ class BudgetSheet extends ChangeNotifier {
   }
 
   Future<BudgetMonth> getBudgetMonthData({ required String month, bool forceUpdate = false }) async {
-    print('Getting budget data for $month');
     if (!forceUpdate && budgetData.containsKey(month) && budgetData[month] != null) {
       return Future<BudgetMonth>.value(budgetData[month]);
     }
