@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:money_warden/components/heading1.dart';
+import 'package:money_warden/models/budget_month.dart';
 import 'package:provider/provider.dart';
-import 'package:fl_chart/fl_chart.dart';
+import 'package:community_charts_flutter/community_charts_flutter.dart' as charts;
 
 import 'package:money_warden/components/budget_month_dropdown.dart';
+import 'package:money_warden/components/heading1.dart';
 import 'package:money_warden/components/mw_app_bar.dart';
 import 'package:money_warden/models/budget_sheet.dart';
 
@@ -30,17 +31,30 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                     padding: EdgeInsets.only(left: 10),
                     child: Heading1(text: 'Expenses by Category'),
                   ),
+                  const SizedBox(height: 10),
 
                   budget.currentBudgetMonthData == null
                       ? const SizedBox(height: 100, child: Center(child: CircularProgressIndicator()))
                       : AspectRatio(
-                        aspectRatio: 1.2,
-                        child: PieChart(
-                          PieChartData(
-                            sections: budget.currentBudgetMonthData!.getExpensesByCategorySectionData(),
-                            centerSpaceRadius: 0,
-                          )
-                        ),
+                        aspectRatio: 1.5,
+                        child: charts.PieChart<double>(
+                          budget.currentBudgetMonthData!.getExpensesByCategorySeriesList(),
+                          defaultRenderer: charts.ArcRendererConfig(
+                            // arcWidth: 40,
+                            arcRendererDecorators: [charts.ArcLabelDecorator()]
+                          ),
+                          behaviors: [
+                            charts.DatumLegend(
+                              position: charts.BehaviorPosition.end,
+                              horizontalFirst: false,
+                              showMeasures: true,
+                              // legendDefaultMeasure: charts.LegendDefaultMeasure.firstValue,
+                              measureFormatter: (value) {
+                                return value == null ? '-' : '\$$value';
+                              }
+                            )
+                          ],
+                        )
                       )
                 ],
               ),

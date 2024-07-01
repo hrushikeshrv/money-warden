@@ -1,7 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:fl_chart/fl_chart.dart';
+import 'package:community_charts_flutter/community_charts_flutter.dart' as charts;
 
-import 'package:money_warden/utils.dart';
 import 'package:money_warden/models/transaction.dart';
 
 /// Global state for a single month's sheet in the chosen budget
@@ -90,71 +88,78 @@ class BudgetMonth {
     return transactions;
   }
 
-  /// Returns a map mapping a category name to information
-  /// about expenses in that category in this month.
+  /// Returns a list containing information
+  /// about expenses for each category in this month.
   ///
   /// Example format -
   /// ```
-  /// {
-  ///   'Category 1': {
+  /// [
+  ///   {
   ///     'name': 'Category 1',
   ///     'amount': 200.0,
-  ///     'backgroundColor': Color(0xFFABCDEF)
+  ///     'backgroundColor': Color(0xFFABCDEF),
+  ///     'borderSide': const BorderSide(width: 3),
+  ///     'showTitle': false,
   ///   },
   ///   ...
-  /// }
+  /// ]
   /// ```
-  Map<String, Map<String, dynamic>> getExpensesByCategory() {
+  List<CategorySpend> getExpensesByCategory() {
     // TODO: add tests
-    Map<String, Map<String, dynamic>> data = {};
+    List<CategorySpend> data = [];
+    Map<String, int> indexMap = {};
+    int idx = 0;
     for (var expense in expenses) {
       String categoryName = expense.category?.name ?? 'Uncategorized';
-      if (!data.containsKey(categoryName)) {
-        data[categoryName] = {
-          'name': categoryName,
-          'amount': 0.0,
-          'backgroundColor': expense.category?.backgroundColor ?? getRandomGraphColor()
-        };
+      if (!indexMap.containsKey(categoryName)) {
+        indexMap[categoryName] = idx;
+        data.add(CategorySpend(name: categoryName));
+        idx++;
       }
-      data[categoryName]!['amount'] = data[categoryName]!['amount'] + expense.amount;
+      data[indexMap[categoryName]!].amount = data[indexMap[categoryName]!].amount + expense.amount;
     }
+
     // If no transactions yet, add an "Uncategorized"
     // category as a placeholder
-    if (data.keys.isEmpty) {
-      data['Uncategorized'] = {
-        'name': 'Uncategorized',
-        'amount': 1.0,
-        'backgroundColor': getRandomGraphColor()
-      };
+    if (data.isEmpty) {
+      data[0] = CategorySpend(name: 'Uncategorized');
     }
-    return data;
-  }
 
-  /// Returns a list of FL Chart's `PieChartSectionData` instances
-  /// containing different categories of spending and their corresponding
-  /// amounts
-  List<PieChartSectionData> getExpensesByCategorySectionData() {
-    List<PieChartSectionData> data = [];
-    var categories = getExpensesByCategory();
-    for (var cat in categories.keys) {
-      data.add(PieChartSectionData(
-        title: categories[cat]!['name'],
-        value: categories[cat]!['amount'],
-        color: categories[cat]!['backgroundColor'],
-        radius: 150,
-        borderSide: const BorderSide(
-          width: 3,
-          color: Colors.black,
-        ),
-        showTitle: false
-      ));
-    }
     data.sort((a, b) {
-      if (a.value > b.value) {
+      if (a.amount < b.amount) {
         return 1;
       }
       return -1;
     });
     return data;
   }
+
+  /// Returns a list of flutter_charts Series instances
+  /// containing different categories of spending and their corresponding
+  /// amounts
+  List<charts.Series<CategorySpend, double>> getExpensesByCategorySeriesList() {
+    List<CategorySpend> spends = getExpensesByCategory();
+    return [
+      charts.Series<CategorySpend, double>(
+        id: 'Expenses',
+        data: spends,
+        domainFn: (CategorySpend spend, _) => spend.amount,
+        measureFn: (CategorySpend spend, _) => spend.amount,
+        labelAccessorFn: (CategorySpend spend, _) => spend.name,
+        colorFn: (_, __) => charts.MaterialPalette.green.shadeDefault,
+        // seriesColor: charts.MaterialPalette.green.shadeDefault
+      )
+    ];
+  }
+}
+
+/// A class describing a category and the amount spent/earned
+/// under that category. Contains two fields -
+/// 1. `String name`: The category name
+/// 2. `double amount`: The amount spent/earned
+class CategorySpend {
+  final String name;
+  double amount = 0.0;
+
+  CategorySpend({ required this.name });
 }
