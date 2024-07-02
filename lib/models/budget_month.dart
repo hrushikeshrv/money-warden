@@ -2,7 +2,6 @@ import 'package:community_charts_common/community_charts_common.dart';
 import 'package:community_charts_flutter/community_charts_flutter.dart' as charts;
 
 import 'package:money_warden/models/transaction.dart';
-import 'package:money_warden/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Global state for a single month's sheet in the chosen budget

@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:money_warden/components/transaction_category_summary_tile.dart';
 import 'package:money_warden/models/budget_month.dart';
 import 'package:provider/provider.dart';
 import 'package:community_charts_flutter/community_charts_flutter.dart' as charts;
@@ -30,12 +31,6 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
               child: ListView(
                 shrinkWrap: true,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.only(left: 10),
-                    child: Heading1(text: 'Expenses by Category'),
-                  ),
-                  const SizedBox(height: 10),
-
                   budget.currentBudgetMonthData == null
                       ? const SizedBox(height: 100, child: Center(child: CircularProgressIndicator()))
                       : AspectRatio(
@@ -57,10 +52,24 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                         ),
                       ),
 
-                  const Padding(
-                    padding: EdgeInsets.only(left: 10),
-                    child: Heading1(text: 'Your Top Categories',),
-                  )
+                  const SizedBox(height: 10),
+                  budget.currentBudgetMonthData == null
+                      ? const SizedBox(height: 100, child: Center(child: CircularProgressIndicator()))
+                      : ListView(
+                        shrinkWrap: true,
+                        physics: const ClampingScrollPhysics(),
+                        children: budget.currentBudgetMonthData!.getExpensesByCategory().map(
+                            (CategorySpend spend) {
+                              return TransactionCategorySummaryTile(
+                                categoryName: spend.name,
+                                amount: spend.amount,
+                                percentSpent: (spend.amount / budget.currentBudgetMonthData!.monthExpenseAmount)
+                              );
+                            }
+                        ).toList(),
+                  ),
+
+                  const SizedBox(height: 70),
                 ],
               ),
             ),
