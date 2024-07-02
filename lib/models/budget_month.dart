@@ -1,6 +1,9 @@
+import 'package:community_charts_common/community_charts_common.dart';
 import 'package:community_charts_flutter/community_charts_flutter.dart' as charts;
 
 import 'package:money_warden/models/transaction.dart';
+import 'package:money_warden/utils.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// Global state for a single month's sheet in the chosen budget
 /// spreadsheet.
@@ -88,22 +91,10 @@ class BudgetMonth {
     return transactions;
   }
 
-  /// Returns a list containing information
-  /// about expenses for each category in this month.
-  ///
-  /// Example format -
-  /// ```
-  /// [
-  ///   {
-  ///     'name': 'Category 1',
-  ///     'amount': 200.0,
-  ///     'backgroundColor': Color(0xFFABCDEF),
-  ///     'borderSide': const BorderSide(width: 3),
-  ///     'showTitle': false,
-  ///   },
-  ///   ...
-  /// ]
-  /// ```
+  /// Returns a list containing information about
+  /// expenses for each category in this month. The
+  /// returned list is sorted in decreasing order of the
+  /// amount spent.
   List<CategorySpend> getExpensesByCategory() {
     // TODO: add tests
     List<CategorySpend> data = [];
@@ -136,8 +127,9 @@ class BudgetMonth {
 
   /// Returns a list of flutter_charts Series instances
   /// containing different categories of spending and their corresponding
-  /// amounts
-  List<charts.Series<CategorySpend, double>> getExpensesByCategorySeriesList() {
+  /// amounts. Takes an instance of `SharedPreferences` to get
+  /// the color to show for each category from local storage.
+  List<charts.Series<CategorySpend, double>> getExpensesByCategorySeriesList(SharedPreferences prefs) {
     List<CategorySpend> spends = getExpensesByCategory();
     return [
       charts.Series<CategorySpend, double>(
@@ -145,8 +137,18 @@ class BudgetMonth {
         data: spends,
         domainFn: (CategorySpend spend, _) => spend.amount,
         measureFn: (CategorySpend spend, _) => spend.amount,
-        labelAccessorFn: (CategorySpend spend, _) => spend.name,
-        colorFn: (_, __) => charts.MaterialPalette.green.shadeDefault,
+        labelAccessorFn: (CategorySpend spend, _) => '${spend.name}\n\$${spend.amount}',
+        colorFn: (CategorySpend spend, __) {
+          String? color = prefs.getString('${spend.name}_color');
+          if (color == null) {
+            return charts.MaterialPalette.green.shadeDefault;
+          }
+          return Color(
+            r: int.parse(color.substring(4, 6), radix: 16),
+            g: int.parse(color.substring(6, 8), radix: 16),
+            b: int.parse(color.substring(8), radix: 16)
+          );
+        },
         // seriesColor: charts.MaterialPalette.green.shadeDefault
       )
     ];

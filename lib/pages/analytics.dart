@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:money_warden/models/budget_month.dart';
 import 'package:provider/provider.dart';
@@ -36,26 +39,28 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                   budget.currentBudgetMonthData == null
                       ? const SizedBox(height: 100, child: Center(child: CircularProgressIndicator()))
                       : AspectRatio(
-                        aspectRatio: 1.5,
+                        aspectRatio: 1,
                         child: charts.PieChart<double>(
-                          budget.currentBudgetMonthData!.getExpensesByCategorySeriesList(),
+                          budget.currentBudgetMonthData!.getExpensesByCategorySeriesList(budget.sharedPreferences!),
                           defaultRenderer: charts.ArcRendererConfig(
-                            // arcWidth: 40,
+                            // arcLength: pi,
+                            // startAngle: pi,
                             arcRendererDecorators: [charts.ArcLabelDecorator()]
                           ),
                           behaviors: [
                             charts.DatumLegend(
                               position: charts.BehaviorPosition.end,
                               horizontalFirst: false,
-                              showMeasures: true,
-                              // legendDefaultMeasure: charts.LegendDefaultMeasure.firstValue,
-                              measureFormatter: (value) {
-                                return value == null ? '-' : '\$$value';
-                              }
+                              desiredMaxColumns: 5
                             )
                           ],
-                        )
-                      )
+                        ),
+                      ),
+
+                  const Padding(
+                    padding: EdgeInsets.only(left: 10),
+                    child: Heading1(text: 'Your Top Categories',),
+                  )
                 ],
               ),
             ),
