@@ -76,7 +76,9 @@ class _SettingsPageState extends State<SettingsPage> {
                           .error),
                       title: 'Manage Expense Categories',
                       subtitle: 'Create or update expense categories',
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.of(context).pushNamed('expense_categories_list');
+                      },
                     ),
                     SettingsTile(
                       leading: Icon(Icons.list, color: Theme
@@ -85,7 +87,9 @@ class _SettingsPageState extends State<SettingsPage> {
                           .primary),
                       title: 'Manage Income Categories',
                       subtitle: 'Create or update income categories',
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.of(context).pushNamed('income_categories_list');
+                      },
                     ),
 
                     const SizedBox(height: 20),

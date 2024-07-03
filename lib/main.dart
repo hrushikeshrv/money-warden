@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:money_warden/pages/transaction_categories_list.dart';
 import 'package:provider/provider.dart';
 
 import 'package:money_warden/models/budget_sheet.dart';
+import 'package:money_warden/models/transaction.dart';
 import 'package:money_warden/pages/login.dart';
 import 'package:money_warden/pages/analytics.dart';
 import 'package:money_warden/pages/homepage.dart';
@@ -85,6 +87,8 @@ class _MoneyWardenState extends State<MoneyWarden> {
             'analytics': (context) => const AnalyticsPage(),
             'settings': (context) => const SettingsPage(),
             'user_sheets_list': (context) => const UserSheetsList(),
+            'expense_categories_list': (context) => const TransactionCategoriesList(transactionType: TransactionType.expense),
+            'income_categories_list': (context) => const TransactionCategoriesList(transactionType: TransactionType.income),
           },
           // Try to sign the user in silently and show the splash screen in the
           // mean time

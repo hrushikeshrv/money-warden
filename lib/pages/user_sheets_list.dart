@@ -35,7 +35,10 @@ class _UserSheetsListState extends State<UserSheetsList> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Heading1(text: 'Your Spreadsheets'),
+              const Padding(
+                padding: EdgeInsets.only(left: 10, top: 10),
+                child: Heading1(text: 'Your Spreadsheets'),
+              ),
               const SizedBox(height: 10),
               const MwWarning(
                 children: [
