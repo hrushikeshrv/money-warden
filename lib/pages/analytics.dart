@@ -38,17 +38,8 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                         child: charts.PieChart<double>(
                           budget.currentBudgetMonthData!.getExpensesByCategorySeriesList(budget.sharedPreferences!),
                           defaultRenderer: charts.ArcRendererConfig(
-                            // arcLength: pi,
-                            // startAngle: pi,
                             arcRendererDecorators: [charts.ArcLabelDecorator()]
                           ),
-                          behaviors: [
-                            charts.DatumLegend(
-                              position: charts.BehaviorPosition.end,
-                              horizontalFirst: false,
-                              desiredMaxColumns: 5
-                            )
-                          ],
                         ),
                       ),
 
