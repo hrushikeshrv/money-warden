@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:money_warden/utils.dart';
 import 'package:money_warden/services/sheets.dart';
+import 'package:money_warden/models/category.dart' as category;
 import 'package:money_warden/models/budget_month.dart';
 
 /// Global state for the chosen budget spreadsheet
@@ -15,8 +16,8 @@ class BudgetSheet extends ChangeNotifier {
   List<String> budgetMonthNames = ['Loading...'];
   String _currentBudgetMonthName = 'Loading...';
 
-  List<Category> expenseCategories = [];
-  List<Category> incomeCategories = [];
+  List<category.Category> expenseCategories = [];
+  List<category.Category> incomeCategories = [];
 
   Map<String, BudgetMonth?> budgetData = {};
 
@@ -35,6 +36,7 @@ class BudgetSheet extends ChangeNotifier {
       await getBudgetMonthNames();
       currentBudgetMonthName = getCurrentOrClosestMonth(budgetMonthNames);
       await getBudgetMonthData(month: currentBudgetMonthName);
+      await getCategoryNames();
       budgetInitialized = true;
       notifyListeners();
     }
@@ -79,6 +81,8 @@ class BudgetSheet extends ChangeNotifier {
   /// and populate this.expenseCategories and this.incomeCategories
   Future<void> getCategoryNames({ bool forceUpdate = false }) async {
     var categoryData = await SheetsService.getTransactionCategories(null);
+    expenseCategories = categoryData['expense']!;
+    incomeCategories = categoryData['income']!;
   }
 
   /// Fetches the budget data of a particular month and returns

@@ -165,12 +165,12 @@ class SheetsService {
       if (exp == null) {
         break;
       }
-      var color = prefs.getString('${exp as String}_color');
+      var color = prefs.getString('expense_${exp as String}_color');
       data['expense']!.add(
         Category(
           name: exp,
           cellId: 'B${i+2}',
-          backgroundColor: color != null ? material.Color(int.parse(color, radix: 16)) : getRandomGraphColor()
+          backgroundColor: color != null ? material.Color(int.parse(color, radix: 16)) : null,
         )
       );
     }
@@ -179,9 +179,16 @@ class SheetsService {
       if (income == null) {
         break;
       }
-      data['income']!.add(Category(name: income as String, cellId: 'C${i+2}'));
+
+      var color = prefs.getString('income_${income as String}_color');
+      data['income']!.add(
+        Category(
+          name: income,
+          cellId: 'C${i+2}',
+          backgroundColor: color != null ? material.Color(int.parse(color, radix: 16)) : null
+        )
+      );
     }
-    print(data);
     return data;
   }
 }

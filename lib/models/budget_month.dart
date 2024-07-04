@@ -139,7 +139,7 @@ class BudgetMonth {
         measureFn: (CategorySpend spend, _) => spend.amount,
         labelAccessorFn: (CategorySpend spend, _) => '${spend.name}\n\$${spend.amount}',
         colorFn: (CategorySpend spend, __) {
-          material.Color color = spend.backgroundColor;
+          material.Color color = spend.backgroundColor ?? getRandomGraphColor();
           return Color(
             r: color.red,
             g: color.green,
@@ -159,7 +159,7 @@ class BudgetMonth {
 class CategorySpend {
   final String name;
   double amount = 0.0;
-  final material.Color backgroundColor;
+  final material.Color? backgroundColor;
 
-  CategorySpend({ required this.name , required this.backgroundColor});
+  CategorySpend({ required this.name , this.backgroundColor});
 }
