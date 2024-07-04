@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart' as material;
 import 'package:googleapis/drive/v3.dart';
 import 'package:googleapis/sheets/v4.dart';
 import 'package:http/http.dart';
@@ -124,5 +125,63 @@ class SheetsService {
     }
     budgetMonth.income.sort((Transaction a, Transaction b) => b.time.compareTo(a.time));
     return budgetMonth;
+  }
+
+  /// Gets expense categories and income categories from the
+  /// budget spreadsheet and returns a map with 2 keys - 'expense' and 'income'
+  /// with a List\<Category> as the values.
+  /// ```
+  /// {
+  ///   'expense': List<Category>,
+  ///   'income': List<Category>
+  /// }
+  /// ```
+  static Future<Map<String, List<Category>>> getTransactionCategories(SheetsApi? api) async {
+    api ??= await getSheetsApiClient();
+
+    var prefs = await SharedPreferences.getInstance();
+    String? spreadsheetId = prefs.getString('spreadsheetId');
+    if (spreadsheetId == null) {
+      throw NullSpreadsheetMetadataException('No spreadsheet has been selected, spreadsheetId was null.');
+    }
+
+    var valuesResponse = await api.spreadsheets.values.batchGet(
+        spreadsheetId,
+        ranges: ["'Metadata'!B2:C",],
+        majorDimension: "COLUMNS"
+    );
+
+    Map<String, List<Category>> data = {
+      'expense': [],
+      'income': [],
+    };
+
+    var values = valuesResponse.valueRanges?[0].values;
+    if (values == null) {
+      return data;
+    }
+    for (int i = 0; i < values[0].length; i++) {
+      var exp = values[0][i];
+      if (exp == null) {
+        break;
+      }
+      var color = prefs.getString('${exp as String}_color');
+      data['expense']!.add(
+        Category(
+          name: exp,
+          cellId: 'B${i+2}',
+          backgroundColor: color != null ? material.Color(int.parse(color, radix: 16)) : getRandomGraphColor()
+        )
+      );
+    }
+    for (int i = 0; i < values[1].length; i++) {
+      var income = values[1][i];
+      if (income == null) {
+        break;
+      }
+      data['income']!.add(Category(name: income as String, cellId: 'C${i+2}'));
+    }
+    print(data);
+    return data;
   }
 }

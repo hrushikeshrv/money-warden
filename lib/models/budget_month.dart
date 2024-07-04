@@ -1,8 +1,9 @@
+import 'package:flutter/material.dart' as material;
 import 'package:community_charts_common/community_charts_common.dart';
 import 'package:community_charts_flutter/community_charts_flutter.dart' as charts;
 
 import 'package:money_warden/models/transaction.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:money_warden/utils.dart';
 
 /// Global state for a single month's sheet in the chosen budget
 /// spreadsheet.
@@ -101,9 +102,10 @@ class BudgetMonth {
     int idx = 0;
     for (var expense in expenses) {
       String categoryName = expense.category?.name ?? 'Uncategorized';
+      material.Color backgroundColor = expense.category?.backgroundColor ?? getRandomGraphColor();
       if (!indexMap.containsKey(categoryName)) {
         indexMap[categoryName] = idx;
-        data.add(CategorySpend(name: categoryName));
+        data.add(CategorySpend(name: categoryName, backgroundColor: backgroundColor));
         idx++;
       }
       data[indexMap[categoryName]!].amount = data[indexMap[categoryName]!].amount + expense.amount;
@@ -112,7 +114,7 @@ class BudgetMonth {
     // If no transactions yet, add an "Uncategorized"
     // category as a placeholder
     if (data.isEmpty) {
-      data[0] = CategorySpend(name: 'Uncategorized');
+      data[0] = CategorySpend(name: 'Uncategorized', backgroundColor: getRandomGraphColor());
     }
 
     data.sort((a, b) {
@@ -126,9 +128,8 @@ class BudgetMonth {
 
   /// Returns a list of flutter_charts Series instances
   /// containing different categories of spending and their corresponding
-  /// amounts. Takes an instance of `SharedPreferences` to get
-  /// the color to show for each category from local storage.
-  List<charts.Series<CategorySpend, double>> getExpensesByCategorySeriesList(SharedPreferences prefs) {
+  /// amounts.
+  List<charts.Series<CategorySpend, double>> getExpensesByCategorySeriesList() {
     List<CategorySpend> spends = getExpensesByCategory();
     return [
       charts.Series<CategorySpend, double>(
@@ -138,14 +139,11 @@ class BudgetMonth {
         measureFn: (CategorySpend spend, _) => spend.amount,
         labelAccessorFn: (CategorySpend spend, _) => '${spend.name}\n\$${spend.amount}',
         colorFn: (CategorySpend spend, __) {
-          String? color = prefs.getString('${spend.name}_color');
-          if (color == null) {
-            return charts.MaterialPalette.green.shadeDefault;
-          }
+          material.Color color = spend.backgroundColor;
           return Color(
-            r: int.parse(color.substring(4, 6), radix: 16),
-            g: int.parse(color.substring(6, 8), radix: 16),
-            b: int.parse(color.substring(8), radix: 16)
+            r: color.red,
+            g: color.green,
+            b: color.blue
           );
         },
         // seriesColor: charts.MaterialPalette.green.shadeDefault
@@ -161,6 +159,7 @@ class BudgetMonth {
 class CategorySpend {
   final String name;
   double amount = 0.0;
+  final material.Color backgroundColor;
 
-  CategorySpend({ required this.name });
+  CategorySpend({ required this.name , required this.backgroundColor});
 }

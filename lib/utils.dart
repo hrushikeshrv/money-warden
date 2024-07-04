@@ -129,17 +129,20 @@ String formatDateTime(DateTime dateTime) {
 
 Color getRandomGraphColor() {
   List<Color> colors = const [
-    Color(0xFF2DBA4B),
-    Color(0xFF9CCC65),
-    Color(0xFF64DD17),
-    Color(0xFFFFE646),
-    Color(0xFF47C03A),
-    Color(0xFF00C853),
-    Color(0xFFFF6E40),
-    Color(0xFFFF7043),
-    Color(0xFFFF9100),
-    Color(0xFFFF6D00),
-    Color(0xFF70FF1A),
+    Color(0xFFE53935),
+    Color(0xFFD81B60),
+    Color(0xFF8E24AA),
+    Color(0xFF673AB7),
+    Color(0xFF3949AB),
+    Color(0xFF1E88E5),
+    Color(0xFF039BE5),
+    Color(0xFF00ACC1),
+    Color(0xFF43A047),
+    Color(0xFF7CB342),
+    Color(0xFFFB8C00),
+    Color(0xFFF4511E),
+    Color(0xFF6D4C41),
+    Color(0xFF757575),
   ];
   return colors[Random().nextInt(colors.length)];
 }

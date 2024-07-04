@@ -1,6 +1,3 @@
-import 'dart:math';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:money_warden/components/transaction_category_summary_tile.dart';
 import 'package:money_warden/models/budget_month.dart';
@@ -8,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:community_charts_flutter/community_charts_flutter.dart' as charts;
 
 import 'package:money_warden/components/budget_month_dropdown.dart';
-import 'package:money_warden/components/heading1.dart';
 import 'package:money_warden/components/mw_app_bar.dart';
 import 'package:money_warden/models/budget_sheet.dart';
 
@@ -36,7 +32,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                       : AspectRatio(
                         aspectRatio: 1,
                         child: charts.PieChart<double>(
-                          budget.currentBudgetMonthData!.getExpensesByCategorySeriesList(budget.sharedPreferences!),
+                          budget.currentBudgetMonthData!.getExpensesByCategorySeriesList(),
                           defaultRenderer: charts.ArcRendererConfig(
                             arcRendererDecorators: [charts.ArcLabelDecorator()]
                           ),

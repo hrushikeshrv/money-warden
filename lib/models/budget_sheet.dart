@@ -15,6 +15,9 @@ class BudgetSheet extends ChangeNotifier {
   List<String> budgetMonthNames = ['Loading...'];
   String _currentBudgetMonthName = 'Loading...';
 
+  List<Category> expenseCategories = [];
+  List<Category> incomeCategories = [];
+
   Map<String, BudgetMonth?> budgetData = {};
 
   BudgetMonth? get currentBudgetMonthData {
@@ -72,6 +75,14 @@ class BudgetSheet extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Fetch all category names in the user's selected budget sheet
+  /// and populate this.expenseCategories and this.incomeCategories
+  Future<void> getCategoryNames({ bool forceUpdate = false }) async {
+    var categoryData = await SheetsService.getTransactionCategories(null);
+  }
+
+  /// Fetches the budget data of a particular month and returns
+  /// a BudgetMonth instance
   Future<BudgetMonth> getBudgetMonthData({ required String month, bool forceUpdate = false }) async {
     if (!forceUpdate && budgetData.containsKey(month) && budgetData[month] != null) {
       return Future<BudgetMonth>.value(budgetData[month]);
