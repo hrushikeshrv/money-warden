@@ -6,6 +6,7 @@ import 'package:money_warden/components/heading1.dart';
 import 'package:money_warden/components/settings_tile.dart';
 import 'package:money_warden/components/mw_app_bar.dart';
 import 'package:money_warden/models/budget_sheet.dart';
+import 'package:money_warden/pages/choose_default_currency.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -98,7 +99,14 @@ class _SettingsPageState extends State<SettingsPage> {
                       leading: const Icon(Icons.attach_money),
                       title: 'Default Currency',
                       subtitle: 'Choose your default currency',
-                      onTap: () {},
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (context) {
+                            return const ChooseDefaultCurrencyPage();
+                          }
+                        );
+                      },
                     ),
                   ],
                 ),

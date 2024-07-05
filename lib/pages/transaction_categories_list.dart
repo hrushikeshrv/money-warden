@@ -39,7 +39,7 @@ class _TransactionCategoriesListState extends State<TransactionCategoriesList> {
                     const SizedBox(height: 10),
                     const MwWarning(
                       children: [
-                        Text('Deleting expense or income categories is not yet supported. You can only create new categories and change the color of an existing category.')
+                        Text('Deleting expense or income categories is not yet supported. You can only create new categories and change an existing category.')
                       ]
                     ),
                     const SizedBox(height: 20),

@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:money_warden/utils.dart';
+import 'package:money_warden/utils/utils.dart';
 import 'package:money_warden/services/sheets.dart';
 import 'package:money_warden/models/category.dart' as category;
 import 'package:money_warden/models/budget_month.dart';
@@ -12,14 +12,12 @@ class BudgetSheet extends ChangeNotifier {
   String? spreadsheetName;
   SharedPreferences? sharedPreferences;
   bool budgetInitialized = false;
-
   List<String> budgetMonthNames = ['Loading...'];
   String _currentBudgetMonthName = 'Loading...';
-
   List<category.Category> expenseCategories = [];
   List<category.Category> incomeCategories = [];
-
   Map<String, BudgetMonth?> budgetData = {};
+  String _defaultCurrency = '\$';
 
   BudgetMonth? get currentBudgetMonthData {
     if (budgetData.containsKey(currentBudgetMonthName)) {
@@ -30,30 +28,43 @@ class BudgetSheet extends ChangeNotifier {
 
   BudgetSheet({ required this.spreadsheetId, required this.spreadsheetName, required this.sharedPreferences });
 
-  /// Fetch and parse all budget data from the budget spreadsheet.
+  /// Fetch and parse all budget data from the budget spreadsheet
+  /// and initialize all other data needed by other screens
   void initBudgetData({ bool forceUpdate = false }) async {
     if (!budgetInitialized || forceUpdate) {
+      // Populate this.budgetMonthNames
       await getBudgetMonthNames();
       currentBudgetMonthName = getCurrentOrClosestMonth(budgetMonthNames);
+      // Populate this.budgetData with the budget data for the current
+      // budget month
       await getBudgetMonthData(month: currentBudgetMonthName);
+      // Populate this.expenseCategories and this.incomeCategories
       await getCategoryNames();
+      // Initialize the default currency from shared preferences
+      // (without notifying listeners)
+      _defaultCurrency = defaultCurrency;
       budgetInitialized = true;
       notifyListeners();
     }
   }
 
+  /// Set the spreadsheet Id, persist in shared preferences,
+  /// and notify listeners.
   void setSpreadsheetId(String spreadsheetId) {
     this.spreadsheetId = spreadsheetId;
     sharedPreferences?.setString('spreadsheetId', spreadsheetId);
     notifyListeners();
   }
 
+  /// Set the spreadsheet name, persist in shared preferences,
+  /// and notify listeners.
   void setSpreadsheetName(String spreadsheetName) {
     this.spreadsheetName = spreadsheetName;
     sharedPreferences?.setString('spreadsheetName', spreadsheetName);
     notifyListeners();
   }
 
+  /// Set the shared preferences instance for this BudgetSheet instance.
   void setSharedPreferences(SharedPreferences prefs) {
     sharedPreferences = prefs;
     notifyListeners();
@@ -65,15 +76,37 @@ class BudgetSheet extends ChangeNotifier {
     budgetMonthNames = await SheetsService.getBudgetMonthNames(null);
   }
 
+  /// Return the current budget month's name
   String get currentBudgetMonthName => _currentBudgetMonthName;
+  /// Set the current budget month without notifying listeners
   set currentBudgetMonthName(month) => _currentBudgetMonthName = month;
 
+  /// Set the current budget month and notify listeners
   void setCurrentBudgetMonth(month) {
     _currentBudgetMonthName = month;
     if (!budgetData.containsKey(month)) {
       budgetData[month] = null;
       getBudgetMonthData(month: month);
     }
+    notifyListeners();
+  }
+
+  /// Get the default currency symbol
+  String get defaultCurrency {
+    // We are currently only storing the currency symbol,
+    // but we may want to create a separate Currency model
+    // in the future.
+    if (sharedPreferences == null) {
+      return '\$';
+    }
+    return sharedPreferences!.getString('defaultCurrency') ?? '\$';
+  }
+  /// Set the default currency symbol and notify listeners
+  void setDefaultCurrency(String value) {
+    if (sharedPreferences == null) {
+      throw Exception("Shared preferences has not been initialized yet.");
+    }
+    sharedPreferences!.setString('defaultCurrency', value);
     notifyListeners();
   }
 

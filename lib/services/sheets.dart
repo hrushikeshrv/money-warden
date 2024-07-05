@@ -7,7 +7,7 @@ import 'package:money_warden/models/transaction.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:money_warden/exceptions/null_spreadsheet_metadata_exception.dart';
-import 'package:money_warden/utils.dart';
+import 'package:money_warden/utils/utils.dart';
 import 'package:money_warden/models/budget_month.dart';
 import 'package:money_warden/services/auth.dart';
 

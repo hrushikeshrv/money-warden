@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:money_warden/components/heading1.dart';
 import 'package:money_warden/components/mw_action_button.dart';
 import 'package:money_warden/components/transaction_tile.dart';
-import 'package:money_warden/utils.dart';
+import 'package:money_warden/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 import 'package:money_warden/components/budget_month_dropdown.dart';
