@@ -17,7 +17,8 @@ class BudgetSheet extends ChangeNotifier {
   List<category.Category> expenseCategories = [];
   List<category.Category> incomeCategories = [];
   Map<String, BudgetMonth?> budgetData = {};
-  String _defaultCurrency = '\$';
+  String _defaultCurrencySymbol = '\$';
+  String _defaultCurrencyCode = 'USD';
 
   BudgetMonth? get currentBudgetMonthData {
     if (budgetData.containsKey(currentBudgetMonthName)) {
@@ -42,7 +43,8 @@ class BudgetSheet extends ChangeNotifier {
       await getCategoryNames();
       // Initialize the default currency from shared preferences
       // (without notifying listeners)
-      _defaultCurrency = defaultCurrency;
+      _defaultCurrencySymbol = defaultCurrencySymbol;
+      _defaultCurrencyCode = defaultCurrencyCode;
       budgetInitialized = true;
       notifyListeners();
     }
@@ -92,21 +94,30 @@ class BudgetSheet extends ChangeNotifier {
   }
 
   /// Get the default currency symbol
-  String get defaultCurrency {
+  String get defaultCurrencySymbol {
     // We are currently only storing the currency symbol,
     // but we may want to create a separate Currency model
     // in the future.
     if (sharedPreferences == null) {
       return '\$';
     }
-    return sharedPreferences!.getString('defaultCurrency') ?? '\$';
+    return sharedPreferences!.getString('defaultCurrencySymbol') ?? '\$';
   }
+  /// Get the default currency symbol
+  String get defaultCurrencyCode {
+    if (sharedPreferences == null) {
+      return 'USD';
+    }
+    return sharedPreferences!.getString('defaultCurrencyCode') ?? 'USD';
+  }
+
   /// Set the default currency symbol and notify listeners
-  void setDefaultCurrency(String value) {
+  void setDefaultCurrency(String code, String symbol) {
     if (sharedPreferences == null) {
       throw Exception("Shared preferences has not been initialized yet.");
     }
-    sharedPreferences!.setString('defaultCurrency', value);
+    sharedPreferences!.setString('defaultCurrencyCode', code);
+    sharedPreferences!.setString('defaultCurrencySymbol', symbol);
     notifyListeners();
   }
 
