@@ -6,13 +6,15 @@ class CurrencyTile extends StatelessWidget {
   final String currencySymbol;
   final String currencyCode;
   final bool isSelected;
+  final VoidCallback onTap;
 
   const CurrencyTile({
     super.key,
     required this.currencyName,
     required this.currencySymbol,
     required this.currencyCode,
-    required this.isSelected
+    required this.isSelected,
+    required this.onTap
   });
 
   @override
@@ -22,6 +24,7 @@ class CurrencyTile extends StatelessWidget {
       title: Text(currencyName, style: const TextStyle(fontSize: 14)),
       subtitle: Text(currencyCode),
       trailing: isSelected ? const Icon(Icons.check) : null,
+      onTap: onTap,
     );
   }
 }

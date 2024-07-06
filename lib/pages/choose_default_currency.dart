@@ -18,6 +18,19 @@ class _ChooseDefaultCurrencyPageState extends State<ChooseDefaultCurrencyPage> {
   final controller = TextEditingController();
   var _currencies = List.from(currencies);
 
+  searchCurrencies(String query) {
+    query = query.toLowerCase().trim();
+    final matches = List.from(currencies).where((currency) {
+      return (
+        currency['code'].toLowerCase().contains(query)
+        || currency['name'].toLowerCase().contains(query)
+      );
+    }).toList();
+    setState(() {
+      _currencies = matches;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<BudgetSheet>(
@@ -38,7 +51,8 @@ class _ChooseDefaultCurrencyPageState extends State<ChooseDefaultCurrencyPage> {
                     borderRadius: BorderRadius.circular(10),
                     borderSide: const BorderSide(width: 2)
                   )
-                )
+                ),
+                onChanged: searchCurrencies,
               ),
               Expanded(
                 child: ListView.builder(
@@ -49,6 +63,9 @@ class _ChooseDefaultCurrencyPageState extends State<ChooseDefaultCurrencyPage> {
                       currencySymbol: _currencies[index]['symbol'],
                       currencyCode: _currencies[index]['code'],
                       isSelected: _currencies[index]['code'] == budget.defaultCurrencyCode,
+                      onTap: () {
+                        budget.setDefaultCurrency(_currencies[index]['code'], _currencies[index]['symbol']);
+                      }
                     );
                   }
                 ),

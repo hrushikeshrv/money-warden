@@ -118,6 +118,7 @@ class BudgetSheet extends ChangeNotifier {
     }
     sharedPreferences!.setString('defaultCurrencyCode', code);
     sharedPreferences!.setString('defaultCurrencySymbol', symbol);
+    print('Set default currency to $defaultCurrencyCode: $defaultCurrencySymbol');
     notifyListeners();
   }
 
