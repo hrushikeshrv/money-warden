@@ -133,7 +133,7 @@ Color getRandomGraphColor() {
     Color(0xFFD81B60),
     Color(0xFF8E24AA),
     Color(0xFF673AB7),
-    Color(0xFF3949AB),
+    // Color(0xFF3949AB),
     Color(0xFF1E88E5),
     Color(0xFF039BE5),
     Color(0xFF00ACC1),
@@ -141,7 +141,7 @@ Color getRandomGraphColor() {
     Color(0xFF7CB342),
     Color(0xFFFB8C00),
     Color(0xFFF4511E),
-    Color(0xFF6D4C41),
+    // Color(0xFF6D4C41),
     Color(0xFF757575),
   ];
   return colors[Random().nextInt(colors.length)];

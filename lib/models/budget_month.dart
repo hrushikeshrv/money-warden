@@ -137,7 +137,7 @@ class BudgetMonth {
         data: spends,
         domainFn: (CategorySpend spend, _) => spend.amount,
         measureFn: (CategorySpend spend, _) => spend.amount,
-        labelAccessorFn: (CategorySpend spend, _) => '${spend.name}\n\$${spend.amount}',
+        labelAccessorFn: (CategorySpend spend, _) => '${spend.name}\n${spend.amount}',
         colorFn: (CategorySpend spend, __) {
           material.Color color = spend.backgroundColor ?? getRandomGraphColor();
           return Color(

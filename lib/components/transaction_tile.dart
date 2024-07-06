@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'package:money_warden/utils/utils.dart';
 import 'package:money_warden/models/transaction.dart';
+import 'package:money_warden/models/budget_sheet.dart';
 
 
 class TransactionTile extends StatefulWidget {
@@ -35,45 +37,47 @@ class _TransactionTileState extends State<TransactionTile> {
     else {
       mainTitle = Text(categoryText);
     }
-    return ListTile(
-      leading: widget.transaction!.transactionType == TransactionType.expense ?
-          Container(
-            padding: const EdgeInsets.only(top: 5),
-            child: const Icon(Icons.payments_outlined),
-          )
-          : Container(
-            padding: const EdgeInsets.only(top: 5),
-            child: Icon(Icons.savings_outlined, color: Colors.green.shade500),
-          ),
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              mainTitle,
-              Text(formatDateTime(widget.transaction!.time), style: TextStyle(fontSize: 13, color: Colors.grey.shade700),),
-            ],
-          ),
-          Text(
-            '${widget.transaction!.transactionType == TransactionType.expense ? '' : '+'}\$${formatMoney(widget.transaction!.amount)}',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: widget.transaction!.transactionType == TransactionType.expense ?
-                Theme.of(context).colorScheme.onSurface
-                : Colors.green.shade500
+    return Consumer<BudgetSheet>(
+      builder: (context, budget, child) => ListTile(
+        leading: widget.transaction!.transactionType == TransactionType.expense ?
+            Container(
+              padding: const EdgeInsets.only(top: 5),
+              child: const Icon(Icons.payments_outlined),
             )
-          ),
-        ],
+            : Container(
+              padding: const EdgeInsets.only(top: 5),
+              child: Icon(Icons.savings_outlined, color: Colors.green.shade500),
+            ),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                mainTitle,
+                Text(formatDateTime(widget.transaction!.time), style: TextStyle(fontSize: 13, color: Colors.grey.shade700),),
+              ],
+            ),
+            Text(
+              '${widget.transaction!.transactionType == TransactionType.expense ? '' : '+'}${budget.defaultCurrencySymbol}${formatMoney(widget.transaction!.amount)}',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: widget.transaction!.transactionType == TransactionType.expense ?
+                  Theme.of(context).colorScheme.onSurface
+                  : Colors.green.shade500
+              )
+            ),
+          ],
+        ),
+        subtitle: subtitle,
+        shape: Border(
+            bottom: BorderSide(
+              color: Colors.grey.shade400,
+              width: 1,
+            )
+        )
       ),
-      subtitle: subtitle,
-      shape: Border(
-          bottom: BorderSide(
-            color: Colors.grey.shade400,
-            width: 1,
-          )
-      )
     );
   }
 }

@@ -48,7 +48,7 @@ class _HomePageState extends State<HomePage> {
                             children: [
                               amountSpent == null ?
                               const CircularProgressIndicator()
-                                  : Text("\$${formatMoney(amountSpent)}", style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600)),
+                                  : Text("${budget.defaultCurrencySymbol}${formatMoney(amountSpent)}", style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600)),
                               const Text("Spent"),
                             ],
                           ),
@@ -58,7 +58,7 @@ class _HomePageState extends State<HomePage> {
                             children: [
                               amountEarned == null ?
                               const CircularProgressIndicator()
-                                  : Text("\$${formatMoney(amountEarned)}", style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600)),
+                                  : Text("${budget.defaultCurrencySymbol}${formatMoney(amountEarned)}", style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600)),
                               const Text("Earned"),
                             ],
                           ),
@@ -76,7 +76,7 @@ class _HomePageState extends State<HomePage> {
                             children: [
                               difference == null ?
                               const CircularProgressIndicator()
-                                  : Text("${difference > 0 ? '+ ' : difference < 0 ? '- ' : ''}\$${formatMoney(difference.abs())}",
+                                  : Text("${difference > 0 ? '+ ' : difference < 0 ? '- ' : ''}${budget.defaultCurrencySymbol}${formatMoney(difference.abs())}",
                                   style: TextStyle(
                                       fontSize: 24,
                                       fontWeight: FontWeight.w600,
