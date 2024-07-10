@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'package:money_warden/components/heading1.dart';
 import 'package:money_warden/components/mw_action_button.dart';
 import 'package:money_warden/components/transaction_tile.dart';
-import 'package:money_warden/utils/utils.dart';
-import 'package:provider/provider.dart';
-
 import 'package:money_warden/components/budget_month_dropdown.dart';
 import 'package:money_warden/components/mw_app_bar.dart';
 import 'package:money_warden/models/budget_sheet.dart';
+import 'package:money_warden/models/transaction.dart';
+import 'package:money_warden/pages/add_transaction.dart';
+import 'package:money_warden/utils/utils.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -111,15 +114,44 @@ class _HomePageState extends State<HomePage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       MwActionButton(
-                          leading: const Icon(Icons.payments_outlined),
-                          text: 'Add Expense',
-                          onTap: () {}
+                        leading: const Icon(Icons.payments_outlined),
+                        text: 'Add Expense',
+                        onTap: () {
+                          showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            builder: (context) {
+                              return FractionallySizedBox(
+                                heightFactor: 0.8,
+                                child: Padding(
+                                  padding: MediaQuery.of(context).viewInsets,
+                                  child: const AddTransactionPage(
+                                    initialTransactionType: TransactionType.expense,
+                                  ),
+                                ),
+                              );
+                            }
+                          );
+                        }
                       ),
                       const SizedBox(width: 30),
                       MwActionButton(
-                          leading: const Icon(Icons.savings_outlined),
-                          text: 'Add Income',
-                          onTap: () {}
+                        leading: const Icon(Icons.savings_outlined),
+                        text: 'Add Income',
+                        onTap: () {
+                          showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            builder: (context) {
+                              return const FractionallySizedBox(
+                                heightFactor: 0.8,
+                                child: AddTransactionPage(
+                                  initialTransactionType: TransactionType.income,
+                                ),
+                              );
+                            }
+                          );
+                        }
                       ),
                     ],
                   ),

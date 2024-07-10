@@ -11,7 +11,7 @@ class MwFormLabel extends StatelessWidget {
       text,
       style: const TextStyle(
         fontWeight: FontWeight.bold,
-        fontSize: 14,
+        fontSize: 16,
       )
     );
   }
