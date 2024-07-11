@@ -28,7 +28,7 @@ class Transaction {
       return '';
     }
     if (description!.length > 25) {
-      return '${description!.substring(0, 23)}...';
+      return '${description!.substring(0, 23).replaceAll('\n', ' ')}...';
     }
     return description!;
   }

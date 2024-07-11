@@ -121,13 +121,10 @@ class _HomePageState extends State<HomePage> {
                             context: context,
                             isScrollControlled: true,
                             builder: (context) {
-                              return FractionallySizedBox(
+                              return const FractionallySizedBox(
                                 heightFactor: 0.8,
-                                child: Padding(
-                                  padding: MediaQuery.of(context).viewInsets,
-                                  child: const AddTransactionPage(
-                                    initialTransactionType: TransactionType.expense,
-                                  ),
+                                child: AddTransactionPage(
+                                  initialTransactionType: TransactionType.expense,
                                 ),
                               );
                             }
