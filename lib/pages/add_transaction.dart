@@ -81,9 +81,12 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                               children: [
                                 GestureDetector(
                                   child: Container(
-                                    padding: const EdgeInsets.all(10),
+                                    padding: const EdgeInsets.all(7),
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
+                                      borderRadius: BorderRadius.circular(12),
+                                      color: transactionType == TransactionType.expense
+                                          ? Theme.of(context).colorScheme.primary
+                                          : Theme.of(context).colorScheme.surface,
                                       border: Border.all(
                                         width: 3,
                                         color: transactionType == TransactionType.expense
@@ -91,8 +94,15 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                                             : Theme.of(context).colorScheme.surfaceDim
                                       )
                                     ),
-                                    child: const Center(
-                                      child: Text('Expense')
+                                    child: Center(
+                                      child: Text(
+                                        'Expense',
+                                        style: TextStyle(
+                                          color: transactionType == TransactionType.expense
+                                              ? Colors.white
+                                              : Theme.of(context).colorScheme.onSurface
+                                        ),
+                                      )
                                     ),
                                   ),
                                   onTap: () {
@@ -104,9 +114,12 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                                 const SizedBox(width: 10),
                                 GestureDetector(
                                   child: Container(
-                                    padding: const EdgeInsets.all(10),
+                                    padding: const EdgeInsets.all(7),
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
+                                      borderRadius: BorderRadius.circular(12),
+                                      color: transactionType == TransactionType.income
+                                          ? Theme.of(context).colorScheme.primary
+                                          : Theme.of(context).colorScheme.surface,
                                       border: Border.all(
                                         width: 3,
                                         color: transactionType == TransactionType.income
@@ -114,8 +127,15 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                                           : Theme.of(context).colorScheme.surfaceDim
                                       )
                                     ),
-                                    child: const Center(
-                                        child: Text('Income')
+                                    child: Center(
+                                        child: Text(
+                                          'Income',
+                                          style: TextStyle(
+                                            color: transactionType == TransactionType.income
+                                                ? Colors.white
+                                                : Theme.of(context).colorScheme.onSurface
+                                          ),
+                                        )
                                     ),
                                   ),
                                   onTap: () {
@@ -128,11 +148,8 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                             ),
                   
                             const SizedBox(height: 20),
-                            const MwFormLabel(text: 'Amount:'),
-                            const SizedBox(height: 7),
                             Row(
                               children: [
-                                const SizedBox(width: 15),
                                 Text(budget.defaultCurrencySymbol, style: const TextStyle(fontSize: 20)),
                                 const SizedBox(width: 15),
                                 Expanded(
@@ -156,11 +173,8 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                             ),
                   
                             const SizedBox(height: 20),
-                            const MwFormLabel(text: 'Date:'),
-                            const SizedBox(height: 7),
                             Row(
                               children: [
-                                const SizedBox(width: 15),
                                 Text(
                                   formatDateTime(transactionDate),
                                   style: const TextStyle(
@@ -172,7 +186,6 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                             const SizedBox(height: 10),
                             Row(
                               children: [
-                                const SizedBox(width: 15),
                                 GestureDetector(
                                   child: PillContainer(
                                     color: Theme.of(context).colorScheme.primary,
@@ -224,20 +237,17 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                             ),
                   
                             const SizedBox(height: 30),
-                            const MwFormLabel(text: 'Category:'),
-                            Text('Optional', style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontSize: 12)),
-                            const SizedBox(height: 5),
                             Row(
                               children: [
-                                const SizedBox(width: 15),
                                 Expanded(
                                   child: DropdownMenu<Category>(
                                     expandedInsets: const EdgeInsets.all(0),
                                     controller: categoryController,
                                     dropdownMenuEntries: getTransactionCategoryOptions(budget),
-                                    hintText: 'Category',
-                                    inputDecorationTheme: const InputDecorationTheme(
+                                    hintText: 'Category (optional)',
+                                    inputDecorationTheme: InputDecorationTheme(
                                       filled: true,
+                                      fillColor: Colors.grey.shade100
                                     ),
                                   ),
                                 ),
@@ -245,12 +255,8 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                             ),
                   
                             const SizedBox(height: 20),
-                            const MwFormLabel(text: 'Description:'),
-                            Text('Optional', style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontSize: 12)),
-                            const SizedBox(height: 7),
                             Row(
                               children: [
-                                const SizedBox(width: 15),
                                 Expanded(
                                   child: TextField(
                                     controller: descriptionController,
@@ -258,7 +264,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                                     decoration: InputDecoration(
                                       fillColor: Colors.grey.shade100,
                                       filled: true,
-                                      hintText: 'Description',
+                                      hintText: 'Description (optional)',
                                     ),
                                   ),
                                 )

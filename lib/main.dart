@@ -8,6 +8,7 @@ import 'package:money_warden/models/budget_sheet.dart';
 import 'package:money_warden/models/transaction.dart';
 import 'package:money_warden/pages/login.dart';
 import 'package:money_warden/pages/analytics.dart';
+import 'package:money_warden/pages/add_transaction.dart';
 import 'package:money_warden/pages/homepage.dart';
 import 'package:money_warden/pages/settings.dart';
 import 'package:money_warden/pages/splash_screen.dart';
@@ -137,7 +138,20 @@ class _MoneyWardenState extends State<MoneyWarden> {
                         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
                         floatingActionButton: FloatingActionButton(
                           backgroundColor: Theme.of(context).colorScheme.primary,
-                          onPressed: () {},
+                          onPressed: () {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              builder: (context) {
+                                return const FractionallySizedBox(
+                                  heightFactor: 0.8,
+                                  child: AddTransactionPage(
+                                    initialTransactionType: TransactionType.expense,
+                                  ),
+                                );
+                              }
+                            );
+                          },
                           child: Icon(Icons.payments_outlined, color: Theme.of(context).colorScheme.onSurface),
                         ),
                         body: SafeArea(
