@@ -150,6 +150,40 @@ class BudgetMonth {
       )
     ];
   }
+
+  /// Looks at the row index of each expense row
+  /// in the current month for the chosen budget sheet
+  /// and returns the index of a row that does not have a transaction
+  int get freeExpenseRowIndex {
+    if (expenses.isEmpty) {
+      return 4;
+    }
+    var expensesSorted = [...expenses];
+    expensesSorted.sort((a, b) {
+      if (a.rowIndex > b.rowIndex) {
+        return 1;
+      }
+      return -1;
+    });
+    return expensesSorted[expensesSorted.length-1].rowIndex + 1;
+  }
+
+  /// Looks at the row index of each expense row
+  /// in the current month for the chosen budget sheet
+  /// and returns the index of a row that does not have a transaction
+  int get freeIncomeRowIndex {
+    if (income.isEmpty) {
+      return 4;
+    }
+    var incomeSorted = [...income];
+    incomeSorted.sort((a, b) {
+      if (a.rowIndex > b.rowIndex) {
+        return 1;
+      }
+      return -1;
+    });
+    return incomeSorted[incomeSorted.length-1].rowIndex + 1;
+  }
 }
 
 /// A class describing a category and the amount spent/earned

@@ -30,6 +30,32 @@ bool isMonthName(String title) {
 }
 
 
+/// Returns true if the passed value is a number
+bool isNumber(String value) {
+  RegExp numeric = RegExp(r'^[0-9]+\.?[0-9]*$');
+  return numeric.hasMatch(value);
+}
+
+
+/// Takes a DateTime object and returns the name of the
+/// month to use as an index into the global `BudgetSheet`'s
+/// month names list. If `shortForm` is true, returns the
+/// month name in short form ("Sept"). Otherwise returns the
+/// month name in long form ("September").
+String getMonthNameFromDate(DateTime date, bool shortForm) {
+  List<String> shortMonthNames = [
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'
+  ];
+  List<String> longMonthNames = [
+    'January', 'February', 'March', 'April', 'May',
+    'June', 'July', 'August', 'September', 'October',
+    'November', 'December'
+  ];
+  return '${shortForm ? shortMonthNames[date.month-1] : longMonthNames[date.month-1]} ${date.year}';
+}
+
+
 /// Takes a list of budget months and returns the
 /// current month if it exists in the list of budget months.
 /// Otherwise, returns the month closest to the current month.

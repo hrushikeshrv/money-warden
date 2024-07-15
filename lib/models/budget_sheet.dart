@@ -1,10 +1,12 @@
 import 'package:flutter/foundation.dart';
+import 'package:money_warden/exceptions/null_spreadsheet_value_exception.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:money_warden/utils/utils.dart';
 import 'package:money_warden/services/sheets.dart';
 import 'package:money_warden/models/category.dart' as category;
 import 'package:money_warden/models/budget_month.dart';
+import 'package:money_warden/models/transaction.dart';
 
 /// Global state for the chosen budget spreadsheet
 class BudgetSheet extends ChangeNotifier {
@@ -20,14 +22,15 @@ class BudgetSheet extends ChangeNotifier {
   String _defaultCurrencySymbol = '\$';
   String _defaultCurrencyCode = 'USD';
 
+  BudgetSheet({ required this.spreadsheetId, required this.spreadsheetName, required this.sharedPreferences });
+
+  /// Returns the `BudgetMonth` instance for the current month
   BudgetMonth? get currentBudgetMonthData {
     if (budgetData.containsKey(currentBudgetMonthName)) {
       return budgetData[currentBudgetMonthName];
     }
     return null;
   }
-
-  BudgetSheet({ required this.spreadsheetId, required this.spreadsheetName, required this.sharedPreferences });
 
   /// Fetch and parse all budget data from the budget spreadsheet
   /// and initialize all other data needed by other screens
@@ -140,5 +143,59 @@ class BudgetSheet extends ChangeNotifier {
     budgetData[month] = budgetMonth;
     notifyListeners();
     return budgetMonth;
+  }
+
+  /// Creates a transaction, writes it to the chosen
+  /// budget spreadsheet and adds it to the right budget month.
+  /// If the passed date doesn't have a corresponding sheet in the
+  /// budget spreadsheet, throws a `SpreadsheetValueException`.
+  Future<bool> createTransaction({
+    required double amount,
+    required DateTime date,
+    required TransactionType transactionType,
+    category.Category? category,
+    String? description
+  }) async {
+    BudgetMonth? budgetMonthData;
+    String shortMonthName = getMonthNameFromDate(date, true);
+    String longMonthName = getMonthNameFromDate(date, false);
+
+    // If the budget data for the passed transaction date has not
+    // been fetched, first try to fetch data for that month.
+    // If that month's sheet has not been created, throw an exception.
+    if (
+      !budgetData.containsKey(shortMonthName)
+      && !budgetData.containsKey(longMonthName)
+    ) {
+      if (budgetMonthNames.contains(shortMonthName)) {
+        budgetMonthData = await getBudgetMonthData(month: shortMonthName);
+      }
+      else if (budgetMonthNames.contains(longMonthName)) {
+        budgetMonthData = await getBudgetMonthData(month: longMonthName);
+      }
+      else {
+        throw NullSpreadsheetValueException('Sheet for month $longMonthName has not been created.');
+      }
+    }
+    else if (budgetData.containsKey(shortMonthName)) {
+      budgetMonthData = budgetData[shortMonthName];
+    }
+    else {
+      budgetMonthData = budgetData[longMonthName];
+    }
+
+    int freeRowIndex = transactionType == TransactionType.expense
+        ? budgetMonthData!.freeExpenseRowIndex
+        : budgetMonthData!.freeIncomeRowIndex;
+    String freeRowRange = transactionType == TransactionType.expense
+        ? 'A$freeRowIndex:D$freeRowIndex'
+        : 'E$freeRowIndex:H$freeRowIndex';
+    return await SheetsService.createTransaction(
+      amount: amount,
+      date: date,
+      category: category,
+      description: description,
+      freeRowRange: freeRowRange
+    );
   }
 }

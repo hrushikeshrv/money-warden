@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:money_warden/components/mw_action_button.dart';
+import 'package:money_warden/exceptions/null_spreadsheet_value_exception.dart';
 import 'package:provider/provider.dart';
 
-import 'package:money_warden/components/mw_form_label.dart';
 import 'package:money_warden/components/heading1.dart';
 import 'package:money_warden/components/pill_container.dart';
 import 'package:money_warden/models/transaction.dart';
@@ -26,6 +26,9 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
   TextEditingController categoryController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
 
+  bool _amountValid = true;
+  bool _loading = false;
+
   List<DropdownMenuEntry<Category>> getTransactionCategoryOptions(BudgetSheet budget) {
     if (transactionType == null || transactionType == TransactionType.expense) {
       return budget.expenseCategories.map(
@@ -41,6 +44,69 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
           }
       ).toList();
     }
+  }
+
+  void createTransaction(BudgetSheet budget) {
+    if (amountController.value.text == '') {
+      return;
+    }
+    if (!isNumber(amountController.value.text)) {
+      setState(() {
+        _amountValid = false;
+        return;
+      });
+    }
+    else {
+      setState(() {
+        _amountValid = true;
+      });
+    }
+    setState(() {
+      _loading = true;
+    });
+    try {
+      budget.createTransaction(
+        amount: double.parse(amountController.value.text),
+        date: transactionDate,
+        transactionType: transactionType!,
+        // category: categoryController.value.text == '' ? null : categoryController.value.text,
+        description: descriptionController.value.text == '' ? null : descriptionController.value.text
+      );
+    }
+    on NullSpreadsheetValueException catch (exception) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('An error occurred'),
+            content: Text(exception.cause)
+          );
+        }
+      );
+      setState(() {
+        _loading = false;
+      });
+    }
+    catch (exception) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return const AlertDialog(
+            title: Text('An error occurred'),
+            content: Text(
+              'An unknown error occurred while trying to create the transaction. '
+              'Please contact us at https://hrus.in/money-warden/contact if this error persists.'
+            )
+          );
+        }
+      );
+      setState(() {
+        _loading = false;
+      });
+    }
+    setState(() {
+      _loading = false;
+    });
   }
 
   @override
@@ -59,9 +125,11 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                   children: [
                     Heading1(text: 'Add an ${transactionType == TransactionType.expense ? 'Expense' : 'Income'}'),
                     MwActionButton(
-                        leading: const Icon(Icons.check),
-                        text: 'Add',
-                        onTap: () {}
+                      leading: const Icon(Icons.check),
+                      text: 'Add',
+                      onTap: () {
+                        createTransaction(budget);
+                      }
                     )
                   ],
                 ),
@@ -163,10 +231,12 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                                       border: const UnderlineInputBorder(),
                                       hintText: 'Amount',
                                       hintStyle: TextStyle(color: Colors.grey.shade600),
+                                      errorText: _amountValid ? null : 'Enter a valid amount'
                                     ),
                                     keyboardType: const TextInputType.numberWithOptions(
                                         decimal: true
                                     ),
+                                    enabled: !_loading,
                                   ),
                                 ),
                               ],
@@ -192,6 +262,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                                     child: Text('Today', style: TextStyle(color: Theme.of(context).colorScheme.onPrimary)),
                                   ),
                                   onTap: () {
+                                    if (_loading) return;
                                     setState(() {
                                       transactionDate = DateTime.now();
                                     });
@@ -204,6 +275,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                                     child: Text('Yesterday', style: TextStyle(color: Theme.of(context).colorScheme.onPrimary)),
                                   ),
                                   onTap: () {
+                                    if (_loading) return;
                                     setState(() {
                                       transactionDate = DateTime.now().subtract(const Duration(days: 1));
                                     });
@@ -220,6 +292,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                                     child: const Icon(Icons.calendar_month)
                                   ),
                                   onTap: () async {
+                                    if (_loading) return;
                                     var date = await showDatePicker(
                                         context: context,
                                         firstDate: DateTime(1900, 1, 1),
@@ -249,6 +322,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                                       filled: true,
                                       fillColor: Colors.grey.shade100
                                     ),
+                                    enabled: !_loading,
                                   ),
                                 ),
                               ],
@@ -266,6 +340,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                                       filled: true,
                                       hintText: 'Description (optional)',
                                     ),
+                                    enabled: !_loading,
                                   ),
                                 )
                               ],

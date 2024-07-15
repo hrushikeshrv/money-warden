@@ -10,6 +10,7 @@ class Transaction {
   String? description;
   Category? category;
   final TransactionType transactionType;
+  final int rowIndex;
 
   Transaction({
     required this.time,
@@ -17,6 +18,7 @@ class Transaction {
     this.description,
     this.category,
     required this.transactionType,
+    required this.rowIndex,
   });
 
   bool get hasDescription {

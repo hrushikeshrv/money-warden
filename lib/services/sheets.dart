@@ -78,7 +78,8 @@ class SheetsService {
     expenses ??= [];
     incomes ??= [];
 
-    for (var expense in expenses) {
+    for (int i = 0; i < expenses.length; i++) {
+      var expense = expenses[i];
       if (
         expense[0] != null && expense[0] != ''
         && expense[1] != null && expense[1] != ''
@@ -86,7 +87,8 @@ class SheetsService {
         var txn = Transaction(
           time: parseDate(expense[0] as String),
           amount: parseAmount(expense[1].toString()),
-          transactionType: TransactionType.expense
+          transactionType: TransactionType.expense,
+          rowIndex: i+4
         );
         if (expense[2] != null && expense[2] != '') {
           txn.description = expense[2].toString();
@@ -101,15 +103,17 @@ class SheetsService {
       }
     }
     budgetMonth.expenses.sort((Transaction a, Transaction b) => b.time.compareTo(a.time));
-    for (var income in incomes) {
+    for (int i = 0; i < incomes.length; i++) {
+      var income = incomes[i];
       if (
       income[0] != null && income[0] != ''
           && income[1] != null && income[1] != ''
       ) {
         var txn = Transaction(
-            time: parseDate(income[0] as String),
-            amount: parseAmount(income[1].toString()),
-            transactionType: TransactionType.income
+          time: parseDate(income[0] as String),
+          amount: parseAmount(income[1].toString()),
+          transactionType: TransactionType.income,
+          rowIndex: i+4
         );
         if (income[2] != null && income[2] != '') {
           txn.description = income[2].toString();
@@ -190,5 +194,33 @@ class SheetsService {
       );
     }
     return data;
+  }
+
+  static Future<bool> createTransaction({
+    SheetsApi? api,
+    required double amount,
+    required DateTime date,
+    Category? category,
+    String? description,
+    required String freeRowRange
+  }) async {
+    api ??= await getSheetsApiClient();
+
+    var prefs = await SharedPreferences.getInstance();
+    String? spreadsheetId = prefs.getString('spreadsheetId');
+    if (spreadsheetId == null) {
+      throw NullSpreadsheetMetadataException('No spreadsheet has been selected, spreadsheetId was null.');
+    }
+    var updateValuesResponse = await api.spreadsheets.values.update(
+      ValueRange(
+        majorDimension: 'ROWS',
+        range: freeRowRange,
+        values: [['${date.day} ${date.month} ${date.year}', amount, category ?? 'Uncategorized', description ?? '']]
+      ),
+      spreadsheetId,
+      freeRowRange,
+      valueInputOption: 'USER_ENTERED'
+    );
+    return true;
   }
 }
