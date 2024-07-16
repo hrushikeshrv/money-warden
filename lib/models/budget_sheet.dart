@@ -159,6 +159,7 @@ class BudgetSheet extends ChangeNotifier {
     BudgetMonth? budgetMonthData;
     String shortMonthName = getMonthNameFromDate(date, true);
     String longMonthName = getMonthNameFromDate(date, false);
+    String budgetMonthName = shortMonthName;
 
     // If the budget data for the passed transaction date has not
     // been fetched, first try to fetch data for that month.
@@ -169,9 +170,11 @@ class BudgetSheet extends ChangeNotifier {
     ) {
       if (budgetMonthNames.contains(shortMonthName)) {
         budgetMonthData = await getBudgetMonthData(month: shortMonthName);
+        budgetMonthName = shortMonthName;
       }
       else if (budgetMonthNames.contains(longMonthName)) {
         budgetMonthData = await getBudgetMonthData(month: longMonthName);
+        budgetMonthName = longMonthName;
       }
       else {
         // TODO: instead of throwing an exception here, create the sheet for that month
@@ -180,17 +183,19 @@ class BudgetSheet extends ChangeNotifier {
     }
     else if (budgetData.containsKey(shortMonthName)) {
       budgetMonthData = budgetData[shortMonthName];
+      budgetMonthName = shortMonthName;
     }
     else {
       budgetMonthData = budgetData[longMonthName];
+      budgetMonthName = longMonthName;
     }
 
     int freeRowIndex = transactionType == TransactionType.expense
         ? budgetMonthData!.freeExpenseRowIndex
         : budgetMonthData!.freeIncomeRowIndex;
     String freeRowRange = transactionType == TransactionType.expense
-        ? 'A$freeRowIndex:D$freeRowIndex'
-        : 'E$freeRowIndex:H$freeRowIndex';
+        ? '$budgetMonthName!A$freeRowIndex:D$freeRowIndex'
+        : '$budgetMonthName!E$freeRowIndex:H$freeRowIndex';
     bool success = await SheetsService.createTransaction(
       amount: amount,
       date: date,

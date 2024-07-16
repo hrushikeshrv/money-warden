@@ -196,6 +196,8 @@ class SheetsService {
     return data;
   }
 
+  /// Creates an expense or income in the selected budget spreadsheet
+  /// with the passed data.
   static Future<bool> createTransaction({
     SheetsApi? api,
     required double amount,
@@ -215,7 +217,7 @@ class SheetsService {
     var valueRange = ValueRange(
       majorDimension: 'ROWS',
       range: freeRowRange,
-      values: [['${date.day} ${getMonthNameFromDate(date, false)}', amount, 'Metadata!$cellId', description ?? '']]
+      values: [['${date.day} ${getMonthNameFromDate(date, false)}', amount, description ?? '', '=Metadata!$cellId',]]
     );
     var updateValuesResponse = await api.spreadsheets.values.update(
       valueRange,
