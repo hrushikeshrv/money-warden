@@ -149,7 +149,7 @@ class BudgetSheet extends ChangeNotifier {
   /// budget spreadsheet and adds it to the right budget month.
   /// If the passed date doesn't have a corresponding sheet in the
   /// budget spreadsheet, throws a `SpreadsheetValueException`.
-  Future<bool> createTransaction({
+  Future<Transaction?> createTransaction({
     required double amount,
     required DateTime date,
     required TransactionType transactionType,
@@ -174,6 +174,7 @@ class BudgetSheet extends ChangeNotifier {
         budgetMonthData = await getBudgetMonthData(month: longMonthName);
       }
       else {
+        // TODO: instead of throwing an exception here, create the sheet for that month
         throw NullSpreadsheetValueException('Sheet for month $longMonthName has not been created.');
       }
     }
@@ -190,12 +191,30 @@ class BudgetSheet extends ChangeNotifier {
     String freeRowRange = transactionType == TransactionType.expense
         ? 'A$freeRowIndex:D$freeRowIndex'
         : 'E$freeRowIndex:H$freeRowIndex';
-    return await SheetsService.createTransaction(
+    bool success = await SheetsService.createTransaction(
       amount: amount,
       date: date,
       category: category,
       description: description,
       freeRowRange: freeRowRange
     );
+    var transaction = Transaction(
+      amount: amount,
+      time: date,
+      description: description,
+      category: category,
+      transactionType: transactionType,
+      rowIndex: freeRowIndex
+    );
+    if (transactionType == TransactionType.expense) {
+      budgetMonthData.expenses.add(transaction);
+    }
+    else if (transactionType == TransactionType.income) {
+      budgetMonthData.income.add(transaction);
+    }
+    if (success) {
+      notifyListeners();
+    }
+    return null;
   }
 }

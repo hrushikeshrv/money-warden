@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:money_warden/components/heading1.dart';
 import 'package:money_warden/components/pill_container.dart';
 import 'package:money_warden/models/transaction.dart';
-import 'package:money_warden/models/category.dart';
+import 'package:money_warden/models/category.dart' as category;
 import 'package:money_warden/models/budget_sheet.dart';
 import 'package:money_warden/utils/utils.dart';
 
@@ -22,6 +22,7 @@ class AddTransactionPage extends StatefulWidget {
 class _AddTransactionPageState extends State<AddTransactionPage> {
   TransactionType? transactionType;
   DateTime transactionDate = DateTime.now();
+  category.Category? transactionCategory;
   TextEditingController amountController = TextEditingController();
   TextEditingController categoryController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
@@ -29,24 +30,24 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
   bool _amountValid = true;
   bool _loading = false;
 
-  List<DropdownMenuEntry<Category>> getTransactionCategoryOptions(BudgetSheet budget) {
+  List<DropdownMenuEntry<category.Category>> getTransactionCategoryOptions(BudgetSheet budget) {
     if (transactionType == null || transactionType == TransactionType.expense) {
       return budget.expenseCategories.map(
-          (Category c) {
+          (category.Category c) {
             return DropdownMenuEntry(value: c, label: c.name);
           }
       ).toList();
     }
     else {
       return budget.incomeCategories.map(
-          (Category c) {
+          (category.Category c) {
             return DropdownMenuEntry(value: c, label: c.name);
           }
       ).toList();
     }
   }
 
-  void createTransaction(BudgetSheet budget) {
+  void createTransaction(BudgetSheet budget) async {
     if (amountController.value.text == '') {
       return;
     }
@@ -64,16 +65,18 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
     setState(() {
       _loading = true;
     });
+
     try {
-      budget.createTransaction(
+      await budget.createTransaction(
         amount: double.parse(amountController.value.text),
         date: transactionDate,
         transactionType: transactionType!,
-        // category: categoryController.value.text == '' ? null : categoryController.value.text,
-        description: descriptionController.value.text == '' ? null : descriptionController.value.text
+        category: transactionCategory,
+        description: descriptionController.value.text
       );
     }
     on NullSpreadsheetValueException catch (exception) {
+      if (!context.mounted) return;
       showDialog(
         context: context,
         builder: (context) {
@@ -83,11 +86,10 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
           );
         }
       );
-      setState(() {
-        _loading = false;
-      });
     }
     catch (exception) {
+      print(exception.toString());
+      if (!context.mounted) return;
       showDialog(
         context: context,
         builder: (context) {
@@ -100,13 +102,14 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
           );
         }
       );
+    }
+    finally {
       setState(() {
         _loading = false;
       });
     }
-    setState(() {
-      _loading = false;
-    });
+    if (!context.mounted) return;
+    Navigator.of(context).pop();
   }
 
   @override
@@ -313,7 +316,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                             Row(
                               children: [
                                 Expanded(
-                                  child: DropdownMenu<Category>(
+                                  child: DropdownMenu<category.Category>(
                                     expandedInsets: const EdgeInsets.all(0),
                                     controller: categoryController,
                                     dropdownMenuEntries: getTransactionCategoryOptions(budget),
@@ -323,6 +326,11 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                                       fillColor: Colors.grey.shade100
                                     ),
                                     enabled: !_loading,
+                                    onSelected: (category.Category? cat) {
+                                      setState(() {
+                                        transactionCategory = cat;
+                                      });
+                                    },
                                   ),
                                 ),
                               ],

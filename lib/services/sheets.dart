@@ -211,12 +211,14 @@ class SheetsService {
     if (spreadsheetId == null) {
       throw NullSpreadsheetMetadataException('No spreadsheet has been selected, spreadsheetId was null.');
     }
+    String cellId = category?.cellId ?? 'B2';
+    var valueRange = ValueRange(
+      majorDimension: 'ROWS',
+      range: freeRowRange,
+      values: [['${date.day} ${getMonthNameFromDate(date, false)}', amount, 'Metadata!$cellId', description ?? '']]
+    );
     var updateValuesResponse = await api.spreadsheets.values.update(
-      ValueRange(
-        majorDimension: 'ROWS',
-        range: freeRowRange,
-        values: [['${date.day} ${date.month} ${date.year}', amount, category ?? 'Uncategorized', description ?? '']]
-      ),
+      valueRange,
       spreadsheetId,
       freeRowRange,
       valueInputOption: 'USER_ENTERED'
