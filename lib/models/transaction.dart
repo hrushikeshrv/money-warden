@@ -22,7 +22,7 @@ class Transaction {
   });
 
   bool get hasDescription {
-    return description != null;
+    return description != null && description!.trim().isNotEmpty;
   }
 
   String get shortDescription {

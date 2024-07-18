@@ -20,6 +20,17 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
   Widget build(BuildContext context) {
     return Consumer<BudgetSheet>(
       builder: (context, budget, child) {
+        if (budget.currentBudgetMonthData != null && budget.currentBudgetMonthData!.expenses.isEmpty) {
+          return const Column(
+            children: [
+              MwAppBar(assetImagePath: 'assets/images/logo.png', child: BudgetMonthDropdown()),
+              Padding(
+                padding: EdgeInsets.only(top: 20),
+                child: Center(child: Text('No transactions yet 💸', style: TextStyle(fontSize: 17))),
+              ),
+            ],
+          );
+        }
         return Column(
           children: [
             const MwAppBar(assetImagePath: 'assets/images/logo.png', child: BudgetMonthDropdown()),
