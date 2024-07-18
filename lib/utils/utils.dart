@@ -55,13 +55,55 @@ String getMonthNameFromDate(DateTime date, bool shortForm) {
   return '${shortForm ? shortMonthNames[date.month-1] : longMonthNames[date.month-1]} ${date.year}';
 }
 
+/// Takes a month name and returns a DateTime object
+/// for the first date in the month. For e.g, returns
+/// `DateTime(2024, 10, 1)` for `"October 2024"` or "Oct 2024".
+DateTime getDateFromMonthName(String monthName) {
+  List<String> shortMonthNames = [
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'
+  ];
+  List<String> longMonthNames = [
+    'January', 'February', 'March', 'April', 'May',
+    'June', 'July', 'August', 'September', 'October',
+    'November', 'December'
+  ];
+  String _month = monthName.split(' ')[0];
+  int year = int.parse(monthName.split(' ')[1]);
+  late int month;
+  if (shortMonthNames.contains(_month)) {
+    month = shortMonthNames.indexOf(_month) + 1;
+  }
+  else if (longMonthNames.contains(_month)) {
+    month = longMonthNames.indexOf(_month) + 1;
+  }
+  else {
+    throw Exception("Unknown month $monthName passed to getDateFromMonthName");
+  }
+  return DateTime(year, month, 1);
+}
+
 
 /// Takes a list of budget months and returns the
 /// current month if it exists in the list of budget months.
 /// Otherwise, returns the month closest to the current month.
 String getCurrentOrClosestMonth(List<String> budgetMonths) {
   // TODO: add tests
-  return budgetMonths[0];
+  DateTime closest = getDateFromMonthName(budgetMonths[0]);
+  DateTime now = DateTime.now();
+  now = DateTime(now.year, now.month+1, 1);
+  String closestMonthName = budgetMonths[0];
+  int closestDifference = (now.difference(closest).inHours / 24).round().abs();
+
+  for (var month in budgetMonths) {
+    var from = getDateFromMonthName(month);
+    if ((now.difference(from).inHours / 24).round().abs() < closestDifference) {
+      closest = from;
+      closestDifference = (now.difference(from).inHours / 24).round().abs();
+      closestMonthName = month;
+    }
+  }
+  return closestMonthName;
 }
 
 
