@@ -117,18 +117,7 @@ class _HomePageState extends State<HomePage> {
                         leading: const Icon(Icons.payments_outlined),
                         text: 'Add Expense',
                         onTap: () {
-                          showModalBottomSheet(
-                            context: context,
-                            isScrollControlled: true,
-                            builder: (context) {
-                              return const FractionallySizedBox(
-                                heightFactor: 0.8,
-                                child: AddTransactionPage(
-                                  initialTransactionType: TransactionType.expense,
-                                ),
-                              );
-                            }
-                          );
+                          showAddTransactionBottomSheet(context: context, transactionType: TransactionType.expense);
                         }
                       ),
                       const SizedBox(width: 30),
@@ -136,18 +125,7 @@ class _HomePageState extends State<HomePage> {
                         leading: const Icon(Icons.savings_outlined),
                         text: 'Add Income',
                         onTap: () {
-                          showModalBottomSheet(
-                            context: context,
-                            isScrollControlled: true,
-                            builder: (context) {
-                              return const FractionallySizedBox(
-                                heightFactor: 0.8,
-                                child: AddTransactionPage(
-                                  initialTransactionType: TransactionType.income,
-                                ),
-                              );
-                            }
-                          );
+                          showAddTransactionBottomSheet(context: context, transactionType: TransactionType.income);
                         }
                       ),
                     ],

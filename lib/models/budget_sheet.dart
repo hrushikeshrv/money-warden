@@ -121,7 +121,6 @@ class BudgetSheet extends ChangeNotifier {
     }
     sharedPreferences!.setString('defaultCurrencyCode', code);
     sharedPreferences!.setString('defaultCurrencySymbol', symbol);
-    print('Set default currency to $defaultCurrencyCode: $defaultCurrencySymbol');
     notifyListeners();
   }
 
@@ -154,7 +153,8 @@ class BudgetSheet extends ChangeNotifier {
     required DateTime date,
     required TransactionType transactionType,
     category.Category? category,
-    String? description
+    String? description,
+    int? freeRowIndex
   }) async {
     BudgetMonth? budgetMonthData;
     String shortMonthName = getMonthNameFromDate(date, true);
@@ -190,7 +190,7 @@ class BudgetSheet extends ChangeNotifier {
       budgetMonthName = longMonthName;
     }
 
-    int freeRowIndex = transactionType == TransactionType.expense
+    freeRowIndex ??= transactionType == TransactionType.expense
         ? budgetMonthData!.freeExpenseRowIndex
         : budgetMonthData!.freeIncomeRowIndex;
     String freeRowRange = transactionType == TransactionType.expense
@@ -212,10 +212,12 @@ class BudgetSheet extends ChangeNotifier {
       rowIndex: freeRowIndex
     );
     if (transactionType == TransactionType.expense) {
-      budgetMonthData.expenses.add(transaction);
+      budgetMonthData!.expenses.add(transaction);
+      budgetMonthData.expenses.sort((Transaction a, Transaction b) => b.time.compareTo(a.time));
     }
     else if (transactionType == TransactionType.income) {
-      budgetMonthData.income.add(transaction);
+      budgetMonthData!.income.add(transaction);
+      budgetMonthData.income.sort((Transaction a, Transaction b) => b.time.compareTo(a.time));
     }
     if (success) {
       notifyListeners();

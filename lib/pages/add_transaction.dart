@@ -13,7 +13,14 @@ import 'package:money_warden/utils/utils.dart';
 
 class AddTransactionPage extends StatefulWidget {
   final TransactionType initialTransactionType;
-  const AddTransactionPage({super.key, required this.initialTransactionType});
+  final bool updateTransaction;
+  final Transaction? initialTransaction;
+  const AddTransactionPage({
+    super.key,
+    required this.initialTransactionType,
+    this.updateTransaction = false,
+    this.initialTransaction
+  });
 
   @override
   State<AddTransactionPage> createState() => _AddTransactionPageState();
@@ -88,7 +95,6 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
       );
     }
     catch (exception) {
-      print(exception.toString());
       if (!context.mounted) return;
       showDialog(
         context: context,
@@ -126,7 +132,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Heading1(text: 'Add an ${transactionType == TransactionType.expense ? 'Expense' : 'Income'}'),
+                    Heading1(text: '${widget.updateTransaction ? 'Update' : 'Add'} an ${transactionType == TransactionType.expense ? 'Expense' : 'Income'}'),
                     MwActionButton(
                       leading: const Icon(Icons.check),
                       text: 'Add',

@@ -76,7 +76,15 @@ class _TransactionTileState extends State<TransactionTile> {
               color: Colors.grey.shade400,
               width: 1,
             )
-        )
+        ),
+        onTap: () {
+          showAddTransactionBottomSheet(
+            context: context,
+            transactionType: widget.transaction!.transactionType,
+            updateTransaction: true,
+            initialTransaction: widget.transaction
+          );
+        },
       ),
     );
   }

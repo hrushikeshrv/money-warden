@@ -1,6 +1,9 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 
+import 'package:money_warden/models/transaction.dart';
+import 'package:money_warden/pages/add_transaction.dart';
+
 /// Returns true if the title is a String of the format
 /// \<MonthName\> \<YearName\>. The month name can be in
 /// short form (Jan) or long form (January). The year must
@@ -195,6 +198,7 @@ String formatDateTime(DateTime dateTime) {
 }
 
 
+/// Returns a random material-like color
 Color getRandomGraphColor() {
   List<Color> colors = const [
     Color(0xFFE53935),
@@ -213,4 +217,28 @@ Color getRandomGraphColor() {
     Color(0xFF757575),
   ];
   return colors[Random().nextInt(colors.length)];
+}
+
+
+/// Shows a modal bottom sheet for adding or updating a transaction
+void showAddTransactionBottomSheet({
+  required BuildContext context,
+  required TransactionType transactionType,
+  bool updateTransaction = false,
+  Transaction? initialTransaction
+}) {
+  showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        return FractionallySizedBox(
+          heightFactor: 0.8,
+          child: AddTransactionPage(
+            initialTransactionType: transactionType,
+            updateTransaction: updateTransaction,
+            initialTransaction: initialTransaction,
+          ),
+        );
+      }
+  );
 }
