@@ -87,6 +87,22 @@ DateTime getDateFromMonthName(String monthName) {
 }
 
 
+/// Takes a DateTime object and returns the date for the first
+/// day of that month
+DateTime getFirstDateOfMonth(DateTime date) {
+  return DateTime(date.year, date.month, 1);
+}
+
+/// Takes a DateTime object and returns the date for the last
+/// day of that month
+DateTime getLastDateOfMonth(DateTime date) {
+  if (date.month < 12) {
+    return DateTime(date.year, date.month + 1, 0);
+  }
+  return DateTime(date.year + 1, 1, 0);
+}
+
+
 /// Takes a list of budget months and returns the
 /// current month if it exists in the list of budget months.
 /// Otherwise, returns the month closest to the current month.

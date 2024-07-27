@@ -37,6 +37,27 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
   bool _amountValid = true;
   bool _loading = false;
 
+  @override
+  void initState() {
+    super.initState();
+    if (
+      widget.updateTransaction
+      && widget.initialTransaction != null
+    ) {
+      amountController.text = widget.initialTransaction!.amount.toString();
+      if (widget.initialTransaction!.category != null) {
+        categoryController.text = widget.initialTransaction!.category!.name;
+        setState(() {
+          transactionCategory = widget.initialTransaction!.category!;
+        });
+      }
+      descriptionController.text = widget.initialTransaction!.description ?? '';
+      setState(() {
+        transactionDate = getTransactionInitialDate();
+      });
+    }
+  }
+
   List<DropdownMenuEntry<category.Category>> getTransactionCategoryOptions(BudgetSheet budget) {
     if (transactionType == null || transactionType == TransactionType.expense) {
       return budget.expenseCategories.map(
@@ -79,7 +100,9 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
         date: transactionDate,
         transactionType: transactionType!,
         category: transactionCategory,
-        description: descriptionController.value.text
+        description: descriptionController.value.text,
+        updateTransaction: widget.updateTransaction,
+        freeRowIndex: widget.updateTransaction ? widget.initialTransaction?.rowIndex : null
       );
     }
     on NullSpreadsheetValueException catch (exception) {
@@ -116,6 +139,25 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
     }
     if (!context.mounted) return;
     Navigator.of(context).pop();
+  }
+
+  /// Returns the first accepted date for the transaction's date picker
+  DateTime getTransactionFirstDate() {
+    return widget.updateTransaction && widget.initialTransaction != null
+        ? getFirstDateOfMonth(widget.initialTransaction!.time)
+        : DateTime(1900, 1, 1);
+  }
+  /// Returns the last accepted date for the transaction's date picker
+  DateTime getTransactionLastDate() {
+    return widget.updateTransaction && widget.initialTransaction != null
+        ? getLastDateOfMonth(widget.initialTransaction!.time)
+        : DateTime(2100, 12, 1);
+  }
+  /// Returns the initial date for the transaction's date picker
+  DateTime getTransactionInitialDate() {
+    return widget.updateTransaction && widget.initialTransaction != null
+        ? widget.initialTransaction!.time
+        : DateTime.now();
   }
 
   @override
@@ -184,6 +226,9 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                                   ),
                                   onTap: () {
                                     setState(() {
+                                      // If we are updating a transaction, we can't change
+                                      // from income to expense, and vice-versa.
+                                      if (widget.updateTransaction) return;
                                       transactionType = TransactionType.expense;
                                     });
                                   },
@@ -217,6 +262,9 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                                   ),
                                   onTap: () {
                                     setState(() {
+                                      // If we are updating a transaction, we can't change
+                                      // from expense to income, and vice-versa.
+                                      if (widget.updateTransaction) return;
                                       transactionType = TransactionType.income;
                                     });
                                   },
@@ -304,9 +352,9 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                                     if (_loading) return;
                                     var date = await showDatePicker(
                                         context: context,
-                                        firstDate: DateTime(1900, 1, 1),
-                                        lastDate: DateTime(2100, 1, 1),
-                                        initialDate: DateTime.now()
+                                        firstDate: getTransactionFirstDate(),
+                                        lastDate: getTransactionLastDate(),
+                                        initialDate: getTransactionInitialDate()
                                       );
                                     if (date != null) {
                                       setState(() {

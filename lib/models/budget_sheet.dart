@@ -154,8 +154,16 @@ class BudgetSheet extends ChangeNotifier {
     required TransactionType transactionType,
     category.Category? category,
     String? description,
+    bool updateTransaction = false,
     int? freeRowIndex
   }) async {
+    if (updateTransaction) {
+      print('Updating existing transaction\n\n');
+    }
+    else {
+      print('Creating new transaction\n\n');
+    }
+
     BudgetMonth? budgetMonthData;
     String shortMonthName = getMonthNameFromDate(date, true);
     String longMonthName = getMonthNameFromDate(date, false);
@@ -203,21 +211,55 @@ class BudgetSheet extends ChangeNotifier {
       description: description,
       freeRowRange: freeRowRange
     );
-    var transaction = Transaction(
-      amount: amount,
-      time: date,
-      description: description,
-      category: category,
-      transactionType: transactionType,
-      rowIndex: freeRowIndex
-    );
-    if (transactionType == TransactionType.expense) {
-      budgetMonthData!.expenses.add(transaction);
-      budgetMonthData.expenses.sort((Transaction a, Transaction b) => b.time.compareTo(a.time));
+
+    // If creating a new transaction, create a
+    // Transaction object and add it to the current budget
+    if (!updateTransaction) {
+      var transaction = Transaction(
+        amount: amount,
+        time: date,
+        description: description,
+        category: category,
+        transactionType: transactionType,
+        rowIndex: freeRowIndex
+      );
+      if (transactionType == TransactionType.expense) {
+        budgetMonthData!.expenses.add(transaction);
+        budgetMonthData.sortExpenses();
+      }
+      else if (transactionType == TransactionType.income) {
+        budgetMonthData!.income.add(transaction);
+        budgetMonthData.sortIncome();
+      }
     }
-    else if (transactionType == TransactionType.income) {
-      budgetMonthData!.income.add(transaction);
-      budgetMonthData.income.sort((Transaction a, Transaction b) => b.time.compareTo(a.time));
+    // If updating a transaction, find the Transaction object
+    // in the budget month and update its properties
+    else {
+      // We use the free row index to find the transaction object
+      // and update its properties. The updated transaction will
+      // always be in the current month, so we don't have to worry
+      // about a transaction date being changed and going into another
+      // month.
+      if (transactionType == TransactionType.expense) {
+        for (int i = 0; i < budgetMonthData!.expenses.length; i++) {
+          if (budgetMonthData.expenses[i].rowIndex == freeRowIndex) {
+            budgetMonthData.expenses[i].category = category;
+            budgetMonthData.expenses[i].amount = amount;
+            budgetMonthData.expenses[i].time = date;
+            budgetMonthData.expenses[i].description = description;
+          }
+        }
+      }
+      else if (transactionType == TransactionType.income) {
+        for (int i = 0; i < budgetMonthData!.income.length; i++) {
+          if (budgetMonthData.income[i].rowIndex == freeRowIndex) {
+            budgetMonthData.income[i].category = category;
+            budgetMonthData.income[i].amount = amount;
+            budgetMonthData.income[i].time = date;
+            budgetMonthData.income[i].description = description;
+          }
+        }
+      }
     }
     if (success) {
       notifyListeners();

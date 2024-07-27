@@ -184,6 +184,16 @@ class BudgetMonth {
     });
     return incomeSorted[incomeSorted.length-1].rowIndex + 1;
   }
+
+  /// Sorts expenses in descending order by date of expense
+  void sortExpenses() {
+    expenses.sort((Transaction a, Transaction b) => b.time.compareTo(a.time));
+  }
+
+  /// Sorts income in descending order by date of income
+  void sortIncome() {
+    income.sort((Transaction a, Transaction b) => b.time.compareTo(a.time));
+  }
 }
 
 /// A class describing a category and the amount spent/earned

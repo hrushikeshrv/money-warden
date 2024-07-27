@@ -5,8 +5,8 @@ enum TransactionType {
 }
 
 class Transaction {
-  final DateTime time;
-  final double amount;
+  DateTime time;
+  double amount;
   String? description;
   Category? category;
   final TransactionType transactionType;
