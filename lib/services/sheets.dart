@@ -102,7 +102,7 @@ class SheetsService {
         break;
       }
     }
-    budgetMonth.expenses.sort((Transaction a, Transaction b) => b.time.compareTo(a.time));
+    budgetMonth.sortExpenses();
     for (int i = 0; i < incomes.length; i++) {
       var income = incomes[i];
       if (
@@ -127,7 +127,7 @@ class SheetsService {
         break;
       }
     }
-    budgetMonth.income.sort((Transaction a, Transaction b) => b.time.compareTo(a.time));
+    budgetMonth.sortIncome();
     return budgetMonth;
   }
 

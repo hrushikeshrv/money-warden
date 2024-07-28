@@ -177,8 +177,9 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                     Heading1(text: '${widget.updateTransaction ? 'Update' : 'Add'} an ${transactionType == TransactionType.expense ? 'Expense' : 'Income'}'),
                     MwActionButton(
                       leading: const Icon(Icons.check),
-                      text: 'Add',
+                      text: widget.updateTransaction ? 'Update' : 'Add',
                       onTap: () {
+                        if (_loading) return;
                         createTransaction(budget);
                       }
                     )

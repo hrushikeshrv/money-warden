@@ -39,11 +39,11 @@ class BudgetSheet extends ChangeNotifier {
       // Populate this.budgetMonthNames
       await getBudgetMonthNames();
       currentBudgetMonthName = getCurrentOrClosestMonth(budgetMonthNames);
+      // Populate this.expenseCategories and this.incomeCategories
+      await getCategoryNames();
       // Populate this.budgetData with the budget data for the current
       // budget month
       await getBudgetMonthData(month: currentBudgetMonthName);
-      // Populate this.expenseCategories and this.incomeCategories
-      await getCategoryNames();
       // Initialize the default currency from shared preferences
       // (without notifying listeners)
       _defaultCurrencySymbol = defaultCurrencySymbol;
@@ -139,6 +139,28 @@ class BudgetSheet extends ChangeNotifier {
       return Future<BudgetMonth>.value(budgetData[month]);
     }
     var budgetMonth = await SheetsService.getBudgetMonthData(spreadsheetId!, month, null);
+    // The Sheets Service can't associate category names with category cell IDs,
+    // so we do that here, since we have access to cell IDs here.
+    for (int i = 0; i < budgetMonth.expenses.length; i++) {
+      if (budgetMonth.expenses[i].category != null) {
+        // Find this category name in the expenseCategories list and associate.
+        for (int j = 0; j < expenseCategories.length; j++) {
+          if (budgetMonth.expenses[i].category!.name == expenseCategories[j].name) {
+            budgetMonth.expenses[i].category = expenseCategories[j];
+          }
+        }
+      }
+    }
+    for (int i = 0; i < budgetMonth.income.length; i++) {
+      if (budgetMonth.income[i].category != null) {
+        // Find this category name in the expenseCategories list and associate.
+        for (int j = 0; j < incomeCategories.length; j++) {
+          if (budgetMonth.income[i].category!.name == incomeCategories[j].name) {
+            budgetMonth.income[i].category = incomeCategories[j];
+          }
+        }
+      }
+    }
     budgetData[month] = budgetMonth;
     notifyListeners();
     return budgetMonth;
