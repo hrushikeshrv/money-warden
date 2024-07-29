@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:money_warden/exceptions/null_spreadsheet_value_exception.dart';
+import 'package:money_warden/exceptions/spreadsheet_value_exception.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:money_warden/utils/utils.dart';
@@ -179,13 +180,6 @@ class BudgetSheet extends ChangeNotifier {
     bool updateTransaction = false,
     int? freeRowIndex
   }) async {
-    if (updateTransaction) {
-      print('Updating existing transaction\n\n');
-    }
-    else {
-      print('Creating new transaction\n\n');
-    }
-
     BudgetMonth? budgetMonthData;
     String shortMonthName = getMonthNameFromDate(date, true);
     String longMonthName = getMonthNameFromDate(date, false);
@@ -283,9 +277,39 @@ class BudgetSheet extends ChangeNotifier {
         }
       }
     }
-    if (success) {
-      notifyListeners();
-    }
+    notifyListeners();
     return null;
+  }
+
+
+  /// Deletes a given transaction
+  Future<bool> deleteTransaction(Transaction transaction) async {
+    String shortMonthName = getMonthNameFromDate(transaction.time, true);
+    String longMonthName = getMonthNameFromDate(transaction.time, false);
+    String monthName = '';
+    if (budgetMonthNames.contains(shortMonthName)) {
+      monthName = shortMonthName;
+    }
+    else if (budgetMonthNames.contains(longMonthName)) {
+      monthName = longMonthName;
+    }
+    else {
+      throw SpreadsheetValueException('Sheet for $shortMonthName or $longMonthName does not exist in linked budget Spreadsheet.');
+    }
+    var response = await SheetsService.deleteTransaction(
+        monthName: monthName,
+        rowIndex: transaction.rowIndex,
+        transactionType: transaction.transactionType
+    );
+
+    var budgetMonth = budgetData[monthName];
+    if (transaction.transactionType == TransactionType.expense) {
+      budgetMonth!.expenses.remove(transaction);
+    }
+    else if (transaction.transactionType == TransactionType.income) {
+      budgetMonth!.income.remove(transaction);
+    }
+    notifyListeners();
+    return true;
   }
 }

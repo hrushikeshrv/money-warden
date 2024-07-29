@@ -407,6 +407,25 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                                   ),
                                 )
                               ],
+                            ),
+
+                            Container(
+                              padding: const EdgeInsets.only(top: 30, bottom: 15),
+                              child: widget.updateTransaction && widget.initialTransaction != null
+                                  ? MwActionButton(
+                                    leading: const Icon(Icons.delete_forever, color: Colors.white),
+                                    text: 'Delete',
+                                    onTap: () async {
+                                      setState(() {
+                                        _loading = true;
+                                      });
+                                      await budget.deleteTransaction(widget.initialTransaction!);
+                                      if (!context.mounted) return;
+                                      Navigator.of(context).pop();
+                                    },
+                                    role: 'error'
+                                  )
+                                  : null
                             )
                           ],
                         ),

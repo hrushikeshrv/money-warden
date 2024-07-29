@@ -227,4 +227,42 @@ class SheetsService {
     );
     return true;
   }
+
+  static Future<bool> deleteTransaction({
+    SheetsApi? api,
+    required String monthName,
+    required int rowIndex,
+    required TransactionType transactionType
+  }) async {
+    api ??= await getSheetsApiClient();
+
+    var prefs = await SharedPreferences.getInstance();
+    String? spreadsheetId = prefs.getString('spreadsheetId');
+    if (spreadsheetId == null) {
+      throw NullSpreadsheetMetadataException('No spreadsheet has been selected, spreadsheetId was null.');
+    }
+    String freeRowRange = '';
+    if (transactionType == TransactionType.expense) {
+      freeRowRange = '$monthName!A$rowIndex:D$rowIndex';
+    }
+    else if (transactionType == TransactionType.income) {
+      freeRowRange = '$monthName!E$rowIndex:H$rowIndex';
+    }
+    else {
+      throw Exception("transactionType must be either TransactionType.income or TransactionType.expense");
+    }
+
+    var valueRange = ValueRange(
+        majorDimension: 'ROWS',
+        range: freeRowRange,
+        values: [['', '', '', '',]]
+    );
+    var updateValuesResponse = await api.spreadsheets.values.update(
+        valueRange,
+        spreadsheetId,
+        freeRowRange,
+        valueInputOption: 'USER_ENTERED'
+    );
+    return true;
+  }
 }
