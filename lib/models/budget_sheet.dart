@@ -165,6 +165,24 @@ class BudgetSheet extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Updates the category name for a given category in the chosen
+  /// budget sheet
+  Future<void> setTransactionCategoryName({
+    required category.Category category,
+    required TransactionType transactionType,
+    required String name
+  }) async {
+    await SheetsService.setTransactionCategoryName(cellId: category.cellId!, name: name);
+    var array = transactionType == TransactionType.expense ? expenseCategories : incomeCategories;
+    for (var cat in array) {
+      if (cat.name == category.name) {
+        cat.name = name;
+        break;
+      }
+    }
+    notifyListeners();
+  }
+
   /// Fetches the budget data of a particular month and returns
   /// a BudgetMonth instance
   Future<BudgetMonth> getBudgetMonthData({ required String month, bool forceUpdate = false }) async {

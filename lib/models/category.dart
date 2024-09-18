@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Category {
-  final String name;
+  String name;
   Color? backgroundColor;
   String? cellId;
 

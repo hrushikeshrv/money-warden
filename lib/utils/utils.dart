@@ -19,6 +19,13 @@ List<Color> mwColors = const [
   Color(0xFF757575),
 ];
 
+/// Parses a stored color string and returns a Color
+/// object.
+Color parseStoredColorString(String color) {
+  int value = int.parse(color.split('0x')[1].split(')')[0], radix: 16);
+  return Color(value);
+}
+
 /// Returns true if the title is a String of the format
 /// \<MonthName\> \<YearName\>. The month name can be in
 /// short form (Jan) or long form (January). The year must

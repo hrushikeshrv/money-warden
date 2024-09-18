@@ -174,7 +174,7 @@ class SheetsService {
         Category(
           name: exp,
           cellId: 'B${i+2}',
-          backgroundColor: color != null ? material.Color(int.parse(color, radix: 16)) : null,
+          backgroundColor: color != null ? parseStoredColorString(color): null,
         )
       );
     }
@@ -189,7 +189,7 @@ class SheetsService {
         Category(
           name: income,
           cellId: 'C${i+2}',
-          backgroundColor: color != null ? material.Color(int.parse(color, radix: 16)) : null
+          backgroundColor: color != null ? parseStoredColorString(color) : null
         )
       );
     }
@@ -245,11 +245,8 @@ class SheetsService {
     if (transactionType == TransactionType.expense) {
       freeRowRange = '$monthName!A$rowIndex:D$rowIndex';
     }
-    else if (transactionType == TransactionType.income) {
-      freeRowRange = '$monthName!E$rowIndex:H$rowIndex';
-    }
     else {
-      throw Exception("transactionType must be either TransactionType.income or TransactionType.expense");
+      freeRowRange = '$monthName!E$rowIndex:H$rowIndex';
     }
 
     var valueRange = ValueRange(
@@ -264,5 +261,32 @@ class SheetsService {
         valueInputOption: 'USER_ENTERED'
     );
     return true;
+  }
+
+  /// Sets the name of a transaction category in the
+  /// chosen budget spreadsheet
+  static Future<void> setTransactionCategoryName({
+    SheetsApi? api,
+    required String cellId,
+    required String name
+  }) async {
+    api ??= await getSheetsApiClient();
+    var prefs = await SharedPreferences.getInstance();
+    String? spreadsheetId = prefs.getString('spreadsheetId');
+    if (spreadsheetId == null) {
+      throw NullSpreadsheetMetadataException('No spreadsheet has been selected, spreadsheetId was null.');
+    }
+
+    var valueRange = ValueRange(
+      majorDimension: 'ROWS',
+      range: 'Metadata!$cellId',
+      values: [[name]]
+    );
+    await api.spreadsheets.values.update(
+      valueRange,
+      spreadsheetId,
+      'Metadata!$cellId',
+      valueInputOption: 'USER_ENTERED'
+    );
   }
 }

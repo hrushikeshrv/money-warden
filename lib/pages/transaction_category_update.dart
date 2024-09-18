@@ -33,8 +33,13 @@ class _TransactionCategoryUpdatePageState extends State<TransactionCategoryUpdat
     categoryNameController.text = widget.transactionCategory.name;
   }
 
-  void updateCategory() async {
-
+  void updateCategory(
+    BudgetSheet budget,
+    category.Category cat,
+    TransactionType transactionType,
+    String name
+  ) async {
+    await budget.setTransactionCategoryName(category: cat, transactionType: transactionType, name: name);
   }
 
   @override
@@ -55,7 +60,8 @@ class _TransactionCategoryUpdatePageState extends State<TransactionCategoryUpdat
                     text: widget.updateCategory ? 'Update' : 'Add',
                     onTap: () {
                       if (_loading) return;
-                      updateCategory();
+                      updateCategory(budget, widget.transactionCategory, widget.transactionType, categoryNameController.text);
+                      Navigator.of(context).pop();
                     }
                   )
                 ],
@@ -81,7 +87,6 @@ class _TransactionCategoryUpdatePageState extends State<TransactionCategoryUpdat
                             ),
                           ),
                           const SizedBox(height: 10),
-
                         ],
                       ),
                     ),
@@ -103,16 +108,22 @@ class _TransactionCategoryUpdatePageState extends State<TransactionCategoryUpdat
                               },
                               child: widget.transactionCategory.backgroundColor == color
                               ? Stack(
+                                alignment: Alignment.center,
                                 children: [
                                   Container(
                                     decoration: BoxDecoration(
                                       color: color,
                                       borderRadius: BorderRadius.circular(10),
+                                      // border: Border.all(color: Theme.of(context).colorScheme.surfaceDim, width: 4)
                                     ),
                                     width: 60,
                                     height: 60,
                                   ),
-                                  const Icon(Icons.check)
+                                  const Icon(
+                                    Icons.check,
+                                    size: 32,
+                                    color: Colors.black,
+                                  ),
                                 ],
                               )
                               : Container(
