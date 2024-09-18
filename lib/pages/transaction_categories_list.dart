@@ -28,42 +28,41 @@ class _TransactionCategoriesListState extends State<TransactionCategoriesList> {
           body: SafeArea(
             child: Container(
               padding: const EdgeInsets.only(top: 10, left: 30, right: 30),
-              child: Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10, left: 10),
-                      child: Heading1(text: '$transactionType Categories'),
-                    ),
-                    const SizedBox(height: 10),
-                    const MwWarning(
-                      children: [
-                        Text('Deleting expense or income categories is not yet supported. You can only create new categories and change an existing category.')
-                      ]
-                    ),
-                    const SizedBox(height: 20),
-                    MwActionButton(
-                      leading: widget.transactionType == TransactionType.expense ? const Icon(Icons.payments_outlined) : const Icon(Icons.savings_outlined),
-                      text: 'Add $transactionType Category',
-                      onTap: () {}
-                    ),
+              child: ListView(
+                // crossAxisAlignment: CrossAxisAlignment.start,
+                physics: const ClampingScrollPhysics(),
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10, left: 10),
+                    child: Heading1(text: '$transactionType Categories'),
+                  ),
+                  const SizedBox(height: 10),
+                  const MwWarning(
+                    children: [
+                      Text('Deleting expense or income categories is not yet supported. You can only create new categories and change an existing category.')
+                    ]
+                  ),
+                  const SizedBox(height: 20),
+                  MwActionButton(
+                    leading: widget.transactionType == TransactionType.expense ? const Icon(Icons.payments_outlined) : const Icon(Icons.savings_outlined),
+                    text: 'Add $transactionType Category',
+                    onTap: () {}
+                  ),
 
-                    const SizedBox(height: 20),
-                    ListView.builder(
-                      itemCount: categoryCount,
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        if (widget.transactionType == TransactionType.expense) {
-                          return CategoryTile(category: budget.expenseCategories[index]);
-                        }
-                        else {
-                          return CategoryTile(category: budget.incomeCategories[index]);
-                        }
-                      },
-                    )
-                  ],
-                ),
+                  const SizedBox(height: 20),
+                  ListView.builder(
+                    itemCount: categoryCount,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      if (widget.transactionType == TransactionType.expense) {
+                        return CategoryTile(category: budget.expenseCategories[index], transactionType: widget.transactionType);
+                      }
+                      else {
+                        return CategoryTile(category: budget.incomeCategories[index], transactionType: widget.transactionType);
+                      }
+                    },
+                  )
+                ],
               ),
             ),
           ),

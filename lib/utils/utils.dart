@@ -4,6 +4,21 @@ import 'package:flutter/material.dart';
 import 'package:money_warden/models/transaction.dart';
 import 'package:money_warden/pages/add_transaction.dart';
 
+List<Color> mwColors = const [
+  Color(0xFFE53935),
+  Color(0xFFD81B60),
+  Color(0xFF8E24AA),
+  Color(0xFF673AB7),
+  Color(0xFF1E88E5),
+  Color(0xFF039BE5),
+  Color(0xFF00ACC1),
+  Color(0xFF43A047),
+  Color(0xFF7CB342),
+  Color(0xFFFB8C00),
+  Color(0xFFF4511E),
+  Color(0xFF757575),
+];
+
 /// Returns true if the title is a String of the format
 /// \<MonthName\> \<YearName\>. The month name can be in
 /// short form (Jan) or long form (January). The year must
@@ -216,23 +231,7 @@ String formatDateTime(DateTime dateTime) {
 
 /// Returns a random material-like color
 Color getRandomGraphColor() {
-  List<Color> colors = const [
-    Color(0xFFE53935),
-    Color(0xFFD81B60),
-    Color(0xFF8E24AA),
-    Color(0xFF673AB7),
-    // Color(0xFF3949AB),
-    Color(0xFF1E88E5),
-    Color(0xFF039BE5),
-    Color(0xFF00ACC1),
-    Color(0xFF43A047),
-    Color(0xFF7CB342),
-    Color(0xFFFB8C00),
-    Color(0xFFF4511E),
-    // Color(0xFF6D4C41),
-    Color(0xFF757575),
-  ];
-  return colors[Random().nextInt(colors.length)];
+  return mwColors[Random().nextInt(mwColors.length)];
 }
 
 

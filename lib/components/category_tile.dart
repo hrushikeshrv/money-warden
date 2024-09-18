@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 
 import 'package:money_warden/models/category.dart';
+import 'package:money_warden/models/transaction.dart';
+import 'package:money_warden/pages/transaction_category_update.dart';
 
 
 class CategoryTile extends StatelessWidget {
   final Category category;
-  const CategoryTile({super.key, required this.category});
+  final TransactionType transactionType;
+  const CategoryTile({super.key, required this.category, required this.transactionType});
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +24,18 @@ class CategoryTile extends StatelessWidget {
         ),
       ),
       title: Text(category.name),
+      onTap: () {
+        showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          builder: (context) {
+            return FractionallySizedBox(
+                heightFactor: 0.85,
+                child: TransactionCategoryUpdatePage(transactionCategory: category, transactionType: transactionType)
+            );
+          }
+        );
+      },
     );
   }
 }

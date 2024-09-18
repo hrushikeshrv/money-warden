@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:money_warden/exceptions/null_spreadsheet_value_exception.dart';
 import 'package:money_warden/exceptions/spreadsheet_value_exception.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -131,6 +132,37 @@ class BudgetSheet extends ChangeNotifier {
     var categoryData = await SheetsService.getTransactionCategories(null);
     expenseCategories = categoryData['expense']!;
     incomeCategories = categoryData['income']!;
+  }
+
+  /// Set the background color for a transaction category both in the
+  /// global provider state and in shared preferences and notify listeners.
+  void setCategoryBackgroundColor({
+    required category.Category category,
+    required TransactionType transactionType,
+    required Color color
+  }) {
+    if (sharedPreferences == null) {
+      throw Exception("Shared preferences has not been initialized yet.");
+    }
+    if (transactionType == TransactionType.expense) {
+      for (var cat in expenseCategories) {
+        if (cat.name == category.name) {
+          cat.backgroundColor = color;
+        }
+      }
+    }
+    else {
+      for (var cat in incomeCategories) {
+        if (cat.name == category.name) {
+          cat.backgroundColor = color;
+        }
+      }
+    }
+    String key = transactionType == TransactionType.expense
+        ? 'expense_${category.name}_color'
+        : 'income_${category.name}_color';
+    sharedPreferences!.setString(key, color.toString());
+    notifyListeners();
   }
 
   /// Fetches the budget data of a particular month and returns
