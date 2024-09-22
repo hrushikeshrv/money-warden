@@ -303,11 +303,13 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                             const SizedBox(height: 20),
                             Row(
                               children: [
-                                Text(
-                                  formatDateTime(transactionDate),
-                                  style: const TextStyle(
-                                    fontSize: 24
-                                  )
+                                Flexible(
+                                  child: Text(
+                                    formatDateTime(transactionDate),
+                                    style: const TextStyle(
+                                      fontSize: 24
+                                    )
+                                  ),
                                 ),
                               ],
                             ),

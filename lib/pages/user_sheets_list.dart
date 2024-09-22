@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:googleapis/drive/v3.dart';
+import 'package:money_warden/components/mw_action_button.dart';
 import 'package:provider/provider.dart';
 
 import 'package:money_warden/models/budget_sheet.dart';
@@ -44,6 +45,12 @@ class _UserSheetsListState extends State<UserSheetsList> {
                 children: [
                   Text('The sheet you select must be in the correct format for Money Warden to be able to work with it.')
                 ]
+              ),
+              const SizedBox(height: 20),
+              MwActionButton(
+                leading: const Icon(Icons.add_to_drive_outlined),
+                text: 'Create a New Budget Sheet',
+                onTap: () {}
               ),
               const SizedBox(height: 10),
               Expanded(

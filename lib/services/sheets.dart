@@ -84,8 +84,12 @@ class SheetsService {
         expense[0] != null && expense[0] != ''
         && expense[1] != null && expense[1] != ''
       ) {
+        var txnDate = parseDate(expense[0] as String);
+        if (txnDate.year == 1970) {
+          txnDate = getFirstDateOfMonth(txnDate);
+        }
         var txn = Transaction(
-          time: parseDate(expense[0] as String),
+          time: txnDate,
           amount: parseAmount(expense[1].toString()),
           transactionType: TransactionType.expense,
           rowIndex: i+4
@@ -109,8 +113,12 @@ class SheetsService {
       income[0] != null && income[0] != ''
           && income[1] != null && income[1] != ''
       ) {
+        var txnDate = parseDate(income[0] as String);
+        if (txnDate.year == 1970) {
+          txnDate = getFirstDateOfMonth(txnDate);
+        }
         var txn = Transaction(
-          time: parseDate(income[0] as String),
+          time: txnDate,
           amount: parseAmount(income[1].toString()),
           transactionType: TransactionType.income,
           rowIndex: i+4

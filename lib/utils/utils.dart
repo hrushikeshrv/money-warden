@@ -151,7 +151,7 @@ String getCurrentOrClosestMonth(List<String> budgetMonths) {
 /// Parses a date in the format \<date> \<Month> \<Year> and
 /// returns a DateTime object. Also tries to parse dates in
 /// other formats but support for all formats is not guaranteed.
-/// Throws a FormatException if the date cannot be parsed.
+/// If an exception occurs while parsing the date, returns 1 January 1970.
 ///
 /// An example of a valid date format is -
 /// 23 May 2024
@@ -187,7 +187,12 @@ DateTime parseDate(String date) {
       formattedDate += splitDate[0];
     }
   }
-  return DateTime.parse(formattedDate);
+  try {
+    return DateTime.parse(formattedDate);
+  }
+  catch(e) {
+    return DateTime(1970, 1, 1);
+  }
 }
 
 
@@ -199,7 +204,12 @@ double parseAmount(String amount) {
   if (!['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].contains(amount[0])) {
     amount = amount.substring(1);
   }
-  return double.parse(amount);
+  try {
+    return double.parse(amount);
+  }
+  catch(e) {
+    return 0.0;
+  }
 }
 
 
@@ -217,7 +227,9 @@ String formatMoney(double amount) {
   }
   String stringResult = result.reversed.join('');
   if (amount.toString().split('.').length > 1) {
-    stringResult += '.${amount.toString().split('.')[1]}';
+    var cents = amount.toString().split('.')[1];
+    if (cents.length > 2) { cents = cents.substring(0, 2); }
+    stringResult += '.$cents';
   }
   return stringResult;
 }
@@ -232,6 +244,11 @@ String formatDateTime(DateTime dateTime) {
   List<String> weekdays = [
     'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'
   ];
+  // If the passed date time was 1970-1-1, there was an error parsing the
+  // date from the source.
+  if (dateTime.year == 1970 && dateTime.month == 1 && dateTime.day == 1) {
+    return 'Unrecognized Date';
+  }
   return '${weekdays[dateTime.weekday-1]}, ${dateTime.day} ${months[dateTime.month-1]} ${dateTime.year}';
 }
 
