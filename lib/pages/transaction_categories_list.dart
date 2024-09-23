@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:money_warden/components/category_tile.dart';
 import 'package:money_warden/components/heading1.dart';
 import 'package:money_warden/components/mw_warning.dart';
+import 'package:money_warden/pages/add_category.dart';
 import 'package:money_warden/models/budget_sheet.dart';
 import 'package:money_warden/models/transaction.dart';
 
@@ -46,7 +47,18 @@ class _TransactionCategoriesListState extends State<TransactionCategoriesList> {
                   MwActionButton(
                     leading: widget.transactionType == TransactionType.expense ? const Icon(Icons.payments_outlined) : const Icon(Icons.savings_outlined),
                     text: 'Add $transactionType Category',
-                    onTap: () {}
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        builder: (context) {
+                          return FractionallySizedBox(
+                              heightFactor: 0.85,
+                              child: AddCategoryPage(transactionType: widget.transactionType)
+                          );
+                        }
+                      );
+                    }
                   ),
 
                   const SizedBox(height: 20),
@@ -55,6 +67,8 @@ class _TransactionCategoriesListState extends State<TransactionCategoriesList> {
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
                       if (widget.transactionType == TransactionType.expense) {
+                        // Don't show the "Uncategorized" category here.
+                        if (budget.expenseCategories[index].name == 'Uncategorized') return Container();
                         return CategoryTile(category: budget.expenseCategories[index], transactionType: widget.transactionType);
                       }
                       else {

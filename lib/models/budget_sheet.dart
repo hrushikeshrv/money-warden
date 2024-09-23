@@ -134,6 +134,28 @@ class BudgetSheet extends ChangeNotifier {
     incomeCategories = categoryData['income']!;
   }
 
+  /// Create a category in the metadata sheet in the selected
+  /// budget spreadsheet.
+  Future<void> createCategory({ required category.Category category, required TransactionType transactionType }) async {
+    var arr = transactionType == TransactionType.expense ? expenseCategories : incomeCategories;
+    int maxRow = 0;
+    for (var cat in arr) {
+      int cell = 0;
+      if (cat.cellId == null) cell = 0;
+      cell = int.parse(cat.cellId!.substring(1));
+      if (cell > maxRow) maxRow = cell;
+    }
+    String cellId = transactionType == TransactionType.expense ? 'B${maxRow+1}' : 'C${maxRow+1}';
+    category.cellId = cellId;
+    await SheetsService.setTransactionCategoryName(cellId: cellId, name: category.name);
+    arr.add(category);
+    setCategoryBackgroundColor(
+      category: category,
+      transactionType: transactionType,
+      color: category.backgroundColor ?? getRandomGraphColor()
+    );
+  }
+
   /// Set the background color for a transaction category both in the
   /// global provider state and in shared preferences and notify listeners.
   void setCategoryBackgroundColor({
