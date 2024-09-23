@@ -112,6 +112,39 @@ class _SettingsPageState extends State<SettingsPage> {
                         );
                       },
                     ),
+
+                    const SizedBox(height: 20),
+                    const Heading1(text: 'Help & Support'),
+                    SettingsTile(
+                      leading: const Icon(Icons.support),
+                      title: 'Usage Guide',
+                      subtitle: 'A short guide to help you get started',
+                      onTap: () {}
+                    ),
+                    SettingsTile(
+                      leading: Icon(Icons.bug_report, color: Theme.of(context).colorScheme.error),
+                      title: 'Report an Issue',
+                      subtitle: 'Let us know about any bugs!',
+                      onTap: () {}
+                    ),
+                    SettingsTile(
+                        leading: Icon(Icons.history_edu, color: Theme.of(context).colorScheme.primary),
+                        title: 'Request a Feature',
+                        subtitle: 'Request new features for Money Warden!',
+                        onTap: () {}
+                    ),
+                    SettingsTile(
+                      leading: const Icon(Icons.lock),
+                      title: 'Privacy Policy',
+                      subtitle: 'Read Money Warden\'s Privacy Policy',
+                      onTap: () {},
+                    ),
+                    SettingsTile(
+                      leading: const Icon(Icons.description),
+                      title: 'Terms of Service',
+                      subtitle: 'Read Money Warden\'s Terms of Service',
+                      onTap: () {},
+                    )
                   ],
                 ),
               ),
