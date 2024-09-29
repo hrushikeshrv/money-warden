@@ -32,6 +32,39 @@ class SheetsService {
     return await api.files.list(q: "mimeType='application/vnd.google-apps.spreadsheet'");
   }
 
+  /// Creates a new sheet in the selected budget spreadsheet for
+  /// the given month. Assumes the given month is a valid month.
+  static Future<bool> createSheet({ SheetsApi? api, required String monthName }) async {
+    api ??= await getSheetsApiClient();
+    var prefs = await SharedPreferences.getInstance();
+    String? spreadsheetId = prefs.getString('spreadsheetId');
+    if (spreadsheetId == null) {
+      throw NullSpreadsheetMetadataException('No spreadsheet has been selected, spreadsheetId was null');
+    }
+    var spreadsheet = await api.spreadsheets.get(spreadsheetId);
+    int? templateSheetId;
+    // Find the sheetId for the monthly template sheet
+    for (var sheet in spreadsheet.sheets!) {
+      if (sheet.properties != null && sheet.properties!.title!.trim().toLowerCase() == 'monthly template') {
+        templateSheetId = sheet.properties!.sheetId;
+      }
+    }
+    if (templateSheetId == null) {
+      throw NullSpreadsheetMetadataException('The selected budget spreadsheet does not have the monthly template sheet');
+    }
+
+    // Copy the monthly template sheet to a new sheet
+    var newSheetProperties = await api.spreadsheets.sheets.copyTo(CopySheetToAnotherSpreadsheetRequest(), spreadsheetId, templateSheetId);
+    Sheet? newSheet;
+    for (var sheet in spreadsheet.sheets!) {
+      if (sheet.properties != null && sheet.properties!.sheetId == newSheetProperties.sheetId) {
+        newSheet = sheet;
+      }
+    }
+    newSheet!.properties!.title = monthName;
+    return true;
+  }
+
   /// Returns a list of sheet names for all the
   /// months in the chosen budget spreadsheet.
   /// Does not return other sheets like the Metadata sheet

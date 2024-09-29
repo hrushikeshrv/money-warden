@@ -384,4 +384,13 @@ class BudgetSheet extends ChangeNotifier {
     notifyListeners();
     return true;
   }
+
+  /// Creates a new sheet in the selected budget spreadsheet and
+  /// updates the local state to include the new sheet.
+  Future<bool> createSheet(String monthName) async {
+    if (!isMonthName(monthName)) {
+      throw SpreadsheetValueException('$monthName is not a valid month name');
+    }
+    return await SheetsService.createSheet(monthName: monthName);
+  }
 }

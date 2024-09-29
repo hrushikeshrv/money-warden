@@ -47,11 +47,10 @@ bool isMonthName(String title) {
     'Dec', 'December',
   ];
   List<String> _ = title.split(' ');
-  return (
-    _.length == 2
-    && monthNames.contains(_[0])
-    && double.tryParse(_[1]) != null
-  );
+  if (_.length != 2) return false;
+  var year = double.tryParse(_[1]);
+  bool validYear = (year != null && year >= 1970 && year <= 2100);
+  return (monthNames.contains(_[0]) && validYear);
 }
 
 
