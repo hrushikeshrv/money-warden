@@ -33,10 +33,7 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const MwAppBar(
-              assetImagePath: 'assets/images/logo.png',
-              child: BudgetMonthDropdown()
-            ),
+            const MwAppBar(),
             Expanded(
               child: ListView(
                 shrinkWrap: true,

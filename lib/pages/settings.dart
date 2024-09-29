@@ -26,14 +26,7 @@ class _SettingsPageState extends State<SettingsPage> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const MwAppBar(
-                assetImagePath: 'assets/images/logo.png',
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-                  child: Text("Settings", style: TextStyle(
-                      fontSize: 24, fontWeight: FontWeight.bold)),
-                )
-            ),
+            const MwAppBar(),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),

@@ -20,7 +20,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
       builder: (context, budget, child) {
         return Column(
           children: [
-            const MwAppBar(assetImagePath: 'assets/images/logo.png', child: BudgetMonthDropdown()),
+            const MwAppBar(),
             Expanded(
               child: ListView(
                 shrinkWrap: true,

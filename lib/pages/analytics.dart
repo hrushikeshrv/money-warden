@@ -23,7 +23,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
         if (budget.currentBudgetMonthData != null && budget.currentBudgetMonthData!.expenses.isEmpty) {
           return const Column(
             children: [
-              MwAppBar(assetImagePath: 'assets/images/logo.png', child: BudgetMonthDropdown()),
+              MwAppBar(),
               Padding(
                 padding: EdgeInsets.only(top: 20),
                 child: Center(child: Text('No transactions yet 💸', style: TextStyle(fontSize: 17))),
@@ -33,7 +33,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
         }
         return Column(
           children: [
-            const MwAppBar(assetImagePath: 'assets/images/logo.png', child: BudgetMonthDropdown()),
+            const MwAppBar(),
             Expanded(
               child: ListView(
                 shrinkWrap: true,

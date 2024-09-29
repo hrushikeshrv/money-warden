@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:money_warden/components/budget_month_dropdown.dart';
 
 class MwAppBar extends StatelessWidget {
-  final Widget child;
-  final String assetImagePath;
-
-  const MwAppBar({super.key, required this.child, required this.assetImagePath});
+  const MwAppBar({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -12,9 +10,9 @@ class MwAppBar extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 20),
       child: Row(
         children: [
-          Image.asset(assetImagePath, height: 45,),
+          Image.asset('assets/images/logo.png', height: 45,),
           const SizedBox(width: 10),
-          child
+          const BudgetMonthDropdown(),
         ],
       ),
     );
