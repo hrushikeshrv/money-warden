@@ -67,6 +67,7 @@ class _AddBudgetMonthToSpreadsheetPageState extends State<AddBudgetMonthToSpread
         _loading = true;
       });
       bool response = await budget.createSheet(monthName);
+      Navigator.of(context).pop();
     }
     on SpreadsheetValueException catch (e) {
       setState(() {
@@ -119,7 +120,6 @@ class _AddBudgetMonthToSpreadsheetPageState extends State<AddBudgetMonthToSpread
                     onTap: () {
                       if (_loading) return;
                       createBudgetMonth('$selectedMonth $selectedYear', budget);
-                      Navigator.of(context).pop();
                     }
                   )
                 ],

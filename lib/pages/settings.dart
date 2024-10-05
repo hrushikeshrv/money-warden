@@ -80,7 +80,24 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
 
                     const SizedBox(height: 20),
-                    const Heading1(text: 'Categories'),
+                    const Heading1(text: 'Preferences'),
+                    SettingsTile(
+                      leading: const Icon(Icons.attach_money),
+                      title: 'Default Currency',
+                      subtitle: 'Choose your default currency',
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          builder: (context) {
+                            return const FractionallySizedBox(
+                              heightFactor: 0.85,
+                              child: ChooseDefaultCurrencyPage()
+                            );
+                          }
+                        );
+                      },
+                    ),
                     SettingsTile(
                       leading: Icon(Icons.list, color: Theme
                           .of(context)
@@ -101,26 +118,6 @@ class _SettingsPageState extends State<SettingsPage> {
                       subtitle: 'Create or update income categories',
                       onTap: () {
                         Navigator.of(context).pushNamed('income_categories_list');
-                      },
-                    ),
-
-                    const SizedBox(height: 20),
-                    const Heading1(text: 'Preferences'),
-                    SettingsTile(
-                      leading: const Icon(Icons.attach_money),
-                      title: 'Default Currency',
-                      subtitle: 'Choose your default currency',
-                      onTap: () {
-                        showModalBottomSheet(
-                          context: context,
-                          isScrollControlled: true,
-                          builder: (context) {
-                            return const FractionallySizedBox(
-                              heightFactor: 0.85,
-                              child: ChooseDefaultCurrencyPage()
-                            );
-                          }
-                        );
                       },
                     ),
 

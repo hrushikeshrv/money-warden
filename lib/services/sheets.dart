@@ -110,7 +110,7 @@ class SheetsService {
   /// Returns a BudgetMonth instance populated with data from the
   /// corresponding sheet in the spreadsheet with the passed spreadsheetId.
   ///
-  /// IMPORTANT: Assumes the passed month exists in the budget spreadsheet,
+  /// Assumes the passed month exists in the budget spreadsheet,
   /// and throws an exception if it doesn't.
   static Future<BudgetMonth> getBudgetMonthData(String spreadsheetId, String month, SheetsApi? api) async {
     api ??= await getSheetsApiClient();
