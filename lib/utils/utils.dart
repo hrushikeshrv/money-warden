@@ -81,7 +81,7 @@ String getMonthNameFromDate(DateTime date, bool shortForm) {
 
 /// Takes a month name and returns a DateTime object
 /// for the first date in the month. For e.g, returns
-/// `DateTime(2024, 10, 1)` for `"October 2024"` or "Oct 2024".
+/// `DateTime(2024, 10, 1)` for `"October 2024"` or `"Oct 2024"`.
 DateTime getDateFromMonthName(String monthName) {
   List<String> shortMonthNames = [
     'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
@@ -131,12 +131,15 @@ String getCurrentOrClosestMonth(List<String> budgetMonths) {
   // TODO: add tests
   DateTime closest = getDateFromMonthName(budgetMonths[0]);
   DateTime now = DateTime.now();
-  now = DateTime(now.year, now.month+1, 1);
+  // now = DateTime(now.year, now.month+1, 1);
   String closestMonthName = budgetMonths[0];
   int closestDifference = (now.difference(closest).inHours / 24).round().abs();
 
   for (var month in budgetMonths) {
     var from = getDateFromMonthName(month);
+    if (from.month == now.month && from.year == now.year) {
+      return month;
+    }
     if ((now.difference(from).inHours / 24).round().abs() < closestDifference) {
       closest = from;
       closestDifference = (now.difference(from).inHours / 24).round().abs();

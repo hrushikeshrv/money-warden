@@ -391,6 +391,25 @@ class BudgetSheet extends ChangeNotifier {
     if (!isMonthName(monthName)) {
       throw SpreadsheetValueException('$monthName is not a valid month name');
     }
-    return await SheetsService.createSheet(monthName: monthName);
+    if (budgetMonthNames.contains(monthName)) {
+      throw SpreadsheetValueException('$monthName is already in the budget spreadsheet');
+    }
+    bool response = false;
+    try {
+      response = await SheetsService.createSheet(monthName: monthName);
+    }
+    catch (e) {
+       rethrow;
+    }
+    if (!response) {
+      throw SpreadsheetValueException('An error occurred while trying to create a new sheet. Please try again later.');
+    }
+    else {
+      BudgetMonth newMonth = BudgetMonth(name: monthName);
+      budgetMonthNames.add(monthName);
+      budgetData[monthName] = newMonth;
+    }
+    notifyListeners();
+    return true;
   }
 }

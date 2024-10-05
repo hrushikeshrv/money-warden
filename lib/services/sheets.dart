@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart' as material;
 import 'package:googleapis/drive/v3.dart';
-import 'package:googleapis/shared.dart';
-import 'package:googleapis/sheets/v4.dart';
+import 'package:googleapis/sheets/v4.dart' hide Request;
+import 'package:googleapis/sheets/v4.dart' as sheets show Request;
 import 'package:http/http.dart';
 import 'package:money_warden/models/category.dart';
 import 'package:money_warden/models/transaction.dart';
@@ -53,15 +53,29 @@ class SheetsService {
       throw NullSpreadsheetMetadataException('The selected budget spreadsheet does not have the monthly template sheet');
     }
 
+    // print('Copying from ');
     // Copy the monthly template sheet to a new sheet
-    var newSheetProperties = await api.spreadsheets.sheets.copyTo(CopySheetToAnotherSpreadsheetRequest(), spreadsheetId, templateSheetId);
-    Sheet? newSheet;
-    for (var sheet in spreadsheet.sheets!) {
-      if (sheet.properties != null && sheet.properties!.sheetId == newSheetProperties.sheetId) {
-        newSheet = sheet;
-      }
-    }
-    newSheet!.properties!.title = monthName;
+    var newSheetProperties = await api.spreadsheets.sheets.copyTo(
+      CopySheetToAnotherSpreadsheetRequest(destinationSpreadsheetId: spreadsheetId),
+      spreadsheetId,
+      templateSheetId
+    );
+    newSheetProperties.title = monthName;
+    api.spreadsheets.batchUpdate(
+      BatchUpdateSpreadsheetRequest(
+        includeSpreadsheetInResponse: false,
+        requests: [
+          sheets.Request(
+            updateSheetProperties: UpdateSheetPropertiesRequest(
+              fields: 'title',
+              properties: newSheetProperties
+            )
+          ),
+        ]
+      ),
+      spreadsheetId
+    );
+
     return true;
   }
 

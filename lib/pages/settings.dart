@@ -7,6 +7,7 @@ import 'package:money_warden/components/settings_tile.dart';
 import 'package:money_warden/components/mw_app_bar.dart';
 import 'package:money_warden/models/budget_sheet.dart';
 import 'package:money_warden/pages/choose_default_currency.dart';
+import 'package:money_warden/pages/add_budget_month_to_spreadsheet.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -39,6 +40,23 @@ class _SettingsPageState extends State<SettingsPage> {
                       title: 'Refresh',
                       subtitle: 'Sync data with linked Google Sheet',
                       onTap: () {},
+                    ),
+                    SettingsTile(
+                      leading: const Icon(Icons.edit_calendar_rounded),
+                      title: 'Add Month To Budget',
+                      subtitle: 'Add a new month to the current budget',
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          builder: (context) {
+                            return const FractionallySizedBox(
+                                heightFactor: 0.85,
+                                child: AddBudgetMonthToSpreadsheetPage()
+                            );
+                          }
+                        );
+                      }
                     ),
                     SettingsTile(
                       leading: const Icon(Icons.request_page),
