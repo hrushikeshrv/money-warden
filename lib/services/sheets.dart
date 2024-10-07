@@ -32,6 +32,16 @@ class SheetsService {
     return await api.files.list(q: "mimeType='application/vnd.google-apps.spreadsheet'");
   }
 
+  // static Future<bool> createNewBudgetSheet({ SheetsApi? api, required String sheetName }) async {
+  //   api ??= await getSheetsApiClient();
+  //   Spreadsheet newSheet = Spreadsheet(
+  //     properties: SpreadsheetProperties(
+  //       title: sheetName
+  //     )
+  //   );
+  //   newSheet = await api.spreadsheets.create(newSheet);
+  // }
+
   /// Creates a new sheet in the selected budget spreadsheet for
   /// the given month. Assumes the given month is a valid month.
   static Future<bool> createSheet({ SheetsApi? api, required String monthName }) async {
