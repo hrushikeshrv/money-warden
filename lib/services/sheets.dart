@@ -285,6 +285,7 @@ class SheetsService {
     );
 
     List<PaymentMethod> paymentMethods = [];
+    String defaultPaymentMethodName = prefs.getString('default_payment_method') ?? 'Unspecified';
 
     var values = valuesResponse.valueRanges?[0].values;
     if (values == null) {
@@ -297,11 +298,12 @@ class SheetsService {
       }
       // var icon = prefs.getString('payment_method_${method as String}_icon');
       paymentMethods.add(
-          PaymentMethod(
-            name: method as String,
-            cellId: 'A${i+2}',
-            icon: const material.Icon(material.Icons.payments)
-          )
+        PaymentMethod(
+          name: method as String,
+          cellId: 'A${i+2}',
+          icon: const material.Icon(material.Icons.payment),
+          isDefault: defaultPaymentMethodName == method
+        )
       );
     }
     return paymentMethods;
