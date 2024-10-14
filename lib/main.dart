@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:money_warden/pages/transaction_categories_list.dart';
+import 'package:money_warden/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 import 'package:money_warden/models/budget_sheet.dart';
@@ -139,18 +140,7 @@ class _MoneyWardenState extends State<MoneyWarden> {
                         floatingActionButton: FloatingActionButton(
                           backgroundColor: Theme.of(context).colorScheme.primary,
                           onPressed: () {
-                            showModalBottomSheet(
-                              context: context,
-                              isScrollControlled: true,
-                              builder: (context) {
-                                return const FractionallySizedBox(
-                                  heightFactor: 0.8,
-                                  child: AddTransactionPage(
-                                    initialTransactionType: TransactionType.expense,
-                                  ),
-                                );
-                              }
-                            );
+                            showAddTransactionBottomSheet(context: context, transactionType: TransactionType.expense);
                           },
                           child: Icon(Icons.payments_outlined, color: Theme.of(context).colorScheme.onSurface),
                         ),

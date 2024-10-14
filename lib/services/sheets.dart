@@ -314,6 +314,7 @@ class SheetsService {
     required double amount,
     required DateTime date,
     Category? category,
+    PaymentMethod? paymentMethod,
     String? description,
     required String freeRowRange
   }) async {
@@ -324,11 +325,12 @@ class SheetsService {
     if (spreadsheetId == null) {
       throw NullSpreadsheetMetadataException('No spreadsheet has been selected, spreadsheetId was null.');
     }
-    String cellId = category?.cellId ?? 'B2';
+    String categoryCellId = category?.cellId ?? 'B2';
+    String paymentMethodCellId = paymentMethod?.cellId ?? 'A2';
     var valueRange = ValueRange(
       majorDimension: 'ROWS',
       range: freeRowRange,
-      values: [['${date.day} ${getMonthNameFromDate(date, false)}', amount, description ?? '', '=Metadata!$cellId',]]
+      values: [['${date.day} ${getMonthNameFromDate(date, false)}', amount, description ?? '', '=Metadata!$categoryCellId', '=Metadata!$paymentMethodCellId']]
     );
     var updateValuesResponse = await api.spreadsheets.values.update(
       valueRange,
@@ -354,16 +356,16 @@ class SheetsService {
     }
     String freeRowRange = '';
     if (transactionType == TransactionType.expense) {
-      freeRowRange = '$monthName!A$rowIndex:D$rowIndex';
+      freeRowRange = '$monthName!A$rowIndex:E$rowIndex';
     }
     else {
-      freeRowRange = '$monthName!E$rowIndex:H$rowIndex';
+      freeRowRange = '$monthName!K$rowIndex:O$rowIndex';
     }
 
     var valueRange = ValueRange(
         majorDimension: 'ROWS',
         range: freeRowRange,
-        values: [['', '', '', '',]]
+        values: [['', '', '', '', '']]
     );
     var updateValuesResponse = await api.spreadsheets.values.update(
         valueRange,

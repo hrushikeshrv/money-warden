@@ -289,6 +289,7 @@ class BudgetSheet extends ChangeNotifier {
     required DateTime date,
     required TransactionType transactionType,
     category.Category? category,
+    PaymentMethod? paymentMethod,
     String? description,
     bool updateTransaction = false,
     int? freeRowIndex
@@ -331,12 +332,13 @@ class BudgetSheet extends ChangeNotifier {
         ? budgetMonthData!.freeExpenseRowIndex
         : budgetMonthData!.freeIncomeRowIndex;
     String freeRowRange = transactionType == TransactionType.expense
-        ? '$budgetMonthName!A$freeRowIndex:D$freeRowIndex'
-        : '$budgetMonthName!E$freeRowIndex:H$freeRowIndex';
+        ? '$budgetMonthName!A$freeRowIndex:E$freeRowIndex'
+        : '$budgetMonthName!K$freeRowIndex:O$freeRowIndex';
     bool success = await SheetsService.createTransaction(
       amount: amount,
       date: date,
       category: category,
+      paymentMethod: paymentMethod,
       description: description,
       freeRowRange: freeRowRange
     );
@@ -349,6 +351,7 @@ class BudgetSheet extends ChangeNotifier {
         time: date,
         description: description,
         category: category,
+        paymentMethod: paymentMethod,
         transactionType: transactionType,
         rowIndex: freeRowIndex
       );
@@ -373,6 +376,7 @@ class BudgetSheet extends ChangeNotifier {
         for (int i = 0; i < budgetMonthData!.expenses.length; i++) {
           if (budgetMonthData.expenses[i].rowIndex == freeRowIndex) {
             budgetMonthData.expenses[i].category = category;
+            budgetMonthData.expenses[i].paymentMethod = paymentMethod;
             budgetMonthData.expenses[i].amount = amount;
             budgetMonthData.expenses[i].time = date;
             budgetMonthData.expenses[i].description = description;
@@ -383,6 +387,7 @@ class BudgetSheet extends ChangeNotifier {
         for (int i = 0; i < budgetMonthData!.income.length; i++) {
           if (budgetMonthData.income[i].rowIndex == freeRowIndex) {
             budgetMonthData.income[i].category = category;
+            budgetMonthData.income[i].paymentMethod = paymentMethod;
             budgetMonthData.income[i].amount = amount;
             budgetMonthData.income[i].time = date;
             budgetMonthData.income[i].description = description;

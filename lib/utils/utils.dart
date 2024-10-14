@@ -273,7 +273,7 @@ void showAddTransactionBottomSheet({
       isScrollControlled: true,
       builder: (context) {
         return FractionallySizedBox(
-          heightFactor: 0.8,
+          heightFactor: 0.9,
           child: AddTransactionPage(
             initialTransactionType: transactionType,
             updateTransaction: updateTransaction,
