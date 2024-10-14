@@ -99,6 +99,14 @@ class _SettingsPageState extends State<SettingsPage> {
                       },
                     ),
                     SettingsTile(
+                      leading: const Icon(Icons.payment),
+                      title: 'Manage Payment Methods',
+                      subtitle: 'Add or remove payment methods',
+                      onTap: () {
+                        Navigator.of(context).pushNamed('payment_methods_list');
+                      },
+                    ),
+                    SettingsTile(
                       leading: Icon(Icons.list, color: Theme
                           .of(context)
                           .colorScheme
