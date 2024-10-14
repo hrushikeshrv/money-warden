@@ -4,6 +4,7 @@ import 'package:googleapis/sheets/v4.dart' hide Request;
 import 'package:googleapis/sheets/v4.dart' as sheets show Request;
 import 'package:http/http.dart';
 import 'package:money_warden/models/category.dart';
+import 'package:money_warden/models/payment_method.dart';
 import 'package:money_warden/models/transaction.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -127,7 +128,7 @@ class SheetsService {
     BudgetMonth budgetMonth = BudgetMonth(name: month);
     var valuesResponse = await api.spreadsheets.values.batchGet(
       spreadsheetId,
-      ranges: ["'$month'!A4:D", "'$month'!E4:H"],
+      ranges: ["'$month'!A4:E", "'$month'!K4:O"],
       majorDimension: "ROWS"
     );
     var valueRanges = valuesResponse.valueRanges;
@@ -158,6 +159,9 @@ class SheetsService {
         if (expense[3] != null && expense[3] != '') {
           txn.category = Category(name: expense[3].toString());
         }
+        if (expense.length >= 5 && expense[4] != null && expense[4] != '') {
+          txn.paymentMethod = PaymentMethod(name: expense[4].toString());
+        }
         budgetMonth.expenses.add(txn);
       }
       else {
@@ -186,6 +190,9 @@ class SheetsService {
         }
         if (income[3] != null && income[3] != '') {
           txn.category = Category(name: income[3].toString());
+        }
+        if (income.length >= 5 && income[4] != null && income[4] != '') {
+          txn.paymentMethod = PaymentMethod(name: income[4].toString());
         }
         budgetMonth.income.add(txn);
       }
@@ -260,6 +267,44 @@ class SheetsService {
       );
     }
     return data;
+  }
+
+  static Future<List<PaymentMethod>> getPaymentMethods(SheetsApi? api) async {
+    api ??= await getSheetsApiClient();
+
+    var prefs = await SharedPreferences.getInstance();
+    String? spreadsheetId = prefs.getString('spreadsheetId');
+    if (spreadsheetId == null) {
+      throw NullSpreadsheetMetadataException('No spreadsheet has been selected, spreadsheetId was null.');
+    }
+
+    var valuesResponse = await api.spreadsheets.values.batchGet(
+        spreadsheetId,
+        ranges: ["'Metadata'!A2:A",],
+        majorDimension: "COLUMNS"
+    );
+
+    List<PaymentMethod> paymentMethods = [];
+
+    var values = valuesResponse.valueRanges?[0].values;
+    if (values == null) {
+      return paymentMethods;
+    }
+    for (int i = 0; i < values[0].length; i++) {
+      var method = values[0][i];
+      if (method == null) {
+        break;
+      }
+      // var icon = prefs.getString('payment_method_${method as String}_icon');
+      paymentMethods.add(
+          PaymentMethod(
+            name: method as String,
+            cellId: 'A${i+2}',
+            icon: const material.Icon(material.Icons.payments)
+          )
+      );
+    }
+    return paymentMethods;
   }
 
   /// Creates an expense or income in the selected budget spreadsheet

@@ -29,6 +29,17 @@ class _HomePageState extends State<HomePage> {
         double? difference = budget.currentBudgetMonthData?.monthDifferenceAmount;
         double? percentSpent = budget.currentBudgetMonthData?.percentIncomeSpent;
 
+        if (budget.budgetInitializationFailed) {
+          return const AlertDialog(
+              title: Text('An error occurred'),
+              content: Text(
+                'An error occurred while fetching data from your connected budget spreadsheet. '
+                '\n\nMake sure your budget spreadsheet is in the correct format.'
+                '\n\nIf your budget spreadsheet is in the correct format, please contact the developer.'
+              )
+          );
+        }
+
         return Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,

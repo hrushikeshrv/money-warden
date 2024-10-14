@@ -37,6 +37,22 @@ class _TransactionTileState extends State<TransactionTile> {
     else {
       mainTitle = Text(categoryText);
     }
+    // Finally, if we have a payment method, we add that to the subtitle
+    if (widget.transaction!.paymentMethod != null) {
+      if (subtitle == null) {
+        subtitle = Text(widget.transaction!.paymentMethod!.name);
+      }
+      else {
+        subtitle = Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(categoryText),
+            Text(widget.transaction!.paymentMethod!.name, style: TextStyle(color: Colors.grey.shade600),),
+          ],
+        );
+      }
+    }
+
     return Consumer<BudgetSheet>(
       builder: (context, budget, child) => ListTile(
         leading: widget.transaction!.transactionType == TransactionType.expense ?
@@ -55,7 +71,7 @@ class _TransactionTileState extends State<TransactionTile> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 mainTitle,
-                Text(formatDateTime(widget.transaction!.time), style: TextStyle(fontSize: 13, color: Colors.grey.shade700),),
+                Text(formatDateTime(widget.transaction!.time), style: TextStyle(fontSize: 13, color: Colors.grey.shade600),),
               ],
             ),
             Text(

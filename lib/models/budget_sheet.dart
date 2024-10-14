@@ -1,13 +1,16 @@
-import 'package:flutter/foundation.dart';
+import 'dart:math';
+import 'package:googleapis/sheets/v4.dart' show DetailedApiRequestError;
 import 'package:flutter/material.dart';
 import 'package:money_warden/exceptions/null_spreadsheet_value_exception.dart';
 import 'package:money_warden/exceptions/spreadsheet_value_exception.dart';
+import 'package:money_warden/exceptions/service_unavailable_exception.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:money_warden/utils/utils.dart';
 import 'package:money_warden/services/sheets.dart';
 import 'package:money_warden/models/category.dart' as category;
 import 'package:money_warden/models/budget_month.dart';
+import 'package:money_warden/models/payment_method.dart';
 import 'package:money_warden/models/transaction.dart';
 
 /// Global state for the chosen budget spreadsheet
@@ -16,10 +19,12 @@ class BudgetSheet extends ChangeNotifier {
   String? spreadsheetName;
   SharedPreferences? sharedPreferences;
   bool budgetInitialized = false;
+  bool budgetInitializationFailed = false;
   List<String> budgetMonthNames = ['Loading...'];
   String _currentBudgetMonthName = 'Loading...';
   List<category.Category> expenseCategories = [];
   List<category.Category> incomeCategories = [];
+  List<PaymentMethod> paymentMethods = [];
   Map<String, BudgetMonth?> budgetData = {};
   String _defaultCurrencySymbol = '\$';
   String _defaultCurrencyCode = 'USD';
@@ -37,22 +42,52 @@ class BudgetSheet extends ChangeNotifier {
   /// Fetch and parse all budget data from the budget spreadsheet
   /// and initialize all other data needed by other screens
   void initBudgetData({ bool forceUpdate = false }) async {
-    if (!budgetInitialized || forceUpdate) {
-      // Populate this.budgetMonthNames
-      await getBudgetMonthNames();
-      currentBudgetMonthName = getCurrentOrClosestMonth(budgetMonthNames);
-      // Populate this.expenseCategories and this.incomeCategories
-      await getCategoryNames();
-      // Populate this.budgetData with the budget data for the current
-      // budget month
-      await getBudgetMonthData(month: currentBudgetMonthName);
-      // Initialize the default currency from shared preferences
-      // (without notifying listeners)
-      _defaultCurrencySymbol = defaultCurrencySymbol;
-      _defaultCurrencyCode = defaultCurrencyCode;
-      budgetInitialized = true;
-      notifyListeners();
-    }
+    bool rateLimited = false;
+    int backoffCount = 0;
+    var rng = Random();
+    do {
+      if (!budgetInitialized || forceUpdate) {
+        try {
+          // Populate this.budgetMonthNames
+          await getBudgetMonthNames();
+          currentBudgetMonthName = getCurrentOrClosestMonth(budgetMonthNames);
+          // Populate this.expenseCategories and this.incomeCategories
+          await getCategoryNames();
+          // Populate this.paymentMethods
+          await getPaymentMethods();
+          // Populate this.budgetData with the budget data for the current
+          // budget month only, not any other month
+          await getBudgetMonthData(month: currentBudgetMonthName);
+          // Initialize the default currency from shared preferences
+          // (without notifying listeners)
+          _defaultCurrencySymbol = defaultCurrencySymbol;
+          _defaultCurrencyCode = defaultCurrencyCode;
+          budgetInitialized = true;
+          budgetInitializationFailed = false;
+          notifyListeners();
+          return;
+        }
+        on DetailedApiRequestError catch (e) {
+          print(e.toString());
+          backoffCount++;
+          if (backoffCount >= 5) {
+            throw ServiceUnavailableException('A Google Service rate-limited Money Warden.');
+          }
+          if (e.status == 429) {
+            rateLimited = true;
+          }
+          // Exponential backoff
+          await Future.delayed(Duration(seconds: pow(2, backoffCount) as int, milliseconds: rng.nextInt(1000)));
+        }
+        catch (e) {
+          print(e.toString());
+          budgetInitializationFailed = true;
+          rateLimited = false;
+          notifyListeners();
+          return;
+        }
+      }
+    } while (rateLimited && !budgetInitializationFailed);
   }
 
   /// Set the spreadsheet Id, persist in shared preferences,
@@ -132,6 +167,12 @@ class BudgetSheet extends ChangeNotifier {
     var categoryData = await SheetsService.getTransactionCategories(null);
     expenseCategories = categoryData['expense']!;
     incomeCategories = categoryData['income']!;
+  }
+
+  /// Fetch all payment method names from the user's selected budget sheet
+  /// and populate this.paymentMethods
+  Future<void> getPaymentMethods({ bool forceUpdate = false }) async {
+    paymentMethods = await SheetsService.getPaymentMethods(null);
   }
 
   /// Create a category in the metadata sheet in the selected

@@ -18,6 +18,17 @@ class _TransactionsPageState extends State<TransactionsPage> {
   Widget build(BuildContext context) {
     return Consumer<BudgetSheet>(
       builder: (context, budget, child) {
+        if (budget.budgetInitializationFailed) {
+          return const AlertDialog(
+              title: Text('An error occurred'),
+              content: Text(
+                  'An error occurred while fetching data from your connected budget spreadsheet. '
+                      '\n\nMake sure your budget spreadsheet is in the correct format.'
+                      '\n\nIf your budget spreadsheet is in the correct format, please contact the developer.'
+              )
+          );
+        }
+
         return Column(
           children: [
             const MwAppBar(),
