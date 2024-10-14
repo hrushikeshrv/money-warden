@@ -8,7 +8,7 @@ import 'package:money_warden/components/budget_month_dropdown.dart';
 import 'package:money_warden/components/mw_app_bar.dart';
 import 'package:money_warden/models/budget_sheet.dart';
 import 'package:money_warden/models/transaction.dart';
-import 'package:money_warden/pages/add_transaction.dart';
+import 'package:money_warden/pages/transaction_add.dart';
 import 'package:money_warden/utils/utils.dart';
 
 

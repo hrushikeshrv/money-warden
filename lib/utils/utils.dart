@@ -2,7 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import 'package:money_warden/models/transaction.dart';
-import 'package:money_warden/pages/add_transaction.dart';
+import 'package:money_warden/pages/transaction_add.dart';
 
 List<Color> mwColors = const [
   Color(0xFFE53935),

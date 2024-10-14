@@ -8,18 +8,19 @@ import 'package:money_warden/models/budget_sheet.dart';
 import 'package:money_warden/models/category.dart' as category;
 import 'package:money_warden/models/transaction.dart';
 
-class AddCategoryPage extends StatefulWidget {
+// TODO: Refactor this widget and incorporate its functionality into TransactionCategoryUpdatePage and rename it to TransactionCategoryDetailPage. This widget should not exist.
+class TransactionCategoryAddPage extends StatefulWidget {
   final TransactionType transactionType;
-  const AddCategoryPage({
+  const TransactionCategoryAddPage({
     super.key,
     required this.transactionType,
   });
 
   @override
-  State<AddCategoryPage> createState() => _AddCategoryPageState();
+  State<TransactionCategoryAddPage> createState() => _TransactionCategoryAddPageState();
 }
 
-class _AddCategoryPageState extends State<AddCategoryPage> {
+class _TransactionCategoryAddPageState extends State<TransactionCategoryAddPage> {
   bool _loading = false;
   Color backgroundColor = getRandomGraphColor();
   TextEditingController categoryNameController = TextEditingController();

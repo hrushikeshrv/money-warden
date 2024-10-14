@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:money_warden/pages/payment_methods_list.dart';
-import 'package:money_warden/pages/transaction_categories_list.dart';
+import 'package:money_warden/pages/payment_method_list.dart';
+import 'package:money_warden/pages/transaction_category_list.dart';
 import 'package:money_warden/utils/utils.dart';
 import 'package:provider/provider.dart';
 
@@ -10,11 +10,11 @@ import 'package:money_warden/models/budget_sheet.dart';
 import 'package:money_warden/models/transaction.dart';
 import 'package:money_warden/pages/login.dart';
 import 'package:money_warden/pages/analytics.dart';
-import 'package:money_warden/pages/add_transaction.dart';
+import 'package:money_warden/pages/transaction_add.dart';
 import 'package:money_warden/pages/homepage.dart';
 import 'package:money_warden/pages/settings.dart';
 import 'package:money_warden/pages/splash_screen.dart';
-import 'package:money_warden/pages/transactions.dart';
+import 'package:money_warden/pages/transaction_list.dart';
 import 'package:money_warden/pages/user_sheets_list.dart';
 import 'package:money_warden/services/auth.dart';
 import 'package:money_warden/theme/theme.dart';
@@ -90,9 +90,9 @@ class _MoneyWardenState extends State<MoneyWarden> {
             'analytics': (context) => const AnalyticsPage(),
             'settings': (context) => const SettingsPage(),
             'user_sheets_list': (context) => const UserSheetsList(),
-            'expense_categories_list': (context) => const TransactionCategoriesList(transactionType: TransactionType.expense),
-            'income_categories_list': (context) => const TransactionCategoriesList(transactionType: TransactionType.income),
-            'payment_methods_list': (context) => const PaymentMethodsListPage(),
+            'expense_categories_list': (context) => const TransactionCategoryListPage(transactionType: TransactionType.expense),
+            'income_categories_list': (context) => const TransactionCategoryListPage(transactionType: TransactionType.income),
+            'payment_methods_list': (context) => const PaymentMethodListPage(),
           },
           // Try to sign the user in silently and show the splash screen in the
           // mean time

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:money_warden/models/payment_method.dart';
-import 'package:money_warden/pages/payment_method_update.dart';
+import 'package:money_warden/pages/payment_method_detail.dart';
 
 
 class PaymentMethodTile extends StatelessWidget {

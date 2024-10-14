@@ -6,17 +6,17 @@ import 'package:provider/provider.dart';
 import 'package:money_warden/components/heading1.dart';
 import 'package:money_warden/models/budget_sheet.dart';
 import 'package:money_warden/models/payment_method.dart';
-import 'package:money_warden/pages/payment_method_update.dart';
+import 'package:money_warden/pages/payment_method_detail.dart';
 
 
-class PaymentMethodsListPage extends StatefulWidget {
-  const PaymentMethodsListPage({super.key});
+class PaymentMethodListPage extends StatefulWidget {
+  const PaymentMethodListPage({super.key});
 
   @override
-  State<PaymentMethodsListPage> createState() => _PaymentMethodsListPageState();
+  State<PaymentMethodListPage> createState() => _PaymentMethodListPageState();
 }
 
-class _PaymentMethodsListPageState extends State<PaymentMethodsListPage> {
+class _PaymentMethodListPageState extends State<PaymentMethodListPage> {
   @override
   Widget build(BuildContext context) {
     return Consumer<BudgetSheet>(
