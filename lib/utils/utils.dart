@@ -312,3 +312,17 @@ Icon getIconFromStoredString({ required String iconName, Icon defaultIcon = cons
   }
   return defaultIcon;
 }
+
+
+/// Get Icon name from the stored Icon. Only supports
+/// very few selected icons. For unsupported inputs, 'payment' is returned.
+String getIconNameFromIcon(Icon icon) {
+  var iconData = getPaymentMethodIcons();
+  String? iconName;
+  iconData.forEach((key, value) {
+    if (value.toString() == icon.toString()) {
+      iconName = key;
+    }
+  });
+  return iconName ?? 'payment';
+}

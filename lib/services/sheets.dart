@@ -296,12 +296,12 @@ class SheetsService {
       if (method == null) {
         break;
       }
-      // var icon = prefs.getString('payment_method_${method as String}_icon');
+      var icon = getIconFromStoredString(iconName: prefs.getString('payment_method_${method as String}_icon') ?? 'payment');
       paymentMethods.add(
         PaymentMethod(
-          name: method as String,
+          name: method,
           cellId: 'A${i+2}',
-          icon: const material.Icon(material.Icons.payment),
+          icon: icon,
           isDefault: defaultPaymentMethodName == method
         )
       );

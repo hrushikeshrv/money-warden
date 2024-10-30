@@ -175,6 +175,15 @@ class BudgetSheet extends ChangeNotifier {
     paymentMethods = await SheetsService.getPaymentMethods(null);
   }
 
+  /// Update the icon associated with a payment method.
+  /// Purely a local action, SheetsService is not needed.
+  Future<void> setPaymentMethodIcon({ required PaymentMethod paymentMethod, required Icon icon }) async {
+    paymentMethod.icon = icon;
+    var prefs = await SharedPreferences.getInstance();
+    prefs.setString('payment_method_${paymentMethod.name}_icon', getIconNameFromIcon(icon));
+    notifyListeners();
+  }
+
   /// Create a category in the metadata sheet in the selected
   /// budget spreadsheet.
   Future<void> createCategory({ required category.Category category, required TransactionType transactionType }) async {

@@ -32,12 +32,8 @@ class _PaymentMethodDetailPageState extends State<PaymentMethodDetailPage> {
     if (widget.updatePaymentMethod) {
       paymentMethodNameController.text = widget.paymentMethod.name;
       var iconData = getPaymentMethodIcons();
-      iconData.forEach((key, value) {
-        if (value.toString() == widget.paymentMethod.icon?.toString()) {
-          setState(() {
-            iconName = key;
-          });
-        }
+      setState(() {
+        iconName = getIconNameFromIcon(widget.paymentMethod.icon ?? const Icon(Icons.payment));
       });
     }
   }
@@ -59,16 +55,18 @@ class _PaymentMethodDetailPageState extends State<PaymentMethodDetailPage> {
 
   }
 
-  List<GestureDetector> getIconGestureDetectors() {
+  List<GestureDetector> getIconGestureDetectors(BudgetSheet budget) {
     var iconData = getPaymentMethodIcons();
     List<GestureDetector> icons = [];
     iconData.forEach((key, value) {
       icons.add(
         GestureDetector(
           onTap: () {
+            if (_loading) return;
             setState(() {
               iconName = key;
             });
+            budget.setPaymentMethodIcon(paymentMethod: widget.paymentMethod, icon: value);
           },
           child: Container(
             decoration: BoxDecoration(
@@ -133,6 +131,7 @@ class _PaymentMethodDetailPageState extends State<PaymentMethodDetailPage> {
                         hintText: 'Payment Method Name',
                         hintStyle: TextStyle(color: Colors.grey.shade600),
                       ),
+                      enabled: !_loading,
                     ),
                     const SizedBox(height: 10),
                   ],
@@ -146,10 +145,15 @@ class _PaymentMethodDetailPageState extends State<PaymentMethodDetailPage> {
                   child: Wrap(
                     spacing: 20,
                     runSpacing: 20,
-                    children: getIconGestureDetectors()
+                    children: getIconGestureDetectors(budget)
                   ),
                 ),
               ) ,
+
+              const SizedBox(height: 10),
+              widget.updatePaymentMethod && !widget.paymentMethod.isDefault
+                ? MwActionButton(leading: const Icon(Icons.check), text: 'Make Default', onTap: () {})
+                : Container(),
             ],
           ),
         );
