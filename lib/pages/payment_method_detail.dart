@@ -23,12 +23,23 @@ class PaymentMethodDetailPage extends StatefulWidget {
 
 class _PaymentMethodDetailPageState extends State<PaymentMethodDetailPage> {
   bool _loading = false;
+  String iconName = '';
   TextEditingController paymentMethodNameController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    paymentMethodNameController.text = widget.paymentMethod.name;
+    if (widget.updatePaymentMethod) {
+      paymentMethodNameController.text = widget.paymentMethod.name;
+      var iconData = getPaymentMethodIcons();
+      iconData.forEach((key, value) {
+        if (value.toString() == widget.paymentMethod.icon?.toString()) {
+          setState(() {
+            iconName = key;
+          });
+        }
+      });
+    }
   }
 
   void updatePaymentMethod(
@@ -46,6 +57,34 @@ class _PaymentMethodDetailPageState extends State<PaymentMethodDetailPage> {
     String iconName
   ) async {
 
+  }
+
+  List<GestureDetector> getIconGestureDetectors() {
+    var iconData = getPaymentMethodIcons();
+    List<GestureDetector> icons = [];
+    iconData.forEach((key, value) {
+      icons.add(
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              iconName = key;
+            });
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              color: iconName == key ? Theme.of(context).colorScheme.surfaceDim : Colors.white,
+              borderRadius: BorderRadius.circular(10)
+            ),
+            width: 60,
+            height: 60,
+            child: Center(
+              child: value,
+            ),
+          )
+        )
+      );
+    });
+    return icons;
   }
 
   @override
@@ -67,17 +106,50 @@ class _PaymentMethodDetailPageState extends State<PaymentMethodDetailPage> {
                     onTap: () {
                       if (_loading) return;
                       if (widget.updatePaymentMethod) {
-                        updatePaymentMethod(budget, widget.paymentMethod, paymentMethodNameController.text, '');
+                        updatePaymentMethod(budget, widget.paymentMethod, paymentMethodNameController.text, iconName);
                       }
                       else {
-
+                        createPaymentMethod(budget, paymentMethodNameController.text, iconName);
                       }
                       Navigator.of(context).pop();
                     }
                   )
                 ],
               ),
+
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  children: [
+                    TextField(
+                      controller: paymentMethodNameController,
+                      autofocus: true,
+                      style: const TextStyle(
+                          fontSize: 24
+                      ),
+                      decoration: InputDecoration(
+                        border: const UnderlineInputBorder(),
+                        hintText: 'Payment Method Name',
+                        hintStyle: TextStyle(color: Colors.grey.shade600),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                ),
+              ),
+
               const SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                child: Center(
+                  child: Wrap(
+                    spacing: 20,
+                    runSpacing: 20,
+                    children: getIconGestureDetectors()
+                  ),
+                ),
+              ) ,
             ],
           ),
         );

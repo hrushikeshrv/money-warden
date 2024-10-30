@@ -12,11 +12,11 @@ import 'package:money_warden/models/budget_sheet.dart';
 import 'package:money_warden/utils/utils.dart';
 
 
-class AddTransactionPage extends StatefulWidget {
+class TransactionAddPage extends StatefulWidget {
   final TransactionType initialTransactionType;
   final bool updateTransaction;
   final Transaction? initialTransaction;
-  const AddTransactionPage({
+  const TransactionAddPage({
     super.key,
     required this.initialTransactionType,
     this.updateTransaction = false,
@@ -24,10 +24,10 @@ class AddTransactionPage extends StatefulWidget {
   });
 
   @override
-  State<AddTransactionPage> createState() => _AddTransactionPageState();
+  State<TransactionAddPage> createState() => _TransactionAddPageState();
 }
 
-class _AddTransactionPageState extends State<AddTransactionPage> {
+class _TransactionAddPageState extends State<TransactionAddPage> {
   TransactionType? transactionType;
   DateTime transactionDate = DateTime.now();
   category.Category? transactionCategory;
