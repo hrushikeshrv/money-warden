@@ -40,7 +40,7 @@ class _TransactionTileState extends State<TransactionTile> {
     // Finally, if we have a payment method, we add that to the subtitle
     if (widget.transaction!.paymentMethod != null) {
       if (subtitle == null) {
-        subtitle = Text(widget.transaction!.paymentMethod!.name);
+        subtitle = Text(widget.transaction!.paymentMethod!.name, style: TextStyle(color: Colors.grey.shade600));
       }
       else {
         subtitle = Row(
@@ -58,7 +58,7 @@ class _TransactionTileState extends State<TransactionTile> {
         leading: widget.transaction!.transactionType == TransactionType.expense ?
             Container(
               padding: const EdgeInsets.only(top: 5),
-              child: const Icon(Icons.payments_outlined),
+              child: widget.transaction?.paymentMethod?.icon ?? const Icon(Icons.payments_outlined),
             )
             : Container(
               padding: const EdgeInsets.only(top: 5),

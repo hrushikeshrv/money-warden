@@ -309,6 +309,33 @@ class SheetsService {
     return paymentMethods;
   }
 
+  /// Sets the name of a payment method in the
+  /// chosen budget spreadsheet
+  static Future<void> setPaymentMethodName({
+    SheetsApi? api,
+    required String cellId,
+    required String name,
+  }) async {
+    api ??= await getSheetsApiClient();
+    var prefs = await SharedPreferences.getInstance();
+    String? spreadsheetId = prefs.getString('spreadsheetId');
+    if (spreadsheetId == null) {
+      throw NullSpreadsheetMetadataException('No spreadsheet has been selected, spreadsheetId was null.');
+    }
+
+    var valueRange = ValueRange(
+      majorDimension: 'ROWS',
+      range: 'Metadata!$cellId',
+      values: [[name]]
+    );
+    await api.spreadsheets.values.update(
+      valueRange,
+      spreadsheetId,
+      'Metadata!$cellId',
+      valueInputOption: 'USER_ENTERED'
+    );
+  }
+
   /// Creates an expense or income in the selected budget spreadsheet
   /// with the passed data.
   static Future<bool> createTransaction({

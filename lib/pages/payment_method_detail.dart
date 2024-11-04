@@ -52,7 +52,10 @@ class _PaymentMethodDetailPageState extends State<PaymentMethodDetailPage> {
     String name,
     String iconName
   ) async {
-
+    var paymentMethod = PaymentMethod(name: name, icon: getIconFromStoredString(iconName: iconName));
+    _loading = true;
+    await budget.createPaymentMethod(paymentMethod: paymentMethod);
+    _loading = false;
   }
 
   List<GestureDetector> getIconGestureDetectors(BudgetSheet budget) {

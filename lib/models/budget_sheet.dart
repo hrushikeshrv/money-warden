@@ -184,6 +184,26 @@ class BudgetSheet extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> createPaymentMethod({ required PaymentMethod paymentMethod }) async {
+    int maxRow = 0;
+    for (var method in paymentMethods) {
+      int cell = 0;
+      if (method.cellId == null) {
+        cell = 0;
+      }
+      else {
+        cell = int.parse(method.cellId!.substring(1));
+      }
+      if (cell > maxRow) maxRow = cell;
+    }
+    String cellId = 'A${maxRow+1}';
+    paymentMethod.cellId = cellId;
+    await SheetsService.setPaymentMethodName(cellId: cellId, name: paymentMethod.name);
+    paymentMethods.add(paymentMethod);
+    setPaymentMethodIcon(paymentMethod: paymentMethod, icon: paymentMethod.icon ?? const Icon(Icons.payments_outlined));
+    notifyListeners();
+  }
+
   /// Create a category in the metadata sheet in the selected
   /// budget spreadsheet.
   Future<void> createCategory({ required category.Category category, required TransactionType transactionType }) async {
@@ -191,8 +211,11 @@ class BudgetSheet extends ChangeNotifier {
     int maxRow = 0;
     for (var cat in arr) {
       int cell = 0;
-      if (cat.cellId == null) cell = 0;
-      cell = int.parse(cat.cellId!.substring(1));
+      if (cat.cellId == null) {
+        cell = 0;
+      } else {
+        cell = int.parse(cat.cellId!.substring(1));
+      }
       if (cell > maxRow) maxRow = cell;
     }
     String cellId = transactionType == TransactionType.expense ? 'B${maxRow+1}' : 'C${maxRow+1}';
@@ -204,6 +227,7 @@ class BudgetSheet extends ChangeNotifier {
       transactionType: transactionType,
       color: category.backgroundColor ?? getRandomGraphColor()
     );
+    notifyListeners();
   }
 
   /// Set the background color for a transaction category both in the
@@ -263,13 +287,20 @@ class BudgetSheet extends ChangeNotifier {
     }
     var budgetMonth = await SheetsService.getBudgetMonthData(spreadsheetId!, month, null);
     // The Sheets Service can't associate category names with category cell IDs,
-    // so we do that here, since we have access to cell IDs here.
+    // and cannot associate payment method instances with their stored icon,
+    // so we do that here, since we have access to cell IDs and the fetched
+    // payment methods here.
     for (int i = 0; i < budgetMonth.expenses.length; i++) {
       if (budgetMonth.expenses[i].category != null) {
         // Find this category name in the expenseCategories list and associate.
         for (int j = 0; j < expenseCategories.length; j++) {
           if (budgetMonth.expenses[i].category!.name == expenseCategories[j].name) {
             budgetMonth.expenses[i].category = expenseCategories[j];
+          }
+        }
+        for (int j = 0; j < paymentMethods.length; j++) {
+          if (budgetMonth.expenses[i].paymentMethod!.name == paymentMethods[j].name) {
+            budgetMonth.expenses[i].paymentMethod = paymentMethods[j];
           }
         }
       }
@@ -282,8 +313,14 @@ class BudgetSheet extends ChangeNotifier {
             budgetMonth.income[i].category = incomeCategories[j];
           }
         }
+        for (int j = 0; j < paymentMethods.length; j++) {
+          if (budgetMonth.income[i].paymentMethod!.name == paymentMethods[j].name) {
+            budgetMonth.income[i].paymentMethod = paymentMethods[j];
+          }
+        }
       }
     }
+
     budgetData[month] = budgetMonth;
     notifyListeners();
     return budgetMonth;
