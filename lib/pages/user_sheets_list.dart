@@ -66,8 +66,8 @@ class _UserSheetsListState extends State<UserSheetsList> {
                             return SpreadsheetTile(
                               sheet: sheets.files![index],
                               onTap: () {
-                                Provider.of<BudgetSheet>(context, listen: false).setSpreadsheetId(sheets.files![index].id!);
                                 Provider.of<BudgetSheet>(context, listen: false).setSpreadsheetName(sheets.files![index].name!);
+                                Provider.of<BudgetSheet>(context, listen: false).setSpreadsheetId(sheets.files![index].id!);
                                 // TODO: Update the state of the app to reflect the new chosen sheet.
                                 //    Currently requires an app restart to reflect the new chosen sheet.
                                 Navigator.of(context).pop();

@@ -4,6 +4,7 @@ import 'package:googleapis/sheets/v4.dart' hide Request;
 import 'package:googleapis/sheets/v4.dart' as sheets show Request;
 import 'package:http/http.dart';
 import 'package:money_warden/models/category.dart';
+import 'package:money_warden/models/payment_method.dart';
 import 'package:money_warden/models/transaction.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -127,7 +128,7 @@ class SheetsService {
     BudgetMonth budgetMonth = BudgetMonth(name: month);
     var valuesResponse = await api.spreadsheets.values.batchGet(
       spreadsheetId,
-      ranges: ["'$month'!A4:D", "'$month'!E4:H"],
+      ranges: ["'$month'!A4:E", "'$month'!K4:O"],
       majorDimension: "ROWS"
     );
     var valueRanges = valuesResponse.valueRanges;
@@ -158,6 +159,9 @@ class SheetsService {
         if (expense[3] != null && expense[3] != '') {
           txn.category = Category(name: expense[3].toString());
         }
+        if (expense.length >= 5 && expense[4] != null && expense[4] != '') {
+          txn.paymentMethod = PaymentMethod(name: expense[4].toString());
+        }
         budgetMonth.expenses.add(txn);
       }
       else {
@@ -186,6 +190,9 @@ class SheetsService {
         }
         if (income[3] != null && income[3] != '') {
           txn.category = Category(name: income[3].toString());
+        }
+        if (income.length >= 5 && income[4] != null && income[4] != '') {
+          txn.paymentMethod = PaymentMethod(name: income[4].toString());
         }
         budgetMonth.income.add(txn);
       }
@@ -262,6 +269,73 @@ class SheetsService {
     return data;
   }
 
+  static Future<List<PaymentMethod>> getPaymentMethods(SheetsApi? api) async {
+    api ??= await getSheetsApiClient();
+
+    var prefs = await SharedPreferences.getInstance();
+    String? spreadsheetId = prefs.getString('spreadsheetId');
+    if (spreadsheetId == null) {
+      throw NullSpreadsheetMetadataException('No spreadsheet has been selected, spreadsheetId was null.');
+    }
+
+    var valuesResponse = await api.spreadsheets.values.batchGet(
+        spreadsheetId,
+        ranges: ["'Metadata'!A2:A",],
+        majorDimension: "COLUMNS"
+    );
+
+    List<PaymentMethod> paymentMethods = [];
+    String defaultPaymentMethodName = prefs.getString('default_payment_method') ?? 'Unspecified';
+
+    var values = valuesResponse.valueRanges?[0].values;
+    if (values == null) {
+      return paymentMethods;
+    }
+    for (int i = 0; i < values[0].length; i++) {
+      var method = values[0][i];
+      if (method == null) {
+        break;
+      }
+      var icon = getIconFromStoredString(iconName: prefs.getString('payment_method_${method as String}_icon') ?? 'payment');
+      paymentMethods.add(
+        PaymentMethod(
+          name: method,
+          cellId: 'A${i+2}',
+          icon: icon,
+          isDefault: defaultPaymentMethodName == method
+        )
+      );
+    }
+    return paymentMethods;
+  }
+
+  /// Sets the name of a payment method in the
+  /// chosen budget spreadsheet
+  static Future<void> setPaymentMethodName({
+    SheetsApi? api,
+    required String cellId,
+    required String name,
+  }) async {
+    api ??= await getSheetsApiClient();
+    var prefs = await SharedPreferences.getInstance();
+    String? spreadsheetId = prefs.getString('spreadsheetId');
+    if (spreadsheetId == null) {
+      throw NullSpreadsheetMetadataException('No spreadsheet has been selected, spreadsheetId was null.');
+    }
+
+    var valueRange = ValueRange(
+      majorDimension: 'ROWS',
+      range: 'Metadata!$cellId',
+      values: [[name]]
+    );
+    await api.spreadsheets.values.update(
+      valueRange,
+      spreadsheetId,
+      'Metadata!$cellId',
+      valueInputOption: 'USER_ENTERED'
+    );
+  }
+
   /// Creates an expense or income in the selected budget spreadsheet
   /// with the passed data.
   static Future<bool> createTransaction({
@@ -269,6 +343,7 @@ class SheetsService {
     required double amount,
     required DateTime date,
     Category? category,
+    PaymentMethod? paymentMethod,
     String? description,
     required String freeRowRange
   }) async {
@@ -279,11 +354,12 @@ class SheetsService {
     if (spreadsheetId == null) {
       throw NullSpreadsheetMetadataException('No spreadsheet has been selected, spreadsheetId was null.');
     }
-    String cellId = category?.cellId ?? 'B2';
+    String categoryCellId = category?.cellId ?? 'B2';
+    String paymentMethodCellId = paymentMethod?.cellId ?? 'A2';
     var valueRange = ValueRange(
       majorDimension: 'ROWS',
       range: freeRowRange,
-      values: [['${date.day} ${getMonthNameFromDate(date, false)}', amount, description ?? '', '=Metadata!$cellId',]]
+      values: [['${date.day} ${getMonthNameFromDate(date, false)}', amount, description ?? '', '=Metadata!$categoryCellId', '=Metadata!$paymentMethodCellId']]
     );
     var updateValuesResponse = await api.spreadsheets.values.update(
       valueRange,
@@ -309,16 +385,16 @@ class SheetsService {
     }
     String freeRowRange = '';
     if (transactionType == TransactionType.expense) {
-      freeRowRange = '$monthName!A$rowIndex:D$rowIndex';
+      freeRowRange = '$monthName!A$rowIndex:E$rowIndex';
     }
     else {
-      freeRowRange = '$monthName!E$rowIndex:H$rowIndex';
+      freeRowRange = '$monthName!K$rowIndex:O$rowIndex';
     }
 
     var valueRange = ValueRange(
         majorDimension: 'ROWS',
         range: freeRowRange,
-        values: [['', '', '', '',]]
+        values: [['', '', '', '', '']]
     );
     var updateValuesResponse = await api.spreadsheets.values.update(
         valueRange,

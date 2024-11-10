@@ -1,4 +1,5 @@
 import 'package:money_warden/models/category.dart';
+import 'package:money_warden/models/payment_method.dart';
 
 enum TransactionType {
   expense, income;
@@ -9,6 +10,7 @@ class Transaction {
   double amount;
   String? description;
   Category? category;
+  PaymentMethod? paymentMethod;
   final TransactionType transactionType;
   final int rowIndex;
 
@@ -19,6 +21,7 @@ class Transaction {
     this.category,
     required this.transactionType,
     required this.rowIndex,
+    this.paymentMethod,
   });
 
   bool get hasDescription {

@@ -39,6 +39,7 @@ class _TransactionCategoryUpdatePageState extends State<TransactionCategoryUpdat
     TransactionType transactionType,
     String name
   ) async {
+    if (name.trim() == '') return;
     await budget.setTransactionCategoryName(category: cat, transactionType: transactionType, name: name);
   }
 

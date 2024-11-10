@@ -8,7 +8,7 @@ import 'package:money_warden/components/budget_month_dropdown.dart';
 import 'package:money_warden/components/mw_app_bar.dart';
 import 'package:money_warden/models/budget_sheet.dart';
 import 'package:money_warden/models/transaction.dart';
-import 'package:money_warden/pages/add_transaction.dart';
+import 'package:money_warden/pages/transaction_add.dart';
 import 'package:money_warden/utils/utils.dart';
 
 
@@ -28,6 +28,17 @@ class _HomePageState extends State<HomePage> {
         double? amountEarned = budget.currentBudgetMonthData?.monthIncomeAmount;
         double? difference = budget.currentBudgetMonthData?.monthDifferenceAmount;
         double? percentSpent = budget.currentBudgetMonthData?.percentIncomeSpent;
+
+        if (budget.budgetInitializationFailed) {
+          return const AlertDialog(
+              title: Text('An error occurred'),
+              content: Text(
+                'An error occurred while fetching data from your connected budget spreadsheet. '
+                '\n\nMake sure your budget spreadsheet is in the correct format.'
+                '\n\nIf your budget spreadsheet is in the correct format, please contact the developer.'
+              )
+          );
+        }
 
         return Column(
           mainAxisAlignment: MainAxisAlignment.start,

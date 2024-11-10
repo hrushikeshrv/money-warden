@@ -34,52 +34,6 @@ class _SettingsPageState extends State<SettingsPage> {
                 child: ListView(
                   shrinkWrap: true,
                   children: [
-                    const Heading1(text: 'Spreadsheet & Account'),
-                    SettingsTile(
-                      leading: const Icon(Icons.sync),
-                      title: 'Refresh',
-                      subtitle: 'Sync data with linked Google Sheet',
-                      onTap: () {},
-                    ),
-                    SettingsTile(
-                      leading: const Icon(Icons.edit_calendar_rounded),
-                      title: 'Add Month To Budget',
-                      subtitle: 'Add a new month to the current budget',
-                      onTap: () {
-                        showModalBottomSheet(
-                          context: context,
-                          isScrollControlled: true,
-                          builder: (context) {
-                            return const FractionallySizedBox(
-                                heightFactor: 0.85,
-                                child: AddBudgetMonthToSpreadsheetPage()
-                            );
-                          }
-                        );
-                      }
-                    ),
-                    SettingsTile(
-                      leading: const Icon(Icons.request_page),
-                      title: 'Choose Google Sheet',
-                      subtitle: 'Choose the sheet to write budget data to',
-                      onTap: () {
-                        Navigator.of(context).pushNamed('user_sheets_list');
-                      },
-                    ),
-                    SettingsTile(
-                      leading: const Icon(Icons.logout),
-                      title: 'Log Out',
-                      subtitle: 'Log out of your Google account (${AuthService
-                          .getUserEmail()})',
-                      onTap: () async {
-                        await AuthService.signOut();
-                      },
-                      trailing: userPhotoUrl != null ? CircleAvatar(
-                          backgroundImage: NetworkImage(userPhotoUrl!),
-                          radius: 25) : null,
-                    ),
-
-                    const SizedBox(height: 20),
                     const Heading1(text: 'Preferences'),
                     SettingsTile(
                       leading: const Icon(Icons.attach_money),
@@ -96,6 +50,14 @@ class _SettingsPageState extends State<SettingsPage> {
                             );
                           }
                         );
+                      },
+                    ),
+                    SettingsTile(
+                      leading: const Icon(Icons.payment),
+                      title: 'Manage Payment Methods',
+                      subtitle: 'Add or remove payment methods',
+                      onTap: () {
+                        Navigator.of(context).pushNamed('payment_methods_list');
                       },
                     ),
                     SettingsTile(
@@ -119,6 +81,52 @@ class _SettingsPageState extends State<SettingsPage> {
                       onTap: () {
                         Navigator.of(context).pushNamed('income_categories_list');
                       },
+                    ),
+
+                    const SizedBox(height: 20),
+                    const Heading1(text: 'Spreadsheet & Account'),
+                    SettingsTile(
+                      leading: const Icon(Icons.sync),
+                      title: 'Refresh',
+                      subtitle: 'Sync data with linked Google Sheet',
+                      onTap: () {},
+                    ),
+                    SettingsTile(
+                        leading: const Icon(Icons.edit_calendar_rounded),
+                        title: 'Add Month To Budget',
+                        subtitle: 'Add a new month to the current budget',
+                        onTap: () {
+                          showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              builder: (context) {
+                                return const FractionallySizedBox(
+                                    heightFactor: 0.85,
+                                    child: AddBudgetMonthToSpreadsheetPage()
+                                );
+                              }
+                          );
+                        }
+                    ),
+                    SettingsTile(
+                      leading: const Icon(Icons.request_page),
+                      title: 'Choose Google Sheet',
+                      subtitle: 'Choose the sheet to write budget data to',
+                      onTap: () {
+                        Navigator.of(context).pushNamed('user_sheets_list');
+                      },
+                    ),
+                    SettingsTile(
+                      leading: const Icon(Icons.logout),
+                      title: 'Log Out',
+                      subtitle: 'Log out of your Google account (${AuthService
+                          .getUserEmail()})',
+                      onTap: () async {
+                        await AuthService.signOut();
+                      },
+                      trailing: userPhotoUrl != null ? CircleAvatar(
+                          backgroundImage: NetworkImage(userPhotoUrl!),
+                          radius: 25) : null,
                     ),
 
                     const SizedBox(height: 20),

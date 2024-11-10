@@ -5,17 +5,18 @@ import 'package:provider/provider.dart';
 
 import 'package:money_warden/components/heading1.dart';
 import 'package:money_warden/components/pill_container.dart';
+import 'package:money_warden/models/payment_method.dart';
 import 'package:money_warden/models/transaction.dart';
 import 'package:money_warden/models/category.dart' as category;
 import 'package:money_warden/models/budget_sheet.dart';
 import 'package:money_warden/utils/utils.dart';
 
 
-class AddTransactionPage extends StatefulWidget {
+class TransactionAddPage extends StatefulWidget {
   final TransactionType initialTransactionType;
   final bool updateTransaction;
   final Transaction? initialTransaction;
-  const AddTransactionPage({
+  const TransactionAddPage({
     super.key,
     required this.initialTransactionType,
     this.updateTransaction = false,
@@ -23,15 +24,17 @@ class AddTransactionPage extends StatefulWidget {
   });
 
   @override
-  State<AddTransactionPage> createState() => _AddTransactionPageState();
+  State<TransactionAddPage> createState() => _TransactionAddPageState();
 }
 
-class _AddTransactionPageState extends State<AddTransactionPage> {
+class _TransactionAddPageState extends State<TransactionAddPage> {
   TransactionType? transactionType;
   DateTime transactionDate = DateTime.now();
   category.Category? transactionCategory;
+  PaymentMethod? paymentMethod;
   TextEditingController amountController = TextEditingController();
   TextEditingController categoryController = TextEditingController();
+  TextEditingController paymentMethodController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
 
   bool _amountValid = true;
@@ -51,10 +54,18 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
           transactionCategory = widget.initialTransaction!.category!;
         });
       }
+      if (widget.initialTransaction!.paymentMethod != null) {
+        paymentMethodController.text = widget.initialTransaction!.paymentMethod!.name;
+        setState(() {
+          paymentMethod = widget.initialTransaction!.paymentMethod!;
+        });
+      }
       descriptionController.text = widget.initialTransaction!.description ?? '';
       setState(() {
         transactionDate = getTransactionInitialDate();
       });
+    } else {
+      // TODO: Otherwise, set the value of the payment method dropdown to the default payment method
     }
   }
 
@@ -73,6 +84,14 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
           }
       ).toList();
     }
+  }
+
+  List<DropdownMenuEntry<PaymentMethod>> getPaymentMethodOptions(BudgetSheet budget) {
+    return budget.paymentMethods.map(
+        (PaymentMethod method) {
+          return DropdownMenuEntry(value: method, label: method.name);
+        }
+    ).toList();
   }
 
   void createTransaction(BudgetSheet budget) async {
@@ -100,6 +119,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
         date: transactionDate,
         transactionType: transactionType!,
         category: transactionCategory,
+        paymentMethod: paymentMethod,
         description: descriptionController.value.text,
         updateTransaction: widget.updateTransaction,
         freeRowIndex: widget.updateTransaction ? widget.initialTransaction?.rowIndex : null
@@ -408,6 +428,30 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                                     enabled: !_loading,
                                   ),
                                 )
+                              ],
+                            ),
+
+                            const SizedBox(height: 20),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: DropdownMenu<PaymentMethod>(
+                                    expandedInsets: const EdgeInsets.all(0),
+                                    controller: paymentMethodController,
+                                    dropdownMenuEntries: getPaymentMethodOptions(budget),
+                                    hintText: 'Payment Method (optional)',
+                                    inputDecorationTheme: InputDecorationTheme(
+                                        filled: true,
+                                        fillColor: Colors.grey.shade100
+                                    ),
+                                    enabled: !_loading,
+                                    onSelected: (PaymentMethod? method) {
+                                      setState(() {
+                                        paymentMethod = method;
+                                      });
+                                    },
+                                  ),
+                                ),
                               ],
                             ),
 

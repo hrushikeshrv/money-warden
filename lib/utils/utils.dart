@@ -2,7 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import 'package:money_warden/models/transaction.dart';
-import 'package:money_warden/pages/add_transaction.dart';
+import 'package:money_warden/pages/transaction_add.dart';
 
 List<Color> mwColors = const [
   Color(0xFFE53935),
@@ -273,8 +273,8 @@ void showAddTransactionBottomSheet({
       isScrollControlled: true,
       builder: (context) {
         return FractionallySizedBox(
-          heightFactor: 0.8,
-          child: AddTransactionPage(
+          heightFactor: 0.9,
+          child: TransactionAddPage(
             initialTransactionType: transactionType,
             updateTransaction: updateTransaction,
             initialTransaction: initialTransaction,
@@ -282,4 +282,47 @@ void showAddTransactionBottomSheet({
         );
       }
   );
+}
+
+
+/// Returns all supported icons for payment methods
+Map<String, Icon> getPaymentMethodIcons() {
+  return {
+    'payment': const Icon(Icons.payment),
+    'payments': const Icon(Icons.payments),
+    'account_balance': const Icon(Icons.account_balance),
+    'account_balance_wallet': const Icon(Icons.account_balance_wallet),
+    'savings': const Icon(Icons.savings),
+    'redeem': const Icon(Icons.redeem),
+    'card_membership': const Icon(Icons.card_membership),
+    'money': const Icon(Icons.money),
+    'atm': const Icon(Icons.atm),
+    'send_to_mobile': const Icon(Icons.send_to_mobile),
+  };
+}
+
+
+/// Get Icon from a String describing its Material Icons name.
+/// Only supports very few selected icons. For unsupported inputs,
+/// the defaultIcon is returned.
+Icon getIconFromStoredString({ required String iconName, Icon defaultIcon = const Icon(Icons.insert_emoticon) }) {
+  Map<String, Icon> iconMap = getPaymentMethodIcons();
+  if (iconMap.containsKey(iconName)) {
+    return iconMap[iconName]!;
+  }
+  return defaultIcon;
+}
+
+
+/// Get Icon name from the stored Icon. Only supports
+/// very few selected icons. For unsupported inputs, 'payment' is returned.
+String getIconNameFromIcon(Icon icon) {
+  var iconData = getPaymentMethodIcons();
+  String? iconName;
+  iconData.forEach((key, value) {
+    if (value.toString() == icon.toString()) {
+      iconName = key;
+    }
+  });
+  return iconName ?? 'payment';
 }

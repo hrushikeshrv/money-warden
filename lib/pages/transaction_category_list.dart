@@ -5,20 +5,20 @@ import 'package:provider/provider.dart';
 import 'package:money_warden/components/category_tile.dart';
 import 'package:money_warden/components/heading1.dart';
 import 'package:money_warden/components/mw_warning.dart';
-import 'package:money_warden/pages/add_category.dart';
+import 'package:money_warden/pages/transaction_category_add.dart';
 import 'package:money_warden/models/budget_sheet.dart';
 import 'package:money_warden/models/transaction.dart';
 
 
-class TransactionCategoriesList extends StatefulWidget {
+class TransactionCategoryListPage extends StatefulWidget {
   final TransactionType transactionType;
-  const TransactionCategoriesList({super.key, required this.transactionType});
+  const TransactionCategoryListPage({super.key, required this.transactionType});
 
   @override
-  State<TransactionCategoriesList> createState() => _TransactionCategoriesListState();
+  State<TransactionCategoryListPage> createState() => _TransactionCategoryListPageState();
 }
 
-class _TransactionCategoriesListState extends State<TransactionCategoriesList> {
+class _TransactionCategoryListPageState extends State<TransactionCategoryListPage> {
   @override
   Widget build(BuildContext context) {
     return Consumer<BudgetSheet>(
@@ -54,7 +54,7 @@ class _TransactionCategoriesListState extends State<TransactionCategoriesList> {
                         builder: (context) {
                           return FractionallySizedBox(
                               heightFactor: 0.85,
-                              child: AddCategoryPage(transactionType: widget.transactionType)
+                              child: TransactionCategoryAddPage(transactionType: widget.transactionType)
                           );
                         }
                       );
