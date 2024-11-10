@@ -41,10 +41,9 @@ class _PaymentMethodDetailPageState extends State<PaymentMethodDetailPage> {
   void updatePaymentMethod(
     BudgetSheet budget,
     PaymentMethod paymentMethod,
-    String name,
-    String iconName
+    String name
   ) async {
-
+    await budget.setPaymentMethodName(paymentMethod: paymentMethod, name: name);
   }
 
   void createPaymentMethod(
@@ -52,10 +51,15 @@ class _PaymentMethodDetailPageState extends State<PaymentMethodDetailPage> {
     String name,
     String iconName
   ) async {
+    if (name.trim() == '') return;
     var paymentMethod = PaymentMethod(name: name, icon: getIconFromStoredString(iconName: iconName));
     _loading = true;
     await budget.createPaymentMethod(paymentMethod: paymentMethod);
     _loading = false;
+  }
+
+  void setPaymentMethodAsDefault(BudgetSheet budget, PaymentMethod paymentMethod) async {
+    await budget.setPaymentMethodAsDefault(paymentMethod: paymentMethod);
   }
 
   List<GestureDetector> getIconGestureDetectors(BudgetSheet budget) {
@@ -107,7 +111,7 @@ class _PaymentMethodDetailPageState extends State<PaymentMethodDetailPage> {
                     onTap: () {
                       if (_loading) return;
                       if (widget.updatePaymentMethod) {
-                        updatePaymentMethod(budget, widget.paymentMethod, paymentMethodNameController.text, iconName);
+                        updatePaymentMethod(budget, widget.paymentMethod, paymentMethodNameController.text);
                       }
                       else {
                         createPaymentMethod(budget, paymentMethodNameController.text, iconName);
@@ -155,7 +159,10 @@ class _PaymentMethodDetailPageState extends State<PaymentMethodDetailPage> {
 
               const SizedBox(height: 10),
               widget.updatePaymentMethod && !widget.paymentMethod.isDefault
-                ? MwActionButton(leading: const Icon(Icons.check), text: 'Make Default', onTap: () {})
+                ? MwActionButton(leading: const Icon(Icons.check), text: 'Make Default', onTap: () {
+                  setPaymentMethodAsDefault(budget, widget.paymentMethod);
+                  Navigator.of(context).pop();
+                })
                 : Container(),
             ],
           ),

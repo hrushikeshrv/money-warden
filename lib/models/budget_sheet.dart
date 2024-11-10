@@ -204,6 +204,27 @@ class BudgetSheet extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> setPaymentMethodName({ required PaymentMethod paymentMethod, required String name }) async {
+    await SheetsService.setPaymentMethodName(cellId: paymentMethod.cellId!, name: name);
+    for (var method in paymentMethods) {
+      if (method.name == paymentMethod.name) {
+        method.name = name;
+        break;
+      }
+    }
+    notifyListeners();
+  }
+
+  Future<void> setPaymentMethodAsDefault({ required PaymentMethod paymentMethod }) async {
+    var prefs = await SharedPreferences.getInstance();
+    prefs.setString('default_payment_method', paymentMethod.name);
+    for (var method in paymentMethods) {
+      method.isDefault = false;
+    }
+    paymentMethod.isDefault = true;
+    notifyListeners();
+  }
+
   /// Create a category in the metadata sheet in the selected
   /// budget spreadsheet.
   Future<void> createCategory({ required category.Category category, required TransactionType transactionType }) async {
