@@ -175,6 +175,14 @@ class BudgetSheet extends ChangeNotifier {
     paymentMethods = await SheetsService.getPaymentMethods(null);
   }
 
+  /// Returns the default payment method object
+  PaymentMethod? getDefaultPaymentMethod() {
+    for (var method in paymentMethods) {
+      if (method.isDefault) return method;
+    }
+    return null;
+  }
+
   /// Update the icon associated with a payment method.
   /// Purely a local action, SheetsService is not needed.
   Future<void> setPaymentMethodIcon({ required PaymentMethod paymentMethod, required Icon icon }) async {
@@ -382,8 +390,7 @@ class BudgetSheet extends ChangeNotifier {
         budgetMonthName = longMonthName;
       }
       else {
-        // TODO: instead of throwing an exception here, create the sheet for that month
-        throw NullSpreadsheetValueException('Sheet for month $longMonthName has not been created.');
+        await createSheet(longMonthName);
       }
     }
     else if (budgetData.containsKey(shortMonthName)) {
@@ -401,6 +408,8 @@ class BudgetSheet extends ChangeNotifier {
     String freeRowRange = transactionType == TransactionType.expense
         ? '$budgetMonthName!A$freeRowIndex:E$freeRowIndex'
         : '$budgetMonthName!K$freeRowIndex:O$freeRowIndex';
+
+    paymentMethod ??= getDefaultPaymentMethod();
     bool success = await SheetsService.createTransaction(
       amount: amount,
       date: date,

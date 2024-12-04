@@ -43,8 +43,9 @@ class SheetsService {
   //   newSheet = await api.spreadsheets.create(newSheet);
   // }
 
-  /// Creates a new sheet in the selected budget spreadsheet for
-  /// the given month. Assumes the given month is a valid month.
+  /// Creates a new sheet in the selected budget spreadsheet by copying
+  /// the "Monthly Template" sheet that is supposed to be present in a budget
+  /// spreadsheet. Assumes the given month is a valid month.
   static Future<bool> createSheet({ SheetsApi? api, required String monthName }) async {
     api ??= await getSheetsApiClient();
     var prefs = await SharedPreferences.getInstance();
@@ -64,7 +65,6 @@ class SheetsService {
       throw NullSpreadsheetMetadataException('The selected budget spreadsheet does not have the monthly template sheet');
     }
 
-    // print('Copying from ');
     // Copy the monthly template sheet to a new sheet
     var newSheetProperties = await api.spreadsheets.sheets.copyTo(
       CopySheetToAnotherSpreadsheetRequest(destinationSpreadsheetId: spreadsheetId),
