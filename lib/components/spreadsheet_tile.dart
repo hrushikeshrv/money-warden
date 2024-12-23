@@ -3,6 +3,8 @@ import 'package:googleapis/drive/v3.dart';
 import 'package:money_warden/models/budget_sheet.dart';
 import 'package:provider/provider.dart';
 
+import 'dart:developer';
+
 import 'package:money_warden/components/pill_container.dart';
 
 
@@ -27,47 +29,9 @@ class SpreadsheetTile extends StatefulWidget {
 class _SpreadsheetTileState extends State<SpreadsheetTile> {
   @override
   Widget build(BuildContext context) {
-    bool notOwner = widget.sheet.ownedByMe == false;
-    bool? shared = widget.sheet.shared;
-    bool? starred = widget.sheet.starred;
-
-    List<Widget> subtitleChildren = [];
-    if (starred != null && starred) {
-      subtitleChildren.add(const Icon(Icons.star, color: Color(0xFFFFD630)));
-      subtitleChildren.add(const SizedBox(width: 10));
-    }
-    if (notOwner) {
-      subtitleChildren.add(
-        const PillContainer(
-          color: Color(0xFFC72F35),
-          child: Text("Not owned by you", style: TextStyle(fontSize: 12)),
-        )
-      );
-      subtitleChildren.add(const SizedBox(width: 10));
-    }
-    if (shared != null && shared) {
-      subtitleChildren.add(
-        const PillContainer(
-          color: Color(0xFFAE429A),
-          child: Text("Shared", style: TextStyle(fontSize: 12)),
-        )
-      );
-    }
-    else {
-      subtitleChildren.add(
-        const PillContainer(
-          color: Color(0xFF5DAE42),
-          child: Text("Private", style: TextStyle(fontSize: 12, color: Colors.white)),
-        )
-      );
-    }
-
     return ListTile(
       leading: const Icon(Icons.request_page),
       title: Text(widget.sheet.name!),
-      subtitle: subtitleChildren.isNotEmpty
-          ? Row(children: subtitleChildren,)
-          : null,
       trailing: Provider.of<BudgetSheet>(context).spreadsheetId == widget.sheet.id ? const Icon(Icons.check) : null,
       onTap: widget.onTap,
       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),

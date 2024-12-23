@@ -65,36 +65,34 @@ class _UserSheetsListState extends State<UserSheetsList> {
                 }
               ),
               const SizedBox(height: 10),
-              Expanded(
-                child: FutureBuilder(
-                  future: sheets,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      var sheets = snapshot.data;
-                      return Expanded(
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          itemBuilder: (_, index) {
-                            return SpreadsheetTile(
-                              sheet: sheets.files![index],
-                              onTap: () {
-                                Provider.of<BudgetSheet>(context, listen: false).setSpreadsheetName(sheets.files![index].name!);
-                                Provider.of<BudgetSheet>(context, listen: false).setSpreadsheetId(sheets.files![index].id!);
-                                // TODO: Update the state of the app to reflect the new chosen sheet.
-                                //    Currently requires an app restart to reflect the new chosen sheet.
-                                Navigator.of(context).pop();
-                              },
-                            );
-                          },
-                          itemCount: sheets!.files!.length,
-                        ),
-                      );
-                    }
-                    else {
-                      return const Center(child: CircularProgressIndicator());
-                    }
+              FutureBuilder(
+                future: sheets,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    var sheets = snapshot.data;
+                    return Expanded(
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemBuilder: (_, index) {
+                          return SpreadsheetTile(
+                            sheet: sheets.files![index],
+                            onTap: () {
+                              Provider.of<BudgetSheet>(context, listen: false).setSpreadsheetName(sheets.files![index].name!);
+                              Provider.of<BudgetSheet>(context, listen: false).setSpreadsheetId(sheets.files![index].id!);
+                              // TODO: Update the state of the app to reflect the new chosen sheet.
+                              //    Currently requires an app restart to reflect the new chosen sheet.
+                              Navigator.of(context).pop();
+                            },
+                          );
+                        },
+                        itemCount: sheets!.files!.length,
+                      ),
+                    );
                   }
-                )
+                  else {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                }
               )
             ]
           ),
