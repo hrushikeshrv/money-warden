@@ -110,8 +110,8 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     SettingsTile(
                       leading: const Icon(Icons.request_page),
-                      title: 'Choose Google Sheet',
-                      subtitle: 'Choose the sheet to write budget data to',
+                      title: 'Choose Budget Sheet',
+                      subtitle: 'Choose the sheet to write budget data to${budget.spreadsheetName != null ? ". (Currently ${budget.spreadsheetName})" : ""}',
                       onTap: () {
                         Navigator.of(context).pushNamed('user_sheets_list');
                       },

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:googleapis/drive/v3.dart';
-import 'package:money_warden/components/mw_action_button.dart';
 import 'package:provider/provider.dart';
 
 import 'package:money_warden/models/budget_sheet.dart';
 import 'package:money_warden/components/heading1.dart';
+import 'package:money_warden/components/mw_action_button.dart';
 import 'package:money_warden/components/mw_warning.dart';
 import 'package:money_warden/components/spreadsheet_tile.dart';
+import 'package:money_warden/pages/budget_spreadsheet_create.dart';
 import 'package:money_warden/services/sheets.dart';
 
 
@@ -49,8 +50,19 @@ class _UserSheetsListState extends State<UserSheetsList> {
               const SizedBox(height: 20),
               MwActionButton(
                 leading: const Icon(Icons.add_to_drive_outlined),
-                text: 'Create a New Budget Sheet',
-                onTap: () {}
+                text: 'Create a New Budget Spreadsheet',
+                onTap: () {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    builder: (context) {
+                      return const FractionallySizedBox(
+                          heightFactor: 0.85,
+                          child: CreateBudgetSpreadsheetPage()
+                      );
+                    }
+                  );
+                }
               ),
               const SizedBox(height: 10),
               Expanded(

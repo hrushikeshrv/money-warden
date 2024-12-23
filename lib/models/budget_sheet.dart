@@ -1,5 +1,5 @@
 import 'dart:math';
-import 'package:googleapis/sheets/v4.dart' show DetailedApiRequestError;
+import 'package:googleapis/sheets/v4.dart' show DetailedApiRequestError, Spreadsheet;
 import 'package:flutter/material.dart';
 import 'package:money_warden/exceptions/null_spreadsheet_value_exception.dart';
 import 'package:money_warden/exceptions/spreadsheet_value_exception.dart';
@@ -505,6 +505,15 @@ class BudgetSheet extends ChangeNotifier {
     }
     notifyListeners();
     return true;
+  }
+
+  /// Creates a new spreadsheet in the user's Google account and
+  /// updates the local state to use the newly created spreadsheet
+  /// instead
+  Future<void> createSpreadsheet(String spreadsheetName) async {
+    Spreadsheet newSheet = await SheetsService.createNewBudgetSheet(sheetName: spreadsheetName);
+    setSpreadsheetName(spreadsheetName);
+    setSpreadsheetId(newSheet.spreadsheetId!);
   }
 
   /// Creates a new sheet in the selected budget spreadsheet and

@@ -15,6 +15,10 @@ import 'package:money_warden/services/auth.dart';
 
 
 class SheetsService {
+  /// The parent budget template spreadsheet (owned by @hrushikeshrv) that every sheet created
+  /// by Money Warden inherits from
+  static const String templateSpreadsheetID = '1HY1205As44sXW4j_QgH5Mp1jWVAfWK1a8xTedWwgyA0';
+
   static Future<SheetsApi> getSheetsApiClient() async {
     var client = (await AuthService.getAuthenticatedClient())!;
     return SheetsApi(client as Client);
@@ -33,15 +37,65 @@ class SheetsService {
     return await api.files.list(q: "mimeType='application/vnd.google-apps.spreadsheet'");
   }
 
-  // static Future<bool> createNewBudgetSheet({ SheetsApi? api, required String sheetName }) async {
-  //   api ??= await getSheetsApiClient();
-  //   Spreadsheet newSheet = Spreadsheet(
-  //     properties: SpreadsheetProperties(
-  //       title: sheetName
-  //     )
-  //   );
-  //   newSheet = await api.spreadsheets.create(newSheet);
-  // }
+  /// Creates a new spreadsheet in the current user's Google account
+  /// in the correct format required by Money Warden
+  static Future<Spreadsheet> createNewBudgetSheet({ SheetsApi? api, required String sheetName }) async {
+    api ??= await getSheetsApiClient();
+    Spreadsheet newSheet = Spreadsheet(
+      properties: SpreadsheetProperties(
+        title: sheetName
+      ),
+      sheets: [],
+    );
+    newSheet = await api.spreadsheets.create(newSheet);
+    Spreadsheet templateSpreadsheet = await api.spreadsheets.get(templateSpreadsheetID);
+
+    int? metadataTemplateId;
+    int? budgetTemplateId;
+    for (var sheet in templateSpreadsheet.sheets!) {
+      if (sheet.properties != null && sheet.properties!.title!.trim().toLowerCase() == 'monthly template') {
+        budgetTemplateId = sheet.properties!.sheetId;
+      }
+      if (sheet.properties != null && sheet.properties!.title!.trim().toLowerCase() == 'metadata') {
+        metadataTemplateId = sheet.properties!.sheetId;
+      }
+    }
+
+    var metadataProperties = await api.spreadsheets.sheets.copyTo(
+      CopySheetToAnotherSpreadsheetRequest(destinationSpreadsheetId: newSheet.spreadsheetId),
+      templateSpreadsheetID,
+      metadataTemplateId!
+    );
+    metadataProperties.title = 'Metadata';
+    var monthlyTemplateProperties = await api.spreadsheets.sheets.copyTo(
+        CopySheetToAnotherSpreadsheetRequest(destinationSpreadsheetId: newSheet.spreadsheetId),
+        templateSpreadsheetID,
+        budgetTemplateId!
+    );
+    monthlyTemplateProperties.title = 'Monthly Template';
+
+    await api.spreadsheets.batchUpdate(
+      BatchUpdateSpreadsheetRequest(
+        includeSpreadsheetInResponse: false,
+        requests: [
+          sheets.Request(
+            updateSheetProperties: UpdateSheetPropertiesRequest(
+              fields: 'title',
+              properties: monthlyTemplateProperties
+            )
+          ),
+          sheets.Request(
+              updateSheetProperties: UpdateSheetPropertiesRequest(
+                  fields: 'title',
+                  properties: metadataProperties
+              )
+          ),
+        ]
+      ),
+      newSheet.spreadsheetId!
+    );
+    return newSheet;
+  }
 
   /// Creates a new sheet in the selected budget spreadsheet by copying
   /// the "Monthly Template" sheet that is supposed to be present in a budget

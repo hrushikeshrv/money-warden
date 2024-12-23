@@ -7,13 +7,15 @@ class MwActionButton extends StatefulWidget {
   final VoidCallback onTap;
   /// A custom role to give this button. Can be "default", "success", "warning", or "error".
   final String role;
+  bool enabled = true;
 
-  const MwActionButton({
+  MwActionButton({
     super.key,
     required this.leading,
     required this.text,
     required this.onTap,
-    this.role = 'default'
+    this.role = 'default',
+    this.enabled = true
   });
 
   @override
@@ -31,13 +33,18 @@ class _MwActionButtonState extends State<MwActionButton> {
     }
 
     return InkWell(
-      onTap: widget.onTap,
+      onTap: () {
+        if (!widget.enabled) return;
+        widget.onTap();
+      },
       child: Ink(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
         decoration: BoxDecoration(
           color: backgroundColor,
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: Theme.of(context).colorScheme.inverseSurface, width: 2),
+          border: widget.enabled ?
+              Border.all(color: Theme.of(context).colorScheme.inverseSurface, width: 2)
+            : Border.all(color: Theme.of(context).colorScheme.surfaceDim),
           boxShadow: const [BoxShadow(color: Color(0x55000000), blurRadius: 4, offset: Offset(2, 2))],
         ),
         child: Row(
