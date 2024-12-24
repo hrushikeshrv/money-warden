@@ -23,6 +23,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Consumer<BudgetSheet>(
       builder: (context, budget, child) {
+        print("\n---\nIn settings page. Spreadsheet name ${budget.spreadsheetName}");
         return Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,7 +111,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     SettingsTile(
                       leading: const Icon(Icons.request_page),
-                      title: 'Choose Budget Sheet',
+                      title: 'Choose Budget Spreadsheet',
                       subtitle: 'Choose the sheet to write budget data to${budget.spreadsheetName != null ? ". (Currently ${budget.spreadsheetName})" : ""}',
                       onTap: () {
                         Navigator.of(context).pushNamed('user_sheets_list');

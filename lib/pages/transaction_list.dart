@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:money_warden/components/budget_month_dropdown.dart';
+import 'package:money_warden/components/budget_initialization_failed_alert.dart';
 import 'package:money_warden/components/mw_app_bar.dart';
 import 'package:money_warden/components/transaction_tile.dart';
 import 'package:money_warden/models/budget_sheet.dart';
@@ -19,14 +20,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
     return Consumer<BudgetSheet>(
       builder: (context, budget, child) {
         if (budget.budgetInitializationFailed) {
-          return const AlertDialog(
-              title: Text('An error occurred'),
-              content: Text(
-                  'An error occurred while fetching data from your connected budget spreadsheet. '
-                      '\n\nMake sure your budget spreadsheet is in the correct format.'
-                      '\n\nIf your budget spreadsheet is in the correct format, please contact the developer.'
-              )
-          );
+          return const BudgetInitializationFailedAlert();
         }
 
         return Column(

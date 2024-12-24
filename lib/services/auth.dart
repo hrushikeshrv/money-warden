@@ -51,7 +51,7 @@ class AuthService {
     Map<String, dynamic> data = {};
     GoogleSignInAccount? previousUser = await googleSignIn.signInSilently();
     final prefs = await SharedPreferences.getInstance();
-    // print('get shared preferences');
+
     String? spreadsheetId = prefs.getString('spreadsheetId');
     String? spreadsheetName = prefs.getString('spreadsheetName');
     data['user'] = previousUser;

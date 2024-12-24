@@ -115,6 +115,7 @@ class _MoneyWardenState extends State<MoneyWarden> {
                       if (
                         snapshot.data!['spreadsheetId'] != null
                         && snapshot.data!['spreadsheetId'] != ''
+                        && !budget.budgetInitializationFailed
                       ) {
                         budget.initBudgetData();
                       }

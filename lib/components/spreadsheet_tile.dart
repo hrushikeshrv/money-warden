@@ -14,12 +14,10 @@ import 'package:money_warden/components/pill_container.dart';
 /// and renders it into a ListTile
 class SpreadsheetTile extends StatefulWidget {
   final File sheet;
-  final VoidCallback onTap;
 
   const SpreadsheetTile({
     super.key,
     required this.sheet,
-    required this.onTap
   });
 
   @override
@@ -29,16 +27,26 @@ class SpreadsheetTile extends StatefulWidget {
 class _SpreadsheetTileState extends State<SpreadsheetTile> {
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: const Icon(Icons.request_page),
-      title: Text(widget.sheet.name!),
-      trailing: Provider.of<BudgetSheet>(context).spreadsheetId == widget.sheet.id ? const Icon(Icons.check) : null,
-      onTap: widget.onTap,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-      shape: Border(bottom: BorderSide(
-          color: Theme.of(context).colorScheme.inverseSurface,
-          width: 2
-      ))
+    return Consumer<BudgetSheet>(
+      builder: (context, budget, child) {
+        return ListTile(
+          leading: const Icon(Icons.request_page),
+          title: Text(widget.sheet.name!),
+          trailing: budget.spreadsheetId == widget.sheet.id ? const Icon(Icons.check) : null,
+          onTap: () async {
+            await budget.setSpreadsheetName(widget.sheet.name!);
+            await budget.setSpreadsheetId(widget.sheet.id!);
+            budget.budgetInitializationFailed = false;
+            await budget.initBudgetData(forceUpdate: true);
+            Navigator.of(context).pop();
+          },
+          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+          shape: Border(bottom: BorderSide(
+            color: Theme.of(context).colorScheme.inverseSurface,
+            width: 2
+          ))
+        );
+      },
     );
   }
 }

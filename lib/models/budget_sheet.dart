@@ -41,12 +41,20 @@ class BudgetSheet extends ChangeNotifier {
 
   /// Fetch and parse all budget data from the budget spreadsheet
   /// and initialize all other data needed by other screens
-  void initBudgetData({ bool forceUpdate = false }) async {
+  Future<bool> initBudgetData({ bool forceUpdate = false }) async {
     bool rateLimited = false;
     int backoffCount = 0;
     var rng = Random();
     do {
       if (!budgetInitialized || forceUpdate) {
+        if (forceUpdate) {
+          budgetMonthNames = ['Loading...'];
+          _currentBudgetMonthName = 'Loading...';
+          expenseCategories = [];
+          incomeCategories = [];
+          paymentMethods = [];
+          budgetData = {};
+        }
         try {
           // Populate this.budgetMonthNames
           await getBudgetMonthNames();
@@ -65,7 +73,7 @@ class BudgetSheet extends ChangeNotifier {
           budgetInitialized = true;
           budgetInitializationFailed = false;
           notifyListeners();
-          return;
+          return budgetInitialized;
         }
         on DetailedApiRequestError catch (e) {
           print(e.toString());
@@ -84,26 +92,34 @@ class BudgetSheet extends ChangeNotifier {
           budgetInitializationFailed = true;
           rateLimited = false;
           notifyListeners();
-          return;
+          return budgetInitialized;
         }
       }
     } while (rateLimited && !budgetInitializationFailed);
+    return false;
   }
 
   /// Set the spreadsheet Id, persist in shared preferences,
   /// and notify listeners.
-  void setSpreadsheetId(String spreadsheetId) {
-    this.spreadsheetId = spreadsheetId;
-    sharedPreferences?.setString('spreadsheetId', spreadsheetId);
+  Future<bool> setSpreadsheetId(String newSpreadsheetId) async {
+    print("\n---\nSet spreadsheet ID to $newSpreadsheetId");
+    spreadsheetId = newSpreadsheetId;
+    var prefs = await SharedPreferences.getInstance();
+    prefs.setString('spreadsheetId', newSpreadsheetId);
     notifyListeners();
+    return true;
   }
 
   /// Set the spreadsheet name, persist in shared preferences,
   /// and notify listeners.
-  void setSpreadsheetName(String spreadsheetName) {
-    this.spreadsheetName = spreadsheetName;
-    sharedPreferences?.setString('spreadsheetName', spreadsheetName);
+  Future<bool> setSpreadsheetName(String newSpreadsheetName) async {
+    print("\n---\nSet spreadsheet name to $newSpreadsheetName");
+    spreadsheetName = newSpreadsheetName;
+    var prefs = await SharedPreferences.getInstance();
+    prefs.setString('spreadsheetName', newSpreadsheetName);
     notifyListeners();
+    print(prefs.getString('spreadsheetName'));
+    return true;
   }
 
   /// Set the shared preferences instance for this BudgetSheet instance.
@@ -512,8 +528,8 @@ class BudgetSheet extends ChangeNotifier {
   /// instead
   Future<void> createSpreadsheet(String spreadsheetName) async {
     Spreadsheet newSheet = await SheetsService.createNewBudgetSheet(sheetName: spreadsheetName);
-    setSpreadsheetName(spreadsheetName);
-    setSpreadsheetId(newSheet.spreadsheetId!);
+    await setSpreadsheetName(spreadsheetName);
+    await setSpreadsheetId(newSheet.spreadsheetId!);
   }
 
   /// Creates a new sheet in the selected budget spreadsheet and
