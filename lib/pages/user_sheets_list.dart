@@ -31,6 +31,9 @@ class _UserSheetsListState extends State<UserSheetsList> {
   Widget build(BuildContext context) {
     return Consumer<BudgetSheet>(
       builder: (context, budget, child) {
+        List<File> spreadsheets = [];
+        if (budget.userSpreadsheets != null) spreadsheets = budget.userSpreadsheets!;
+
         return Scaffold(
           body: SafeArea(
             child: Container(
@@ -46,7 +49,7 @@ class _UserSheetsListState extends State<UserSheetsList> {
                   const SizedBox(height: 10),
                   const MwWarning(
                     children: [
-                      Text('The sheet you select must be in the correct format for Money Warden to be able to work with it.')
+                      Text('The sheet you select must be in the correct format for Money Warden to be able to work with it.'),
                     ]
                   ),
                   const SizedBox(height: 20),
@@ -67,25 +70,15 @@ class _UserSheetsListState extends State<UserSheetsList> {
                     }
                   ),
                   const SizedBox(height: 20),
-                  FutureBuilder(
-                    future: sheets,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.done) {
-                        var sheets = snapshot.data;
-                        return Expanded(
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            itemBuilder: (_, index) {
-                              return SpreadsheetTile(sheet: sheets.files![index]);
-                            },
-                            itemCount: sheets!.files!.length,
-                          ),
-                        );
-                      }
-                      else {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-                    }
+
+                  Expanded(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemBuilder: (_, index) {
+                        return SpreadsheetTile(key: ValueKey(spreadsheets[index].id), sheet: spreadsheets[index]);
+                      },
+                      itemCount: spreadsheets.length,
+                    ),
                   )
                 ]
               ),

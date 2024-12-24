@@ -29,6 +29,14 @@ class SheetsService {
     return DriveApi(client as Client);
   }
 
+  static Future<Map<String, dynamic>> initializeSpreadsheetPrefs() async {
+    Map<String, dynamic> data = {};
+    var prefs = await SharedPreferences.getInstance();
+    data["spreadsheetId"] = prefs.getString("spreadsheetId");
+    data["spreadsheetName"] = prefs.getString("spreadsheetName");
+    return data;
+  }
+
   /// Returns a Future<FileList>? with
   /// a FileList instance containing all Google Sheets a user has
   /// access to (not just the sheets they own).

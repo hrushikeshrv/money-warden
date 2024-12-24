@@ -29,6 +29,7 @@ class _SpreadsheetTileState extends State<SpreadsheetTile> {
   Widget build(BuildContext context) {
     return Consumer<BudgetSheet>(
       builder: (context, budget, child) {
+        print('Current budget spreadsheet ${budget.spreadsheetName}');
         return ListTile(
           leading: const Icon(Icons.request_page),
           title: Text(widget.sheet.name!),
@@ -38,6 +39,7 @@ class _SpreadsheetTileState extends State<SpreadsheetTile> {
             await budget.setSpreadsheetId(widget.sheet.id!);
             budget.budgetInitializationFailed = false;
             await budget.initBudgetData(forceUpdate: true);
+            if (!context.mounted) return;
             Navigator.of(context).pop();
           },
           contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),

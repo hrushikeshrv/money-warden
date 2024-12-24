@@ -88,26 +88,34 @@ class _SettingsPageState extends State<SettingsPage> {
                     const Heading1(text: 'Spreadsheet & Account'),
                     SettingsTile(
                       leading: const Icon(Icons.sync),
+                      title: 'Log Current Spreadsheet',
+                      subtitle: 'Log',
+                      onTap: () {
+                        print(budget.spreadsheetName);
+                      },
+                    ),
+                    SettingsTile(
+                      leading: const Icon(Icons.sync),
                       title: 'Refresh',
                       subtitle: 'Sync data with linked Google Sheet',
                       onTap: () {},
                     ),
                     SettingsTile(
-                        leading: const Icon(Icons.edit_calendar_rounded),
-                        title: 'Add Month To Budget',
-                        subtitle: 'Add a new month to the current budget',
-                        onTap: () {
-                          showModalBottomSheet(
-                              context: context,
-                              isScrollControlled: true,
-                              builder: (context) {
-                                return const FractionallySizedBox(
-                                    heightFactor: 0.85,
-                                    child: AddBudgetMonthToSpreadsheetPage()
-                                );
-                              }
-                          );
-                        }
+                      leading: const Icon(Icons.edit_calendar_rounded),
+                      title: 'Add Month To Budget',
+                      subtitle: 'Add a new month to the current budget',
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          builder: (context) {
+                            return const FractionallySizedBox(
+                                heightFactor: 0.85,
+                                child: AddBudgetMonthToSpreadsheetPage()
+                            );
+                          }
+                        );
+                      }
                     ),
                     SettingsTile(
                       leading: const Icon(Icons.request_page),

@@ -3,6 +3,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:money_warden/pages/payment_method_list.dart';
 import 'package:money_warden/pages/transaction_category_list.dart';
+import 'package:money_warden/services/sheets.dart';
 import 'package:money_warden/utils/utils.dart';
 import 'package:provider/provider.dart';
 
@@ -39,6 +40,7 @@ class MoneyWarden extends StatefulWidget {
 class _MoneyWardenState extends State<MoneyWarden> {
   GoogleSignInAccount? _currentUser;
   Future<Map<String, dynamic>>? _previousAuth;
+  Future<Map<String, dynamic>>? _spreadsheetPrefs;
 
   final List pages = [
     const HomePage(),
@@ -59,6 +61,7 @@ class _MoneyWardenState extends State<MoneyWarden> {
   void initState() {
     super.initState();
     _previousAuth = AuthService.initializeAuth();
+    _spreadsheetPrefs = SheetsService.initializeSpreadsheetPrefs();
     AuthService.googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) async {
       setState(() {
         _currentUser = account;
@@ -98,82 +101,89 @@ class _MoneyWardenState extends State<MoneyWarden> {
           // mean time
           home: FutureBuilder(
             future: _previousAuth,
-            builder: (context, snapshot) {
+            builder: (context, authSnapshot) {
               // If silent sign in request was completed, show either the
               // homepage or the login page depending on whether the silent
               // sign in request was successful.
-              if (snapshot.hasData) {
-                return Builder(
-                  builder: (context) {
-                    final GoogleSignInAccount? user = _currentUser;
-                    if (user != null) {
-                      budget.spreadsheetId = snapshot.data!['spreadsheetId'];
-                      budget.spreadsheetName = snapshot.data!['spreadsheetName'];
-                      budget.sharedPreferences = snapshot.data!['sharedPreferences'];
+              if (authSnapshot.hasData) {
+                return FutureBuilder(
+                  future: _spreadsheetPrefs,
+                  builder: (context, spreadsheetSnapshot) {
+                    if (spreadsheetSnapshot.hasData) {
+                      final GoogleSignInAccount? user = _currentUser;
+                      if (user != null) {
+                        budget.spreadsheetId = spreadsheetSnapshot.data!['spreadsheetId'];
+                        budget.spreadsheetName = spreadsheetSnapshot.data!['spreadsheetName'];
+                        budget.sharedPreferences = authSnapshot.data!['sharedPreferences'];
+                        budget.userSpreadsheets = authSnapshot.data!['spreadsheets'];
 
-                      // TODO: Check if a spreadsheet has been selected and show users an instructions page if not.
-                      if (
-                        snapshot.data!['spreadsheetId'] != null
-                        && snapshot.data!['spreadsheetId'] != ''
-                        && !budget.budgetInitializationFailed
-                      ) {
-                        budget.initBudgetData();
+                        // TODO: Check if a spreadsheet has been selected and show users an instructions page if not.
+                        if (
+                          spreadsheetSnapshot.data!['spreadsheetId'] != null
+                          && spreadsheetSnapshot.data!['spreadsheetId'] != ''
+                          && !budget.budgetInitializationFailed
+                        ) {
+                          budget.initBudgetData();
+                        }
+                        else {
+                          // Redirect users to instructions page.
+                        }
+
+                        return Scaffold(
+                          backgroundColor: Theme
+                              .of(context)
+                              .colorScheme
+                              .surface,
+                          bottomNavigationBar: NavigationBar(
+                            destinations: const [
+                              NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
+                              NavigationDestination(icon: Icon(Icons.monetization_on), label: 'Transactions'),
+                              NavigationDestination(icon: Icon(Icons.auto_graph), label: 'Analytics'),
+                              NavigationDestination(icon: Icon(Icons.settings), label: 'Settings')
+                            ],
+                            selectedIndex: currentPage,
+                            onDestinationSelected: navigateBottomBar,
+                            indicatorColor: Theme.of(context).colorScheme.primary,
+                          ),
+                          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+                          floatingActionButton: FloatingActionButton(
+                            backgroundColor: Theme.of(context).colorScheme.primary,
+                            onPressed: () {
+                              showAddTransactionBottomSheet(context: context, transactionType: TransactionType.expense);
+                            },
+                            child: Icon(Icons.payments_outlined, color: Theme.of(context).colorScheme.onSurface),
+                          ),
+                          body: SafeArea(
+                            child: Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: pages[currentPage],
+                            ),
+                          ),
+                        );
                       }
                       else {
-                        // Redirect users to instructions page.
-                      }
-
-                      return Scaffold(
-                        backgroundColor: Theme
-                            .of(context)
-                            .colorScheme
-                            .surface,
-                        bottomNavigationBar: NavigationBar(
-                          destinations: const [
-                            NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
-                            NavigationDestination(icon: Icon(Icons.monetization_on), label: 'Transactions'),
-                            NavigationDestination(icon: Icon(Icons.auto_graph), label: 'Analytics'),
-                            NavigationDestination(icon: Icon(Icons.settings), label: 'Settings')
-                          ],
-                          selectedIndex: currentPage,
-                          onDestinationSelected: navigateBottomBar,
-                          indicatorColor: Theme.of(context).colorScheme.primary,
-                        ),
-                        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-                        floatingActionButton: FloatingActionButton(
-                          backgroundColor: Theme.of(context).colorScheme.primary,
-                          onPressed: () {
-                            showAddTransactionBottomSheet(context: context, transactionType: TransactionType.expense);
-                          },
-                          child: Icon(Icons.payments_outlined, color: Theme.of(context).colorScheme.onSurface),
-                        ),
-                        body: SafeArea(
-                          child: Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: pages[currentPage],
+                        return Scaffold(
+                          backgroundColor: Theme
+                              .of(context)
+                              .colorScheme
+                              .surface,
+                          body: const SafeArea(
+                              child: Padding(
+                                padding: EdgeInsets.all(10),
+                                child: LoginPage(),
+                              )
                           ),
-                        ),
-                      );
+                        );
+                      }
                     }
                     else {
-                      return Scaffold(
-                        backgroundColor: Theme
-                            .of(context)
-                            .colorScheme
-                            .surface,
-                        body: const SafeArea(
-                          child: Padding(
-                            padding: EdgeInsets.all(10),
-                            child: LoginPage(),
-                          )
-                        ),
-                      );
+                      return const SplashScreen(message: "Fetching Budget Data");
                     }
                   }
                 );
               }
               else {
-                return const SplashScreen();
+                return const SplashScreen(message: "Signing In");
               }
             },
           ),
