@@ -1,6 +1,6 @@
 # Money Warden
 
-![Money Warden](../assets/images/logo.png)
+![Money Warden](./media/logo.png)
 
 A budgeting app using Google Sheets as a backing store.
 
