@@ -18,6 +18,7 @@ import 'package:money_warden/pages/settings.dart';
 import 'package:money_warden/pages/splash_screen.dart';
 import 'package:money_warden/pages/transaction_list.dart';
 import 'package:money_warden/pages/user_sheets_list.dart';
+import 'package:money_warden/pages/privacy_policy.dart';
 import 'package:money_warden/services/auth.dart';
 import 'package:money_warden/theme/theme.dart';
 
@@ -97,6 +98,7 @@ class _MoneyWardenState extends State<MoneyWarden> {
             'expense_categories_list': (context) => const TransactionCategoryListPage(transactionType: TransactionType.expense),
             'income_categories_list': (context) => const TransactionCategoryListPage(transactionType: TransactionType.income),
             'payment_methods_list': (context) => const PaymentMethodListPage(),
+            'privacy_policy': (context) => const PrivacyPolicyPage(),
           },
           // Try to sign the user in silently and show the splash screen in the
           // mean time
