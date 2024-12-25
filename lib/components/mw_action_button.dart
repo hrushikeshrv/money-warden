@@ -27,9 +27,14 @@ class _MwActionButtonState extends State<MwActionButton> {
   Widget build(BuildContext context) {
     Color backgroundColor = Theme.of(context).colorScheme.surfaceDim;
     Color textColor = Theme.of(context).colorScheme.onSurface;
+    Color enabledBorderColor = Theme.of(context).colorScheme.inverseSurface;
     if (widget.role == 'error') {
       backgroundColor = Theme.of(context).colorScheme.errorContainer;
       textColor = Theme.of(context).colorScheme.onErrorContainer;
+    }
+    if (widget.role == 'warning') {
+      backgroundColor = const Color(0xFFF5F4BA);
+      enabledBorderColor = const Color(0xFF756A10);
     }
 
     return InkWell(
@@ -43,7 +48,7 @@ class _MwActionButtonState extends State<MwActionButton> {
           color: backgroundColor,
           borderRadius: BorderRadius.circular(10),
           border: widget.enabled ?
-              Border.all(color: Theme.of(context).colorScheme.inverseSurface, width: 2)
+              Border.all(color: enabledBorderColor, width: 2)
             : Border.all(color: Theme.of(context).colorScheme.surfaceDim),
           boxShadow: const [BoxShadow(color: Color(0x55000000), blurRadius: 4, offset: Offset(2, 2))],
         ),
@@ -52,7 +57,7 @@ class _MwActionButtonState extends State<MwActionButton> {
           children: [
             widget.leading,
             const SizedBox(width: 10),
-            Text(widget.text, style: TextStyle(color: textColor)),
+            Text(widget.text, style: TextStyle(color: textColor), textAlign: TextAlign.center,),
           ],
         ),
       )

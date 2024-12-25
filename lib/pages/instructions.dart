@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import 'package:money_warden/services/auth.dart';
 import 'package:money_warden/components/mw_action_button.dart';
 import 'package:money_warden/pages/budget_spreadsheet_create.dart';
 
@@ -55,6 +57,18 @@ class InstructionsPage extends StatelessWidget {
                       );
                     }
                   );
+                }
+              ),
+
+              const SizedBox(height: 40),
+              Text('You are signed in as ${AuthService.getUserEmail()}', textAlign: TextAlign.center,),
+              const SizedBox(height: 10),
+              MwActionButton(
+                leading: CircleAvatar(backgroundImage: NetworkImage(AuthService.getUserPhotoUrl()!), radius: 15,),
+                role: 'warning',
+                text: 'Sign Out',
+                onTap: () async {
+                  await AuthService.signOut();
                 }
               )
             ],
