@@ -50,6 +50,7 @@ class _CreateBudgetSpreadsheetPageState extends State<CreateBudgetSpreadsheetPag
                       text: 'Create New Budget Spreadsheet',
                       onTap: () async {
                         if (_loading) return;
+                        if (controller.text.trim() == '') return;
                         setState(() {
                           _loading = true;
                         });
@@ -65,7 +66,7 @@ class _CreateBudgetSpreadsheetPageState extends State<CreateBudgetSpreadsheetPag
                       child: Text(
                         "A new spreadsheet will be created for the Google account ${AuthService.getUserEmail()}",
                         style: TextStyle(
-                            fontSize: 12,
+                            fontSize: 14,
                             color: Theme.of(context).colorScheme.outline
                         ),
                       ),
