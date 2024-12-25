@@ -23,7 +23,6 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Consumer<BudgetSheet>(
       builder: (context, budget, child) {
-        print("\n---\nIn settings page. Spreadsheet name ${budget.spreadsheetName}");
         return Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -93,21 +92,21 @@ class _SettingsPageState extends State<SettingsPage> {
                       onTap: () {},
                     ),
                     SettingsTile(
-                        leading: const Icon(Icons.edit_calendar_rounded),
-                        title: 'Add Month To Budget',
-                        subtitle: 'Add a new month to the current budget',
-                        onTap: () {
-                          showModalBottomSheet(
-                              context: context,
-                              isScrollControlled: true,
-                              builder: (context) {
-                                return const FractionallySizedBox(
-                                    heightFactor: 0.85,
-                                    child: AddBudgetMonthToSpreadsheetPage()
-                                );
-                              }
-                          );
-                        }
+                      leading: const Icon(Icons.edit_calendar_rounded),
+                      title: 'Add Month To Budget',
+                      subtitle: 'Add a new month to the current budget',
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          builder: (context) {
+                            return const FractionallySizedBox(
+                                heightFactor: 0.85,
+                                child: AddBudgetMonthToSpreadsheetPage()
+                            );
+                          }
+                        );
+                      }
                     ),
                     SettingsTile(
                       leading: const Icon(Icons.request_page),

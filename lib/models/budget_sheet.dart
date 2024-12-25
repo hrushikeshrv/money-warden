@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:googleapis/sheets/v4.dart' show DetailedApiRequestError, Spreadsheet;
+import 'package:googleapis/drive/v3.dart' as drive;
 import 'package:flutter/material.dart';
 import 'package:money_warden/exceptions/null_spreadsheet_value_exception.dart';
 import 'package:money_warden/exceptions/spreadsheet_value_exception.dart';
@@ -28,6 +29,9 @@ class BudgetSheet extends ChangeNotifier {
   Map<String, BudgetMonth?> budgetData = {};
   String _defaultCurrencySymbol = '\$';
   String _defaultCurrencyCode = 'USD';
+
+  /// List of spreadsheets the user has in their Google Account
+  List<drive.File>? userSpreadsheets = [];
 
   BudgetSheet({ required this.spreadsheetId, required this.spreadsheetName, required this.sharedPreferences });
 
@@ -118,7 +122,6 @@ class BudgetSheet extends ChangeNotifier {
     var prefs = await SharedPreferences.getInstance();
     prefs.setString('spreadsheetName', newSpreadsheetName);
     notifyListeners();
-    print(prefs.getString('spreadsheetName'));
     return true;
   }
 

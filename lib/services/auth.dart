@@ -3,6 +3,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis/sheets/v4.dart' as sheets;
 import 'package:googleapis/drive/v3.dart' as drive;
 import 'package:googleapis_auth/googleapis_auth.dart' as auth show AuthClient;
+import 'package:money_warden/services/sheets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
@@ -51,13 +52,15 @@ class AuthService {
     Map<String, dynamic> data = {};
     GoogleSignInAccount? previousUser = await googleSignIn.signInSilently();
     final prefs = await SharedPreferences.getInstance();
+    List<drive.File>? spreadsheets;
+    if (previousUser != null) {
+      var _ = await SheetsService.getUserSpreadsheets(null);
+      spreadsheets = _!.files;
+    }
 
-    String? spreadsheetId = prefs.getString('spreadsheetId');
-    String? spreadsheetName = prefs.getString('spreadsheetName');
     data['user'] = previousUser;
-    data['spreadsheetId'] = spreadsheetId ?? '';
-    data['spreadsheetName'] = spreadsheetName ?? '';
     data['sharedPreferences'] = prefs;
+    data['spreadsheets'] = spreadsheets;
     return data;
   }
 }
