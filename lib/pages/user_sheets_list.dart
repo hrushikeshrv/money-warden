@@ -20,6 +20,7 @@ class UserSheetsList extends StatefulWidget {
 
 class _UserSheetsListState extends State<UserSheetsList> {
   Future<FileList>? sheets;
+  bool _loading = false;
 
   @override
   void initState() {
@@ -71,11 +72,36 @@ class _UserSheetsListState extends State<UserSheetsList> {
                   ),
                   const SizedBox(height: 20),
 
+                  _loading
+                    ? const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(width: 20, height: 20, child: CircularProgressIndicator()),
+                          SizedBox(width: 10,),
+                          Text("Connecting your spreadsheet")
+                        ],
+                      )
+                    : Container(),
+
                   Expanded(
                     child: ListView.builder(
                       shrinkWrap: true,
-                      itemBuilder: (_, index) {
-                        return SpreadsheetTile(key: ValueKey(spreadsheets[index].id), sheet: spreadsheets[index]);
+                      itemBuilder: (context, index) {
+                        return SpreadsheetTile(
+                          sheet: spreadsheets[index],
+                          isSelected: spreadsheets[index].id == budget.spreadsheetId,
+                          onTap: () async {
+                            setState(() {
+                              _loading = true;
+                            });
+                            await budget.setSpreadsheetName(spreadsheets[index].name!);
+                            await budget.setSpreadsheetId(spreadsheets[index].id!);
+                            budget.budgetInitializationFailed = false;
+                            await budget.initBudgetData(forceUpdate: true);
+                            if (!context.mounted) return;
+                            Navigator.of(context).pop();
+                          },
+                        );
                       },
                       itemCount: spreadsheets.length,
                     ),

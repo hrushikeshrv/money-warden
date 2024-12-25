@@ -23,7 +23,6 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Consumer<BudgetSheet>(
       builder: (context, budget, child) {
-        print("\n---\nIn settings page. Spreadsheet name ${budget.spreadsheetName}");
         return Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,14 +85,6 @@ class _SettingsPageState extends State<SettingsPage> {
 
                     const SizedBox(height: 20),
                     const Heading1(text: 'Spreadsheet & Account'),
-                    SettingsTile(
-                      leading: const Icon(Icons.sync),
-                      title: 'Log Current Spreadsheet',
-                      subtitle: 'Log',
-                      onTap: () {
-                        print(budget.spreadsheetName);
-                      },
-                    ),
                     SettingsTile(
                       leading: const Icon(Icons.sync),
                       title: 'Refresh',
