@@ -86,15 +86,9 @@ class _SettingsPageState extends State<SettingsPage> {
                     const SizedBox(height: 20),
                     const Heading1(text: 'Spreadsheet & Account'),
                     SettingsTile(
-                      leading: const Icon(Icons.sync),
-                      title: 'Refresh',
-                      subtitle: 'Sync data with linked Google Sheet',
-                      onTap: () {},
-                    ),
-                    SettingsTile(
                       leading: const Icon(Icons.edit_calendar_rounded),
                       title: 'Add Month To Budget',
-                      subtitle: 'Add a new month to the current budget',
+                      subtitle: 'Add a new month to the current budget spreadsheet',
                       onTap: () {
                         showModalBottomSheet(
                           context: context,
@@ -110,8 +104,17 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     SettingsTile(
                       leading: const Icon(Icons.request_page),
+                      title: 'Null Spreadsheet',
+                      subtitle: 'Nullify the chosen spreadsheet',
+                      onTap: () {
+                        budget.setSpreadsheetId('');
+                        budget.setSpreadsheetName('NULL');
+                      },
+                    ),
+                    SettingsTile(
+                      leading: const Icon(Icons.request_page),
                       title: 'Choose Budget Spreadsheet',
-                      subtitle: 'Choose the sheet to write budget data to${budget.spreadsheetName != null ? ". (Currently ${budget.spreadsheetName})" : ""}',
+                      subtitle: 'Choose the sheet to write budget data to${budget.spreadsheetName != null ? " (currently ${budget.spreadsheetName})" : ""}',
                       onTap: () {
                         Navigator.of(context).pushNamed('user_sheets_list');
                       },
@@ -119,8 +122,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     SettingsTile(
                       leading: const Icon(Icons.logout),
                       title: 'Log Out',
-                      subtitle: 'Log out of your Google account (${AuthService
-                          .getUserEmail()})',
+                      subtitle: 'Log out of your Google account (${AuthService.getUserEmail()})',
                       onTap: () async {
                         await AuthService.signOut();
                       },

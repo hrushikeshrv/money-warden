@@ -43,6 +43,17 @@ class BudgetSheet extends ChangeNotifier {
     return null;
   }
 
+  /// Resets the value of all relevant properties where state is maintained
+  /// to prepare for fetching data again.
+  void softResetState() {
+    budgetMonthNames = ['Loading...'];
+    _currentBudgetMonthName = 'Loading...';
+    expenseCategories = [];
+    incomeCategories = [];
+    paymentMethods = [];
+    budgetData = {};
+  }
+
   /// Fetch and parse all budget data from the budget spreadsheet
   /// and initialize all other data needed by other screens
   Future<bool> initBudgetData({ bool forceUpdate = false }) async {
@@ -52,12 +63,7 @@ class BudgetSheet extends ChangeNotifier {
     do {
       if (!budgetInitialized || forceUpdate) {
         if (forceUpdate) {
-          budgetMonthNames = ['Loading...'];
-          _currentBudgetMonthName = 'Loading...';
-          expenseCategories = [];
-          incomeCategories = [];
-          paymentMethods = [];
-          budgetData = {};
+          softResetState();
         }
         try {
           // Populate this.budgetMonthNames
@@ -106,7 +112,6 @@ class BudgetSheet extends ChangeNotifier {
   /// Set the spreadsheet Id, persist in shared preferences,
   /// and notify listeners.
   Future<bool> setSpreadsheetId(String newSpreadsheetId) async {
-    print("\n---\nSet spreadsheet ID to $newSpreadsheetId");
     spreadsheetId = newSpreadsheetId;
     var prefs = await SharedPreferences.getInstance();
     prefs.setString('spreadsheetId', newSpreadsheetId);
@@ -117,7 +122,6 @@ class BudgetSheet extends ChangeNotifier {
   /// Set the spreadsheet name, persist in shared preferences,
   /// and notify listeners.
   Future<bool> setSpreadsheetName(String newSpreadsheetName) async {
-    print("\n---\nSet spreadsheet name to $newSpreadsheetName");
     spreadsheetName = newSpreadsheetName;
     var prefs = await SharedPreferences.getInstance();
     prefs.setString('spreadsheetName', newSpreadsheetName);
@@ -134,7 +138,14 @@ class BudgetSheet extends ChangeNotifier {
   /// Fetch all sheets in the user's selected budget sheet
   /// and populate this.budgetMonths
   Future<void> getBudgetMonthNames({ bool forceUpdate = false }) async {
-    budgetMonthNames = await SheetsService.getBudgetMonthNames(null);
+    var names = await SheetsService.getBudgetMonthNames(null);
+    if (names.isEmpty) {
+      await createSheet(getCurrentMonthName());
+      budgetMonthNames = [getCurrentMonthName()];
+    }
+    else {
+      budgetMonthNames = names;
+    }
   }
 
   /// Return the current budget month's name
@@ -526,15 +537,6 @@ class BudgetSheet extends ChangeNotifier {
     return true;
   }
 
-  /// Creates a new spreadsheet in the user's Google account and
-  /// updates the local state to use the newly created spreadsheet
-  /// instead
-  Future<void> createSpreadsheet(String spreadsheetName) async {
-    Spreadsheet newSheet = await SheetsService.createNewBudgetSheet(sheetName: spreadsheetName);
-    await setSpreadsheetName(spreadsheetName);
-    await setSpreadsheetId(newSheet.spreadsheetId!);
-  }
-
   /// Creates a new sheet in the selected budget spreadsheet and
   /// updates the local state to include the new sheet.
   Future<bool> createSheet(String monthName) async {
@@ -561,5 +563,17 @@ class BudgetSheet extends ChangeNotifier {
     }
     notifyListeners();
     return true;
+  }
+
+  /// Creates a new spreadsheet in the user's Google account and
+  /// updates the local state to use the newly created spreadsheet
+  /// instead
+  Future<void> createSpreadsheet(String spreadsheetName) async {
+    softResetState();
+    Spreadsheet newSheet = await SheetsService.createNewBudgetSheet(sheetName: spreadsheetName);
+    await setSpreadsheetName(spreadsheetName);
+    await setSpreadsheetId(newSheet.spreadsheetId!);
+    await createSheet(getCurrentMonthName());
+    notifyListeners();
   }
 }

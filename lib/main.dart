@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:money_warden/pages/instructions.dart';
 import 'package:money_warden/pages/payment_method_list.dart';
 import 'package:money_warden/pages/transaction_category_list.dart';
 import 'package:money_warden/services/sheets.dart';
@@ -112,21 +113,21 @@ class _MoneyWardenState extends State<MoneyWarden> {
                     if (spreadsheetSnapshot.hasData) {
                       final GoogleSignInAccount? user = _currentUser;
                       if (user != null) {
-                        budget.spreadsheetId = spreadsheetSnapshot.data!['spreadsheetId'];
-                        budget.spreadsheetName = spreadsheetSnapshot.data!['spreadsheetName'];
+                        var prefs = authSnapshot.data!['sharedPreferences'];
+                        budget.spreadsheetId = prefs.getString('spreadsheetId');
+                        budget.spreadsheetName = prefs.getString('spreadsheetName');
                         budget.sharedPreferences = authSnapshot.data!['sharedPreferences'];
                         budget.userSpreadsheets = authSnapshot.data!['spreadsheets'];
 
-                        // TODO: Check if a spreadsheet has been selected and show users an instructions page if not.
                         if (
-                          spreadsheetSnapshot.data!['spreadsheetId'] != null
-                          && spreadsheetSnapshot.data!['spreadsheetId'] != ''
+                          budget.spreadsheetId != null
+                          && budget.spreadsheetId != ''
                           && !budget.budgetInitializationFailed
                         ) {
                           budget.initBudgetData();
                         }
-                        else {
-                          // Redirect users to instructions page.
+                        else if (!budget.budgetInitializationFailed) {
+                          return const InstructionsPage();
                         }
 
                         return Scaffold(

@@ -51,6 +51,10 @@ class _UserSheetsListState extends State<UserSheetsList> {
                   const MwWarning(
                     children: [
                       Text('The sheet you select must be in the correct format for Money Warden to be able to work with it.'),
+                      SizedBox(height: 20,),
+                      Text(
+                        'If you haven\'t used Money Warden before, you can create a new budget spreadsheet below'
+                      )
                     ]
                   ),
                   const SizedBox(height: 20),

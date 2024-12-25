@@ -150,6 +150,12 @@ String getCurrentOrClosestMonth(List<String> budgetMonths) {
 }
 
 
+/// Returns the name of the current month
+String getCurrentMonthName() {
+  return getMonthNameFromDate(DateTime.now(), false);
+}
+
+
 /// Parses a date in the format \<date> \<Month> \<Year> and
 /// returns a DateTime object. Also tries to parse dates in
 /// other formats but support for all formats is not guaranteed.
