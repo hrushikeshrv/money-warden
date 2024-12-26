@@ -56,7 +56,7 @@ class _MwActionButtonState extends State<MwActionButton> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             widget.leading,
-            const SizedBox(width: 10),
+            const SizedBox(width: 8),
             Text(widget.text, style: TextStyle(color: textColor), textAlign: TextAlign.center,),
           ],
         ),

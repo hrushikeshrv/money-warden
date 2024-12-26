@@ -40,7 +40,7 @@ class _LoginPageState extends State<LoginPage> {
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: MwActionButton(
                       leading: Image.asset('assets/images/google-g.png', height: 30),
-                      text: 'Log In Using Your Google Account',
+                      text: 'Sign In With Google',
                       onTap: () async {
                         await AuthService.signIn();
                       }
