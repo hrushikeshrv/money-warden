@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:googleapis/drive/v3.dart';
+import 'package:money_warden/services/auth.dart';
 import 'package:provider/provider.dart';
 
 import 'package:money_warden/models/budget_sheet.dart';
@@ -87,28 +88,45 @@ class _UserSheetsListState extends State<UserSheetsList> {
                       )
                     : Container(),
 
-                  Expanded(
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        return SpreadsheetTile(
-                          sheet: spreadsheets[index],
-                          isSelected: spreadsheets[index].id == budget.spreadsheetId,
-                          onTap: () async {
-                            setState(() {
-                              _loading = true;
-                            });
-                            await budget.setSpreadsheetName(spreadsheets[index].name!);
-                            await budget.setSpreadsheetId(spreadsheets[index].id!);
-                            budget.budgetInitializationFailed = false;
-                            await budget.initBudgetData(forceUpdate: true);
-                            if (!context.mounted) return;
-                            Navigator.of(context).pop();
-                          },
+                  const SizedBox(height: 10),
+
+                  FutureBuilder(
+                    future: sheets,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        var sheets = snapshot.data;
+                        if (sheets == null || sheets.files == null) {
+                          return Text("No spreadsheets found in your account ${AuthService.getUserEmail()}");
+                        }
+                        budget.userSpreadsheets = sheets.files!;
+                        return Expanded(
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) {
+                              return SpreadsheetTile(
+                                sheet: sheets.files![index],
+                                isSelected: sheets.files![index].id == budget.spreadsheetId,
+                                onTap: () async {
+                                  setState(() {
+                                    _loading = true;
+                                  });
+                                  await budget.setSpreadsheetName(sheets.files![index].name!);
+                                  await budget.setSpreadsheetId(sheets.files![index].id!);
+                                  budget.budgetInitializationFailed = false;
+                                  await budget.initBudgetData(forceUpdate: true);
+                                  if (!context.mounted) return;
+                                  Navigator.of(context).pop();
+                                },
+                              );
+                            },
+                            itemCount: spreadsheets.length,
+                          ),
                         );
-                      },
-                      itemCount: spreadsheets.length,
-                    ),
+                      }
+                      else {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                    }
                   )
                 ]
               ),
