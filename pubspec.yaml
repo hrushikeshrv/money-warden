@@ -71,6 +71,7 @@ flutter:
   assets:
     - assets/images/
     - docs/privacy-policy.md
+    - docs/tos.md
   fonts:
     - family: Poppins
       fonts:

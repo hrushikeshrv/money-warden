@@ -3,6 +3,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:money_warden/pages/instructions.dart';
 import 'package:money_warden/pages/payment_method_list.dart';
+import 'package:money_warden/pages/terms_of_service.dart';
 import 'package:money_warden/pages/transaction_category_list.dart';
 import 'package:money_warden/services/sheets.dart';
 import 'package:money_warden/utils/utils.dart';
@@ -100,6 +101,7 @@ class _MoneyWardenState extends State<MoneyWarden> {
             'income_categories_list': (context) => const TransactionCategoryListPage(transactionType: TransactionType.income),
             'payment_methods_list': (context) => const PaymentMethodListPage(),
             'privacy_policy': (context) => const PrivacyPolicyPage(),
+            'tos': (context) => const TermsOfServicePage(),
           },
           // Try to sign the user in silently and show the splash screen in the
           // mean time

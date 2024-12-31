@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:money_warden/services/auth.dart';
 import 'package:money_warden/components/heading1.dart';
@@ -133,14 +134,18 @@ class _SettingsPageState extends State<SettingsPage> {
                     SettingsTile(
                       leading: Icon(Icons.bug_report, color: Theme.of(context).colorScheme.error),
                       title: 'Report an Issue',
-                      subtitle: 'Let us know about any bugs!',
-                      onTap: () {}
+                      subtitle: 'Let us know about any bugs (opens in your email app)',
+                      onTap: () async {
+                        await launchUrl(Uri.parse('mailto:hrushikeshrv@gmail.com?subject=Money Warden Bug Report'));
+                      }
                     ),
                     SettingsTile(
-                        leading: Icon(Icons.history_edu, color: Theme.of(context).colorScheme.primary),
-                        title: 'Request a Feature',
-                        subtitle: 'Request new features for Money Warden!',
-                        onTap: () {}
+                      leading: Icon(Icons.history_edu, color: Theme.of(context).colorScheme.primary),
+                      title: 'Request a Feature',
+                      subtitle: 'Request new features for Money Warden (opens in your email app)',
+                      onTap: () async {
+                        await launchUrl(Uri.parse('mailto:hrushikeshrv@gmail.com?subject=Money Warden Feature Request'));
+                      }
                     ),
                     SettingsTile(
                       leading: const Icon(Icons.lock),
@@ -154,7 +159,9 @@ class _SettingsPageState extends State<SettingsPage> {
                       leading: const Icon(Icons.description),
                       title: 'Terms of Service',
                       subtitle: 'Read Money Warden\'s Terms of Service',
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.of(context).pushNamed('tos');
+                      },
                     )
                   ],
                 ),
