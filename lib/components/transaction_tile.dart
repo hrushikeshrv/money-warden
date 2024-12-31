@@ -71,7 +71,7 @@ class _TransactionTileState extends State<TransactionTile> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 mainTitle,
-                Text(formatDateTime(widget.transaction!.time), style: TextStyle(fontSize: 13, color: Colors.grey.shade600),),
+                Text(formatDateTime(widget.transaction!.time), style: TextStyle(fontSize: 12, color: Colors.grey.shade600),),
               ],
             ),
             Text(

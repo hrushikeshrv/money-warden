@@ -104,7 +104,7 @@ class _PaymentMethodDetailPageState extends State<PaymentMethodDetailPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Heading1(text: '${widget.updatePaymentMethod ? 'Update' : 'Add'} Payment Method'),
+                  Heading1(text: '${widget.updatePaymentMethod ? '' : 'Add'} Payment Method'),
                   MwActionButton(
                     leading: const Icon(Icons.check),
                     text: widget.updatePaymentMethod ? 'Update' : 'Add',

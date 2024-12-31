@@ -17,7 +17,7 @@ class BudgetInitializationFailedAlert extends StatelessWidget {
           const SizedBox(height: 15,),
           MwActionButton(
             leading: const Icon(Icons.request_page),
-            text: "Choose budget spreadsheet",
+            text: "Choose budget sheet",
             onTap: () {
               Navigator.of(context).pushNamed('user_sheets_list');
             }

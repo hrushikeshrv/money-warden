@@ -27,6 +27,7 @@ import 'firebase_options.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
+    name: "Money Warden",
     options:DefaultFirebaseOptions.currentPlatform,
   );
   runApp(const MoneyWarden());
@@ -156,10 +157,13 @@ class _MoneyWardenState extends State<MoneyWarden> {
                             },
                             child: Icon(Icons.payments_outlined, color: Theme.of(context).colorScheme.onSurface),
                           ),
-                          body: SafeArea(
-                            child: Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: pages[currentPage],
+                          body: Material(
+                            color: Theme.of(context).colorScheme.surface,
+                            child: SafeArea(
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 10, right: 10),
+                                child: pages[currentPage],
+                              ),
                             ),
                           ),
                         );

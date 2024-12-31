@@ -6,14 +6,17 @@ class MwAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 20),
-      child: Row(
-        children: [
-          Image.asset('assets/images/logo.png', height: 45,),
-          const SizedBox(width: 10),
-          const BudgetMonthDropdown(),
-        ],
+    return Container(
+      color: Theme.of(context).colorScheme.surface,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 10, top: 10),
+        child: Row(
+          children: [
+            Image.asset('assets/images/logo.png', height: 45,),
+            const SizedBox(width: 10),
+            const BudgetMonthDropdown(),
+          ],
+        ),
       ),
     );
   }

@@ -358,7 +358,7 @@ class BudgetSheet extends ChangeNotifier {
           }
         }
         for (int j = 0; j < paymentMethods.length; j++) {
-          if (budgetMonth.expenses[i].paymentMethod!.name == paymentMethods[j].name) {
+          if (budgetMonth.expenses[i].paymentMethod?.name == paymentMethods[j].name) {
             budgetMonth.expenses[i].paymentMethod = paymentMethods[j];
           }
         }

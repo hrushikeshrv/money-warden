@@ -43,5 +43,5 @@ app.*.map.json
 /android/app/release
 
 google-services.json
-_pvt/firebase_options.dart
+firebase_options.dart
 _pvt/
