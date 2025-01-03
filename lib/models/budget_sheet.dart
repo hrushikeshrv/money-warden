@@ -86,7 +86,6 @@ class BudgetSheet extends ChangeNotifier {
           return budgetInitialized;
         }
         on DetailedApiRequestError catch (e) {
-          print(e.toString());
           backoffCount++;
           if (backoffCount >= 5) {
             throw ServiceUnavailableException('A Google Service rate-limited Money Warden.');
@@ -98,7 +97,6 @@ class BudgetSheet extends ChangeNotifier {
           await Future.delayed(Duration(seconds: pow(2, backoffCount) as int, milliseconds: rng.nextInt(1000)));
         }
         catch (e) {
-          print(e.toString());
           budgetInitializationFailed = true;
           rateLimited = false;
           notifyListeners();

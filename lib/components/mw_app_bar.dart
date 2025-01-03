@@ -54,6 +54,8 @@ class _MwAppBarState extends State<MwAppBar> {
                     refreshing = true;
                     await budget.initBudgetData(forceUpdate: true);
                     refreshing = false;
+                    if (!context.mounted) return;
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
                   },
                   child: Ink(
                     padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
