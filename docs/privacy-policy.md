@@ -1,5 +1,5 @@
 # Money Warden Privacy Policy
-**Effective December 25, 2024**
+**Effective Date:** December 25, 2024
 
 # Introduction
 Welcome to Money Warden! Your privacy is important to us, and we are committed to safeguarding it. This Privacy Policy outlines how Money Warden handles your information. By using Money Warden, you agree to the practices described in this policy.
@@ -13,7 +13,7 @@ Money Warden integrates with the following third-party services:
 - Google Sheets API: To create and manage your budgeting data in a Google Sheet.
 - Google Analytics: To analyze app usage and improve the user experience. Google Analytics collects non-identifiable data, such as app usage patterns.
 
-Please refer to Google's privacy policy for details on how they handle your data: https://policies.google.com/privacy.
+Please refer to Google's privacy policy for details on how they handle your data: [https://policies.google.com/privacy].
 
 # User Control
 You have complete control over the data accessed by Money Warden:
@@ -30,5 +30,5 @@ Money Warden is designed with privacy in mind. While we do not collect or store 
 # Contact Us
 If you have any questions or concerns regarding this Privacy Policy or Money Warden, you can reach us via:
 
-- Website: https://hrus.in/money-warden
-- GitHub Repository: https://github.com/hrushikeshrv/money-warden/issues
+- **Website**: [https://hrus.in](https://hrus.in)  
+- **GitHub Repository**: [https://github.com/hrushikeshrv/money-warden/issues]

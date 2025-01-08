@@ -1,6 +1,6 @@
 # Terms of Service for Money Warden
 
-**Effective Date:** 25 December 2024
+**Effective Date:** December 25, 2024
 
 ## Introduction
 

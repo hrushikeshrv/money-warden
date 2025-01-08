@@ -17,3 +17,9 @@ Money Warden is completely open source, and all contributions are welcome!
 
 Please report any issues you face or request any new features on this repository's
 [issues page](https://github.com/hrushikeshrv/money-warden/issues).
+
+## Privacy Policy
+See [Privacy Policy](./privacy-policy.md)
+
+## Terms of Service
+See [Terms of Service](./tos.md)
