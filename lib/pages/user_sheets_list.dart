@@ -33,8 +33,7 @@ class _UserSheetsListState extends State<UserSheetsList> {
   Widget build(BuildContext context) {
     return Consumer<BudgetSheet>(
       builder: (context, budget, child) {
-        List<File> spreadsheets = [];
-        if (budget.userSpreadsheets != null) spreadsheets = budget.userSpreadsheets!;
+        // if (budget.userSpreadsheets != null) spreadsheets = budget.userSpreadsheets!;
 
         return Scaffold(
           body: SafeArea(
@@ -119,7 +118,7 @@ class _UserSheetsListState extends State<UserSheetsList> {
                                 },
                               );
                             },
-                            itemCount: spreadsheets.length,
+                            itemCount: sheets.files!.length,
                           ),
                         );
                       }

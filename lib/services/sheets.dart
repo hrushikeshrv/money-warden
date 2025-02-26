@@ -153,7 +153,7 @@ class SheetsService {
   }
 
   /// Returns a list of sheet names for all the
-  /// months in the chosen budget spreadsheet.
+  /// months in the chosen budget spreadsheet sorted by latest first.
   /// Does not return other sheets like the Metadata sheet
   /// or the Finances Summary sheet.
   static Future<List<String>> getBudgetMonthNames(SheetsApi? api) async {
@@ -177,6 +177,11 @@ class SheetsService {
         sheetNames.add(sheet.properties!.title ?? '');
       }
     }
+    sheetNames.sort((a, b) {
+      DateTime aDate = getDateFromMonthName(a);
+      DateTime bDate = getDateFromMonthName(b);
+      return bDate.compareTo(aDate);
+    });
     return sheetNames;
   }
 
@@ -218,7 +223,7 @@ class SheetsService {
         if (expense[2] != null && expense[2] != '') {
           txn.description = expense[2].toString();
         }
-        if (expense[3] != null && expense[3] != '') {
+        if (expense.length >= 4 && expense[3] != null && expense[3] != '') {
           txn.category = Category(name: expense[3].toString());
         }
         if (expense.length >= 5 && expense[4] != null && expense[4] != '') {
@@ -250,7 +255,7 @@ class SheetsService {
         if (income[2] != null && income[2] != '') {
           txn.description = income[2].toString();
         }
-        if (income[3] != null && income[3] != '') {
+        if (income.length >= 4 && income[3] != null && income[3] != '') {
           txn.category = Category(name: income[3].toString());
         }
         if (income.length >= 5 && income[4] != null && income[4] != '') {
