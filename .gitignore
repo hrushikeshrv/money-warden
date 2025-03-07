@@ -46,3 +46,4 @@ google-services.json
 firebase_options.dart
 _pvt/
 GoogleService-Info.plist
+key.properties
