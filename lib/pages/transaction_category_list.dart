@@ -63,6 +63,7 @@ class _TransactionCategoryListPageState extends State<TransactionCategoryListPag
 
                   const SizedBox(height: 20),
                   ListView.builder(
+                    padding: const EdgeInsets.only(bottom: 20),
                     itemCount: categoryCount,
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
@@ -75,7 +76,7 @@ class _TransactionCategoryListPageState extends State<TransactionCategoryListPag
                         return CategoryTile(category: budget.incomeCategories[index], transactionType: widget.transactionType);
                       }
                     },
-                  )
+                  ),
                 ],
               ),
             ),

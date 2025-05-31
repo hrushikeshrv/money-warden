@@ -210,90 +210,13 @@ class _TransactionAddPageState extends State<TransactionAddPage> {
                     shrinkWrap: true,
                     children: [
                   
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 10),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 30),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                GestureDetector(
-                                  child: Container(
-                                    padding: const EdgeInsets.all(7),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(12),
-                                      color: transactionType == TransactionType.expense
-                                          ? Theme.of(context).colorScheme.primary
-                                          : Theme.of(context).colorScheme.surface,
-                                      border: Border.all(
-                                        width: 3,
-                                        color: transactionType == TransactionType.expense
-                                            ? Theme.of(context).colorScheme.primary
-                                            : Theme.of(context).colorScheme.surfaceDim
-                                      )
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        'Expense',
-                                        style: TextStyle(
-                                          color: transactionType == TransactionType.expense
-                                              ? Colors.white
-                                              : Theme.of(context).colorScheme.onSurface
-                                        ),
-                                      )
-                                    ),
-                                  ),
-                                  onTap: () {
-                                    setState(() {
-                                      // If we are updating a transaction, we can't change
-                                      // from income to expense, and vice-versa.
-                                      if (widget.updateTransaction) return;
-                                      transactionType = TransactionType.expense;
-                                    });
-                                  },
-                                ),
-                                const SizedBox(width: 10),
-                                GestureDetector(
-                                  child: Container(
-                                    padding: const EdgeInsets.all(7),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(12),
-                                      color: transactionType == TransactionType.income
-                                          ? Theme.of(context).colorScheme.primary
-                                          : Theme.of(context).colorScheme.surface,
-                                      border: Border.all(
-                                        width: 3,
-                                        color: transactionType == TransactionType.income
-                                          ? Theme.of(context).colorScheme.primary
-                                          : Theme.of(context).colorScheme.surfaceDim
-                                      )
-                                    ),
-                                    child: Center(
-                                        child: Text(
-                                          'Income',
-                                          style: TextStyle(
-                                            color: transactionType == TransactionType.income
-                                                ? Colors.white
-                                                : Theme.of(context).colorScheme.onSurface
-                                          ),
-                                        )
-                                    ),
-                                  ),
-                                  onTap: () {
-                                    setState(() {
-                                      // If we are updating a transaction, we can't change
-                                      // from expense to income, and vice-versa.
-                                      if (widget.updateTransaction) return;
-                                      transactionType = TransactionType.income;
-                                    });
-                                  },
-                                ),
-                              ],
-                            ),
-                  
-                            const SizedBox(height: 20),
+                            const SizedBox(height: 10),
                             Row(
                               children: [
                                 Text(budget.defaultCurrencySymbol, style: const TextStyle(fontSize: 20)),
@@ -327,7 +250,7 @@ class _TransactionAddPageState extends State<TransactionAddPage> {
                                   child: Text(
                                     formatDateTime(transactionDate),
                                     style: const TextStyle(
-                                      fontSize: 24
+                                      fontSize: 20
                                     )
                                   ),
                                 ),
