@@ -26,9 +26,11 @@ class _MwAppBarState extends State<MwAppBar> {
             children: [
               const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2,),),
               const SizedBox(width: 10),
-              Text(
-                'Syncing with ${budget.spreadsheetName}',
-                style: const TextStyle(color: Colors.black),
+              Flexible(
+                child: Text(
+                  'Syncing with ${budget.spreadsheetName}',
+                  style: const TextStyle(color: Colors.black),
+                ),
               ),
             ],
           )
