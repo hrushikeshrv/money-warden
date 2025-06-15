@@ -132,33 +132,12 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                   const SizedBox(height: 25),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Heading1(text: 'Recent Transactions'),
-                        GestureDetector(
-                          onTap: () {},
-                          child: Row(
-                            children: [
-                              Text(
-                                'See all',
-                                style: TextStyle(
-                                    color: Theme.of(context).colorScheme.primary,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 15
-                                ),
-                              ),
-                              const SizedBox(width: 5),
-                              Icon(
-                                  Icons.arrow_forward,
-                                  color: Theme.of(context).colorScheme.primary,
-                                  size: 14
-                              )
-                            ],
-                          )
-                        ),
+                        Heading1(text: 'Recent Transactions'),
                       ],
                     ),
                   ),
