@@ -107,6 +107,35 @@ class BudgetSheet extends ChangeNotifier {
     return false;
   }
 
+  /// Returns true if the last (at most) six months
+  /// of data is already loaded.
+  bool lastSixMonthDataLoaded() {
+    List<String> lastSixMonths = getLastSixMonths(getCurrentMonthName());
+    for (String month in lastSixMonths) {
+      if (
+        budgetMonthNames.contains(month)
+        && !budgetData.containsKey(month)
+      ) return false;
+    }
+    return true;
+  }
+
+  /// Fetches budget data for the last 6 months
+  /// (or as many are available) and returns the number
+  /// of months of data fetched
+  Future<int> getLastSixMonthData() async {
+    List<String> lastSixMonths = getLastSixMonths(getCurrentMonthName());
+    int n = 0;
+    for (String month in lastSixMonths) {
+      if (budgetMonthNames.contains(month)) {
+        await getBudgetMonthData(month: month);
+        n++;
+      }
+    }
+    notifyListeners();
+    return n;
+  }
+
   /// Set the spreadsheet Id, persist in shared preferences,
   /// and notify listeners.
   Future<bool> setSpreadsheetId(String newSpreadsheetId) async {

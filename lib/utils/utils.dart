@@ -149,6 +149,18 @@ String getCurrentOrClosestMonth(List<String> budgetMonths) {
   return closestMonthName;
 }
 
+/// Returns a list containing the names of the passed
+/// month and the 5 months before it
+List<String> getLastSixMonths(String month) {
+  DateTime d = getFirstDateOfMonth(getDateFromMonthName(month));
+  List<String> months = [month];
+  for (int i = 1; i < 6; i++) {
+    d = DateTime(d.year, d.month - 1, d.day);
+    months.add(getMonthNameFromDate(d, false));
+  }
+  return months;
+}
+
 
 /// Returns the name of the current month
 String getCurrentMonthName() {

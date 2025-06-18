@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:money_warden/models/budget_sheet.dart';
 import 'package:money_warden/models/transaction.dart';
 import 'package:money_warden/pages/login.dart';
-import 'package:money_warden/pages/analytics.dart';
+import 'package:money_warden/pages/analytics/analytics_homepage.dart';
 import 'package:money_warden/pages/transaction_add.dart';
 import 'package:money_warden/pages/homepage.dart';
 import 'package:money_warden/pages/settings.dart';
@@ -49,7 +49,7 @@ class _MoneyWardenState extends State<MoneyWarden> {
   final List pages = [
     const HomePage(),
     const TransactionsPage(),
-    const AnalyticsPage(),
+    const AnalyticsHomepage(),
     const SettingsPage(),
   ];
 
@@ -94,7 +94,7 @@ class _MoneyWardenState extends State<MoneyWarden> {
             'homepage': (context) => const HomePage(),
             'login': (context) => const LoginPage(),
             'transactions': (context) => const TransactionsPage(),
-            'analytics': (context) => const AnalyticsPage(),
+            'analytics': (context) => const AnalyticsHomepage(),
             'settings': (context) => const SettingsPage(),
             'user_sheets_list': (context) => const UserSheetsList(),
             'expense_categories_list': (context) => const TransactionCategoryListPage(transactionType: TransactionType.expense),
