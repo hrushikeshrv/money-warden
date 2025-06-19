@@ -24,8 +24,8 @@ class _AnalyticsHomepageState extends State<AnalyticsHomepage> {
             dividerColor: Theme.of(context).colorScheme.surfaceDim,
             tabs: const [
               Tab(icon: Icon(Icons.pie_chart),),
-              Tab(icon: Icon(Icons.timeline),),
               Tab(icon: Icon(Icons.area_chart),),
+              Tab(icon: Icon(Icons.timeline),),
               Tab(icon: Icon(Icons.trending_up),),
             ]
           ),
@@ -33,8 +33,8 @@ class _AnalyticsHomepageState extends State<AnalyticsHomepage> {
             child: TabBarView(
               children: [
                 SpendByCategoryPage(),
-                SpendingTrendPage(),
                 IncomeVsExpensesPage(),
+                SpendingTrendPage(),
                 IncomeTrendPage(),
               ],
             ),

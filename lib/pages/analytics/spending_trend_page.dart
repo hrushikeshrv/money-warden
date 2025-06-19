@@ -36,11 +36,24 @@ class SpendingTrendPage extends StatelessWidget {
 
         List<String> lastSixMonths = getLastSixMonths(getCurrentMonthName());
         List<MonthlySpend> data = [];
+        List<Widget> spendTiles = [];
         for (String month in lastSixMonths) {
           if (budget.budgetData.containsKey(month)) {
             data.add(MonthlySpend(
               getDateFromMonthName(month),
               budget.budgetData[month]!.monthExpenseAmount,
+            ));
+            spendTiles.add(ListTile(
+              leading: const Icon(Icons.payments_outlined),
+              title: Text(month),
+              trailing: Text(
+                budget.defaultCurrencySymbol + formatMoney(budget.budgetData[month]!.monthExpenseAmount),
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.onSurface
+                ),
+              ),
             ));
           }
         }
@@ -67,6 +80,14 @@ class SpendingTrendPage extends StatelessWidget {
               child: ListView(
                 shrinkWrap: true,
                 children: [
+                  const Center(
+                    child: Text(
+                      'Expenses over last 6 months',
+                      style: TextStyle(
+                        fontSize: 10
+                      ),
+                    )
+                  ),
                   AspectRatio(
                     aspectRatio: 1.5,
                     child: charts.TimeSeriesChart(
@@ -78,6 +99,9 @@ class SpendingTrendPage extends StatelessWidget {
                             transitionFormat: 'MMM yyyy',
                           )
                         )
+                      ),
+                      defaultRenderer: charts.LineRendererConfig(
+                        strokeWidthPx: 3
                       ),
                       primaryMeasureAxis: charts.NumericAxisSpec(
                         tickFormatterSpec: charts.BasicNumericTickFormatterSpec((num? value) {
@@ -94,7 +118,9 @@ class SpendingTrendPage extends StatelessWidget {
                     )
                   ),
 
-
+                  const SizedBox(height: 20),
+                  ...spendTiles,
+                  const SizedBox(height: 70),
                 ],
               ),
             )

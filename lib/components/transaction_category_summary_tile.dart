@@ -35,7 +35,7 @@ class TransactionCategorySummaryTile extends StatelessWidget {
             ),
             const Positioned(
               left: 10,
-              top: 10,
+              top: 8,
               child: SizedBox(
                 height: 40,
                 width: 40,
