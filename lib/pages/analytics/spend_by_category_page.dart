@@ -39,13 +39,13 @@ class SpendByCategoryPage extends StatelessWidget {
                   budget.currentBudgetMonthData == null
                       ? const SizedBox(height: 100, child: Center(child: CircularProgressIndicator()))
                       : AspectRatio(
-                    aspectRatio: 1,
-                    child: charts.PieChart<double>(
-                      budget.currentBudgetMonthData!.getExpensesByCategorySeriesList(),
-                      defaultRenderer: charts.ArcRendererConfig(
-                          arcRendererDecorators: [charts.ArcLabelDecorator()]
-                      ),
-                    ),
+                        aspectRatio: 1,
+                        child: charts.PieChart<double>(
+                          budget.currentBudgetMonthData!.getExpensesByCategorySeriesList(),
+                          defaultRenderer: charts.ArcRendererConfig(
+                              arcRendererDecorators: [charts.ArcLabelDecorator()]
+                          ),
+                        ),
                   ),
 
                   const SizedBox(height: 10),

@@ -4,6 +4,7 @@ import 'package:money_warden/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 import 'package:community_charts_flutter/community_charts_flutter.dart' as charts;
+import 'package:community_charts_common/community_charts_common.dart' as chartsCommon;
 
 class SpendingTrendPage extends StatelessWidget {
   const SpendingTrendPage({super.key});
@@ -32,37 +33,70 @@ class SpendingTrendPage extends StatelessWidget {
             ],
           );
         }
+
         List<String> lastSixMonths = getLastSixMonths(getCurrentMonthName());
-        List<Spend> data = [];
-        int idx = 0;
+        List<MonthlySpend> data = [];
         for (String month in lastSixMonths) {
           if (budget.budgetData.containsKey(month)) {
-            data.add(Spend(
-              idx++,
+            data.add(MonthlySpend(
+              getDateFromMonthName(month),
               budget.budgetData[month]!.monthExpenseAmount,
-              month
             ));
           }
         }
-        final s = charts.Series<Spend, double>(
+        data = data.reversed.toList();
+        final s = [charts.Series<MonthlySpend, DateTime>(
           id: 'Expenses by month',
-          domainFn: (Spend s, _) => s.spend,
-          measureFn: (Spend s, _) => s.spend,
-          labelAccessorFn: (Spend s, _) => s.monthName,
-          colorFn: (Spend s, __) {
-            Color c = getRandomGraphColor();
-            return Color(
+          domainFn: (MonthlySpend s, _) => s.month,
+          measureFn: (MonthlySpend s, _) => s.spend,
+          labelAccessorFn: (MonthlySpend s, _) => getMonthNameFromDate(s.month, true),
+          colorFn: (MonthlySpend s, __) {
+            Color c = const Color(0xFF43A047);
+            return chartsCommon.Color(
               r: c.red,
               g: c.green,
               b: c.blue
             );
           },
           data: data
-        );
+        )];
         return Column(
           children: [
-            charts.LineChart(
-              s
+            const SizedBox(height: 20),
+            Expanded(
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  AspectRatio(
+                    aspectRatio: 1.5,
+                    child: charts.TimeSeriesChart(
+                      s,
+                      domainAxis: const charts.DateTimeAxisSpec(
+                        tickFormatterSpec: charts.AutoDateTimeTickFormatterSpec(
+                          month: charts.TimeFormatterSpec(
+                            format: 'MMM',
+                            transitionFormat: 'MMM yyyy',
+                          )
+                        )
+                      ),
+                      primaryMeasureAxis: charts.NumericAxisSpec(
+                        tickFormatterSpec: charts.BasicNumericTickFormatterSpec((num? value) {
+                          if (value == null) return '';
+                          return '${budget.defaultCurrencySymbol} ${value.toStringAsFixed(0)}';
+                        })
+                      ),
+                      behaviors: [
+                        charts.SelectNearest(eventTrigger: charts.SelectionTrigger.tap),
+                        charts.LinePointHighlighter(
+                          symbolRenderer: charts.CircleSymbolRenderer(),
+                        ),
+                      ],
+                    )
+                  ),
+
+
+                ],
+              ),
             )
           ],
         );
@@ -71,9 +105,8 @@ class SpendingTrendPage extends StatelessWidget {
   }
 }
 
-class Spend {
+class MonthlySpend {
   final double spend;
-  final int index;
-  final String monthName;
-  Spend(this.index, this.spend, this.monthName);
+  final DateTime month;
+  MonthlySpend(this.month, this.spend);
 }
