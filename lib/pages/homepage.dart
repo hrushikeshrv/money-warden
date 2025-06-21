@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'package:money_warden/components/heading1.dart';
 import 'package:money_warden/components/mw_action_button.dart';
@@ -52,7 +53,10 @@ class _HomePageState extends State<HomePage> {
                             children: [
                               amountSpent == null ?
                               const CircularProgressIndicator()
-                                  : Text("${budget.defaultCurrencySymbol}${formatMoney(amountSpent)}", style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600)),
+                                  : Text(
+                                      "${budget.defaultCurrencySymbol}${formatMoney(amountSpent)}",
+                                      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600)
+                                  ),
                               const Text("Spent"),
                             ],
                           ),

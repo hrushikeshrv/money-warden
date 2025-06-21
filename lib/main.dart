@@ -13,7 +13,6 @@ import 'package:money_warden/models/budget_sheet.dart';
 import 'package:money_warden/models/transaction.dart';
 import 'package:money_warden/pages/login.dart';
 import 'package:money_warden/pages/analytics/analytics_homepage.dart';
-import 'package:money_warden/pages/transaction_add.dart';
 import 'package:money_warden/pages/homepage.dart';
 import 'package:money_warden/pages/settings.dart';
 import 'package:money_warden/pages/splash_screen.dart';
@@ -86,10 +85,7 @@ class _MoneyWardenState extends State<MoneyWarden> {
       ),
       child: Consumer<BudgetSheet>(
         builder: (context, budget, _) => MaterialApp(
-          theme: ThemeData(
-            fontFamily: 'Poppins',
-            colorScheme: defaultColorScheme,
-          ),
+          theme: defaultTheme,
           routes: {
             'homepage': (context) => const HomePage(),
             'login': (context) => const LoginPage(),
