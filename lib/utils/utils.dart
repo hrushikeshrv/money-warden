@@ -236,8 +236,9 @@ double parseAmount(String amount) {
 /// Formats a double as an amount by inserting commas
 /// in the right places
 String formatMoney(double amount) {
-  // TODO: add tests
   List<String> result = [];
+  bool negative = amount < 0;
+  if (negative) amount = -1 * amount;
   var characters = amount.toString().split('.')[0].split('').reversed.toList();
   for (int i = 0; i < characters.length; i++) {
     result.add(characters[i]);
@@ -251,6 +252,7 @@ String formatMoney(double amount) {
     if (cents.length > 2) { cents = cents.substring(0, 2); }
     stringResult += '.$cents';
   }
+  if (negative) stringResult = '-$stringResult';
   return stringResult;
 }
 

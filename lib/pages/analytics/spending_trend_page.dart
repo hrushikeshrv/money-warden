@@ -38,15 +38,43 @@ class SpendingTrendPage extends StatelessWidget {
         List<String> lastSixMonths = getLastSixMonths(getCurrentMonthName());
         List<MonthlySpend> data = [];
         List<Widget> spendTiles = [];
-        for (String month in lastSixMonths) {
+        for (int i = 0; i < lastSixMonths.length; i++) {
+          String month = lastSixMonths[i];
           if (budget.budgetData.containsKey(month)) {
             data.add(MonthlySpend(
               getDateFromMonthName(month),
               budget.budgetData[month]!.monthExpenseAmount,
             ));
+            double change = 0;
+            if (i < lastSixMonths.length - 1) {
+              double curr = budget.budgetData[month]?.monthExpenseAmount ?? 0;
+              double prev = (budget.budgetData[lastSixMonths[i+1]]?.monthExpenseAmount ?? 0);
+              change = (curr - prev) * 100 / prev;
+              if (change.isInfinite) change = 100;
+              if (change.isNaN) change = 0;
+            }
             spendTiles.add(ListTile(
               leading: const Icon(Icons.payments_outlined),
               title: Text(month),
+              subtitle: Row(
+                children: [
+                  change > 0
+                      ? Icon(Icons.arrow_upward, size: 12, color: change > 0 ? Colors.red.shade500 : Colors.green.shade600,)
+                      : change == 0
+                      ?  const Icon(Icons.remove, size: 12)
+                      : Icon(Icons.arrow_downward, size: 12, color: change > 0 ? Colors.red.shade500 : Colors.green.shade600,),
+                  Text(
+                    '${change.abs().toStringAsFixed(2)}% ${change > 0 ? "increase" : change == 0 ? "no change" : "decrease"}',
+                    style: TextStyle(
+                        color: change > 0
+                            ? Colors.red.shade600
+                            : change == 0
+                            ? Colors.black
+                            : Colors.green.shade600
+                    ),
+                  ),
+                ],
+              ),
               trailing: Text(
                 budget.defaultCurrencySymbol + formatMoney(budget.budgetData[month]!.monthExpenseAmount),
                 style: GoogleFonts.poppins(
