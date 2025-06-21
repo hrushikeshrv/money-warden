@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'package:money_warden/models/budget_sheet.dart';
 import 'package:money_warden/utils/utils.dart';
@@ -46,7 +47,7 @@ class TransactionCategorySummaryTile extends StatelessWidget {
         ),
         title: Text(categoryName),
         subtitle: Text('${(percentSpent * 100).toStringAsFixed(1)}% of total'),
-        trailing: Text('${budget.defaultCurrencySymbol}${formatMoney(amount)}', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+        trailing: Text('${budget.defaultCurrencySymbol}${formatMoney(amount)}', style: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.w500),),
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:money_warden/models/budget_sheet.dart';
 import 'package:money_warden/utils/utils.dart';
 import 'package:provider/provider.dart';
@@ -48,9 +49,9 @@ class IncomeTrendPage extends StatelessWidget {
               title: Text(month),
               trailing: Text(
                 budget.defaultCurrencySymbol + formatMoney(budget.budgetData[month]!.monthIncomeAmount),
-                style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                style: GoogleFonts.poppins(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w500,
                     color: Theme.of(context).colorScheme.onSurface
                 ),
               ),
