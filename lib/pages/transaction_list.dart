@@ -15,6 +15,8 @@ class TransactionsPage extends StatefulWidget {
 }
 
 class _TransactionsPageState extends State<TransactionsPage> {
+  final TextEditingController controller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Consumer<BudgetSheet>(
@@ -26,6 +28,26 @@ class _TransactionsPageState extends State<TransactionsPage> {
         return Column(
           children: [
             const MwAppBar(),
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+              child: TextField(
+                controller: controller,
+                onChanged: (String query) {
+                  budget.filterTransactions(query);
+                },
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
+                  label: Row(
+                    children: [
+                      Icon(Icons.search, color: Theme.of(context).colorScheme.onSurface),
+                      const SizedBox(width: 5,),
+                      Text("Filter transactions", style: TextStyle(color: Theme.of(context).colorScheme.onSurface))
+                    ],
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0)
+                ),
+              ),
+            ),
             Expanded(
               child: ListView(
                 shrinkWrap: true,
@@ -38,9 +60,9 @@ class _TransactionsPageState extends State<TransactionsPage> {
                       : ListView.builder(
                         shrinkWrap: true,
                         physics: const ClampingScrollPhysics(),
-                        itemCount: budget.currentBudgetMonthData == null ? 0 : budget.currentBudgetMonthData!.orderedTransactions.length,
+                        itemCount: budget.currentBudgetMonthData == null ? 0 : budget.currentBudgetMonthData!.filteredTransactions.length,
                         itemBuilder: (context, index) {
-                          return TransactionTile(transaction: budget.currentBudgetMonthData?.orderedTransactions[index]);
+                          return TransactionTile(transaction: budget.currentBudgetMonthData?.filteredTransactions[index]);
                         },
                       ),
                   const SizedBox(height: 70),

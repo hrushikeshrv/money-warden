@@ -182,6 +182,9 @@ class BudgetSheet extends ChangeNotifier {
 
   /// Set the current budget month and notify listeners
   void setCurrentBudgetMonth(month) {
+    // First remove the filter on the current budget month's
+    // transactions (if any)
+    filterTransactions('');
     _currentBudgetMonthName = month;
     if (!budgetData.containsKey(month)) {
       budgetData[month] = null;
@@ -406,6 +409,7 @@ class BudgetSheet extends ChangeNotifier {
         }
       }
     }
+    budgetMonth.filteredTransactions = budgetMonth.getOrderedTransactions(null);
 
     budgetData[month] = budgetMonth;
     notifyListeners();
@@ -562,6 +566,17 @@ class BudgetSheet extends ChangeNotifier {
     }
     notifyListeners();
     return true;
+  }
+
+  /// Filter the current budget month's transactions to only contain
+  /// transactions matching the given query. Searches for the
+  /// given query to be in the transaction category or the
+  /// transaction description
+  void filterTransactions(String query) {
+    if (currentBudgetMonthData != null) {
+      currentBudgetMonthData?.filterTransactions(query);
+      notifyListeners();
+    }
   }
 
   /// Creates a new sheet in the selected budget spreadsheet and

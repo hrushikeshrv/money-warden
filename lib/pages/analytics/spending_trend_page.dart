@@ -93,7 +93,7 @@ class SpendingTrendPage extends StatelessWidget {
           measureFn: (MonthlySpend s, _) => s.spend,
           labelAccessorFn: (MonthlySpend s, _) => getMonthNameFromDate(s.month, true),
           colorFn: (MonthlySpend s, __) {
-            Color c = const Color(0xFF43A047);
+            Color c = Colors.red.shade600;
             return chartsCommon.Color(
               r: c.red,
               g: c.green,

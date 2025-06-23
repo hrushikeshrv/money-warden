@@ -11,6 +11,7 @@ class BudgetMonth {
   final String name;
   List<Transaction> expenses = [];
   List<Transaction> income = [];
+  List<Transaction> filteredTransactions = [];
 
   BudgetMonth({ required this.name });
 
@@ -53,6 +54,23 @@ class BudgetMonth {
 
   List<Transaction> get orderedTransactions {
     return getOrderedTransactions(null);
+  }
+
+  /// Filter this.filteredTransactions to only contain
+  /// transactions matching the given query. Searches for the
+  /// given query to be in the transaction category or the
+  /// transaction description
+  void filterTransactions(String query) {
+    List<Transaction> allTransactions = getOrderedTransactions(null);
+    filteredTransactions = [];
+    for (int i = 0; i < allTransactions.length; i++) {
+      if (
+        (allTransactions[i].category?.name.toLowerCase().contains(query) ?? false)
+        || (allTransactions[i].description?.toLowerCase().contains(query) ?? false)
+      ) {
+        filteredTransactions.add(allTransactions[i]);
+      }
+    }
   }
 
   /// Returns up to maxTransactions transactions in descending order
