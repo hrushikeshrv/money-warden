@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:money_warden/components/mw_action_button.dart';
 import 'package:money_warden/exceptions/null_spreadsheet_value_exception.dart';
+import 'package:money_warden/theme/theme.dart';
 import 'package:provider/provider.dart';
 
-import 'package:money_warden/components/heading1.dart';
 import 'package:money_warden/components/pill_container.dart';
 import 'package:money_warden/models/payment_method.dart';
 import 'package:money_warden/models/transaction.dart';
@@ -183,227 +183,273 @@ class _TransactionAddPageState extends State<TransactionAddPage> {
   @override
   Widget build(BuildContext context) {
     transactionType ??= widget.initialTransactionType;
+    final colors = Theme.of(context).extension<MwColors>()!;
+
     return Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: Consumer<BudgetSheet>(
         builder: (context, budget, child) {
-          return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          return Column(
+            children: [
+              Expanded(
+                child: ListView(
+                  shrinkWrap: true,
                   children: [
-                    Heading1(text: '${widget.updateTransaction ? 'Update' : 'Add'} an ${transactionType == TransactionType.expense ? 'Expense' : 'Income'}'),
-                    MwActionButton(
-                      leading: const Icon(Icons.check),
-                      text: widget.updateTransaction ? 'Update' : 'Add',
-                      onTap: () {
-                        if (_loading) return;
-                        createTransaction(budget);
-                      }
-                    )
-                  ],
-                ),
-                Expanded(
-                  child: ListView(
-                    shrinkWrap: true,
-                    children: [
-                  
-                      const SizedBox(height: 10),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 30),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 10),
-                            Row(
-                              children: [
-                                Text(budget.defaultCurrencySymbol, style: const TextStyle(fontSize: 20)),
-                                const SizedBox(width: 15),
-                                Expanded(
-                                  child: TextField(
-                                    controller: amountController,
-                                    autofocus: true,
-                                    style: const TextStyle(
-                                      fontSize: 24
-                                    ),
-                                    decoration: InputDecoration(
-                                      border: const UnderlineInputBorder(),
-                                      hintText: 'Amount',
-                                      hintStyle: TextStyle(color: Colors.grey.shade600),
-                                      errorText: _amountValid ? null : 'Enter a valid amount'
-                                    ),
-                                    keyboardType: const TextInputType.numberWithOptions(
-                                        decimal: true
-                                    ),
-                                    enabled: !_loading,
-                                  ),
-                                ),
-                              ],
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30),
+                              boxShadow: const [BoxShadow(color: Color(0x22000000), blurRadius: 4, offset: Offset(2, 2))],
                             ),
-                  
-                            const SizedBox(height: 20),
-                            Row(
-                              children: [
-                                Flexible(
-                                  child: Text(
-                                    formatDateTime(transactionDate),
-                                    style: const TextStyle(
-                                      fontSize: 20
-                                    )
-                                  ),
+                            child: SegmentedButton<TransactionType>(
+
+                              segments: <ButtonSegment<TransactionType>> [
+                                ButtonSegment<TransactionType>(
+                                  value: TransactionType.expense,
+                                  label: const Text("Expense"),
+                                  icon: const Icon(Icons.payments_outlined),
+                                  enabled: (
+                                    !widget.updateTransaction
+                                    || widget.initialTransaction == null
+                                    || widget.initialTransaction!.transactionType == TransactionType.expense
+                                  )
                                 ),
-                              ],
-                            ),
-                            const SizedBox(height: 10),
-                            Row(
-                              children: [
-                                GestureDetector(
-                                  child: PillContainer(
-                                    color: Theme.of(context).colorScheme.primary,
-                                    child: Text('Today', style: TextStyle(color: Theme.of(context).colorScheme.onPrimary)),
-                                  ),
-                                  onTap: () {
-                                    if (_loading) return;
-                                    setState(() {
-                                      transactionDate = DateTime.now();
-                                    });
-                                  }
-                                ),
-                                const SizedBox(width: 10),
-                                GestureDetector(
-                                  child: PillContainer(
-                                    color: Theme.of(context).colorScheme.primary,
-                                    child: Text('Yesterday', style: TextStyle(color: Theme.of(context).colorScheme.onPrimary)),
-                                  ),
-                                  onTap: () {
-                                    if (_loading) return;
-                                    setState(() {
-                                      transactionDate = DateTime.now().subtract(const Duration(days: 1));
-                                    });
-                                  }
-                                ),
-                                const SizedBox(width: 10),
-                                InkWell(
-                                  child: Ink(
-                                    padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(context).colorScheme.surfaceDim,
-                                      borderRadius: BorderRadius.circular(10)
-                                    ),
-                                    child: const Icon(Icons.calendar_month)
-                                  ),
-                                  onTap: () async {
-                                    if (_loading) return;
-                                    var date = await showDatePicker(
-                                        context: context,
-                                        firstDate: getTransactionFirstDate(),
-                                        lastDate: getTransactionLastDate(),
-                                        initialDate: getTransactionInitialDate()
-                                      );
-                                    if (date != null) {
-                                      setState(() {
-                                        transactionDate = date;
-                                      });
-                                    }
-                                  }
+                                ButtonSegment<TransactionType>(
+                                  value: TransactionType.income,
+                                  label: const Text("Income"),
+                                  icon: const Icon(Icons.savings_outlined),
+                                  enabled: (
+                                    !widget.updateTransaction
+                                    || widget.initialTransaction == null
+                                    || widget.initialTransaction!.transactionType == TransactionType.income
+                                  )
                                 )
                               ],
+                              selected: <TransactionType>{transactionType!},
+                              onSelectionChanged: (Set<TransactionType> newSelection) {
+                                setState(() {
+                                  transactionType = newSelection.first;
+                                });
+                              },
+                              showSelectedIcon: false,
+                              style: SegmentedButton.styleFrom(
+                                backgroundColor: colors.backgroundDark1,
+                                selectedBackgroundColor: Theme.of(context).colorScheme.primary,
+                                side: BorderSide(
+                                  color: Theme.of(context).colorScheme.onSurface,
+                                  width: 2
+                                )
+                              )
                             ),
-                  
-                            const SizedBox(height: 30),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: DropdownMenu<category.Category>(
-                                    expandedInsets: const EdgeInsets.all(0),
-                                    controller: categoryController,
-                                    dropdownMenuEntries: getTransactionCategoryOptions(budget),
-                                    hintText: 'Category (optional)',
-                                    inputDecorationTheme: InputDecorationTheme(
+                          ),
+                          MwActionButton(
+                              leading: const Icon(Icons.check),
+                              text: widget.updateTransaction ? 'Save' : 'Add',
+                              onTap: () {
+                                if (_loading) return;
+                                createTransaction(budget);
+                              }
+                          )
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 10),
+                          Row(
+                            children: [
+                              Text(budget.defaultCurrencySymbol, style: const TextStyle(fontSize: 20)),
+                              const SizedBox(width: 15),
+                              Expanded(
+                                child: TextField(
+                                  controller: amountController,
+                                  autofocus: true,
+                                  style: const TextStyle(
+                                    fontSize: 24
+                                  ),
+                                  decoration: InputDecoration(
+                                    border: const UnderlineInputBorder(),
+                                    hintText: 'Amount',
+                                    hintStyle: TextStyle(color: Colors.grey.shade600),
+                                    errorText: _amountValid ? null : 'Enter a valid amount'
+                                  ),
+                                  keyboardType: const TextInputType.numberWithOptions(
+                                      decimal: true
+                                  ),
+                                  enabled: !_loading,
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(height: 20),
+                          Row(
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  formatDateTime(transactionDate),
+                                  style: const TextStyle(
+                                    fontSize: 20
+                                  )
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          Row(
+                            children: [
+                              GestureDetector(
+                                child: PillContainer(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  child: Text('Today', style: TextStyle(color: Theme.of(context).colorScheme.onPrimary)),
+                                ),
+                                onTap: () {
+                                  if (_loading) return;
+                                  setState(() {
+                                    transactionDate = DateTime.now();
+                                  });
+                                }
+                              ),
+                              const SizedBox(width: 10),
+                              GestureDetector(
+                                child: PillContainer(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  child: Text('Yesterday', style: TextStyle(color: Theme.of(context).colorScheme.onPrimary)),
+                                ),
+                                onTap: () {
+                                  if (_loading) return;
+                                  setState(() {
+                                    transactionDate = DateTime.now().subtract(const Duration(days: 1));
+                                  });
+                                }
+                              ),
+                              const SizedBox(width: 10),
+                              InkWell(
+                                child: Ink(
+                                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context).colorScheme.surfaceDim,
+                                    borderRadius: BorderRadius.circular(10)
+                                  ),
+                                  child: const Icon(Icons.calendar_month)
+                                ),
+                                onTap: () async {
+                                  if (_loading) return;
+                                  var date = await showDatePicker(
+                                      context: context,
+                                      firstDate: getTransactionFirstDate(),
+                                      lastDate: getTransactionLastDate(),
+                                      initialDate: getTransactionInitialDate()
+                                    );
+                                  if (date != null) {
+                                    setState(() {
+                                      transactionDate = date;
+                                    });
+                                  }
+                                }
+                              )
+                            ],
+                          ),
+
+                          const SizedBox(height: 30),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: DropdownMenu<category.Category>(
+                                  expandedInsets: const EdgeInsets.all(0),
+                                  controller: categoryController,
+                                  dropdownMenuEntries: getTransactionCategoryOptions(budget),
+                                  hintText: 'Category (optional)',
+                                  inputDecorationTheme: InputDecorationTheme(
+                                    filled: true,
+                                    fillColor: Colors.grey.shade100
+                                  ),
+                                  enabled: !_loading,
+                                  onSelected: (category.Category? cat) {
+                                    setState(() {
+                                      transactionCategory = cat;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(height: 20),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  controller: descriptionController,
+                                  maxLines: 3,
+                                  decoration: InputDecoration(
+                                    fillColor: Colors.grey.shade100,
+                                    filled: true,
+                                    hintText: 'Description (optional)',
+                                  ),
+                                  enabled: !_loading,
+                                ),
+                              )
+                            ],
+                          ),
+
+                          const SizedBox(height: 20),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: DropdownMenu<PaymentMethod>(
+                                  expandedInsets: const EdgeInsets.all(0),
+                                  controller: paymentMethodController,
+                                  dropdownMenuEntries: getPaymentMethodOptions(budget),
+                                  hintText: 'Payment Method (optional)',
+                                  inputDecorationTheme: InputDecorationTheme(
                                       filled: true,
                                       fillColor: Colors.grey.shade100
-                                    ),
-                                    enabled: !_loading,
-                                    onSelected: (category.Category? cat) {
-                                      setState(() {
-                                        transactionCategory = cat;
-                                      });
-                                    },
                                   ),
+                                  enabled: !_loading,
+                                  onSelected: (PaymentMethod? method) {
+                                    setState(() {
+                                      paymentMethod = method;
+                                    });
+                                  },
                                 ),
-                              ],
-                            ),
-                  
-                            const SizedBox(height: 20),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: TextField(
-                                    controller: descriptionController,
-                                    maxLines: 3,
-                                    decoration: InputDecoration(
-                                      fillColor: Colors.grey.shade100,
-                                      filled: true,
-                                      hintText: 'Description (optional)',
-                                    ),
-                                    enabled: !_loading,
-                                  ),
+                              ),
+                            ],
+                          ),
+
+                          Container(
+                            padding: const EdgeInsets.only(top: 30, bottom: 15),
+                            child: widget.updateTransaction && widget.initialTransaction != null
+                                ? MwActionButton(
+                                  leading: const Icon(Icons.delete, color: Colors.white),
+                                  text: 'Delete',
+                                  onTap: () async {
+                                    setState(() {
+                                      _loading = true;
+                                    });
+                                    await budget.deleteTransaction(widget.initialTransaction!);
+                                    if (!context.mounted) return;
+                                    Navigator.of(context).pop();
+                                  },
+                                  role: 'error'
                                 )
-                              ],
-                            ),
-
-                            const SizedBox(height: 20),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: DropdownMenu<PaymentMethod>(
-                                    expandedInsets: const EdgeInsets.all(0),
-                                    controller: paymentMethodController,
-                                    dropdownMenuEntries: getPaymentMethodOptions(budget),
-                                    hintText: 'Payment Method (optional)',
-                                    inputDecorationTheme: InputDecorationTheme(
-                                        filled: true,
-                                        fillColor: Colors.grey.shade100
-                                    ),
-                                    enabled: !_loading,
-                                    onSelected: (PaymentMethod? method) {
-                                      setState(() {
-                                        paymentMethod = method;
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-
-                            Container(
-                              padding: const EdgeInsets.only(top: 30, bottom: 15),
-                              child: widget.updateTransaction && widget.initialTransaction != null
-                                  ? MwActionButton(
-                                    leading: const Icon(Icons.delete_forever, color: Colors.white),
-                                    text: 'Delete',
-                                    onTap: () async {
-                                      setState(() {
-                                        _loading = true;
-                                      });
-                                      await budget.deleteTransaction(widget.initialTransaction!);
-                                      if (!context.mounted) return;
-                                      Navigator.of(context).pop();
-                                    },
-                                    role: 'error'
-                                  )
-                                  : null
-                            )
-                          ],
-                        ),
+                                : null
+                          )
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           );
         }
       ),

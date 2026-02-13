@@ -43,6 +43,17 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const MwAppBar(),
+            Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                child: MwTextField(
+                  labelText: "Filter transactions",
+                  labelIcon: Icon(Icons.search, color: colors.mutedText),
+                  controller: controller,
+                  onChanged: (String query) {
+                    budget.filterTransactions(query);
+                  },
+                )
+            ),
             Expanded(
               child: ListView(
                 shrinkWrap: true,
@@ -119,18 +130,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   const SizedBox(height: 25),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
-                    child: MwTextField(
-                      labelText: "Filter transactions",
-                      labelIcon: Icon(Icons.search, color: colors.mutedText),
-                      controller: controller,
-                      onChanged: (String query) {
-                        budget.filterTransactions(query);
-                      },
-                    )
-                  ),
-                  const SizedBox(height: 10),
+
 
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 5),

@@ -40,7 +40,13 @@ class _TransactionTileState extends State<TransactionTile> {
     // Finally, if we have a payment method, we add that to the subtitle
     if (widget.transaction!.paymentMethod != null) {
       if (subtitle == null) {
-        subtitle = Text(widget.transaction!.paymentMethod!.name, style: TextStyle(color: Colors.grey.shade600));
+        subtitle = Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(),
+            Text(widget.transaction!.paymentMethod!.name, style: TextStyle(color: Colors.grey.shade600)),
+          ],
+        );
       }
       else {
         subtitle = Row(

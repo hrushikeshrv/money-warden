@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:money_warden/theme/theme.dart';
 
 
 class MwActionButton extends StatefulWidget {
@@ -25,11 +26,14 @@ class MwActionButton extends StatefulWidget {
 class _MwActionButtonState extends State<MwActionButton> {
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).extension<MwColors>()!;
+
     Color backgroundColor = Theme.of(context).colorScheme.surfaceDim;
     Color textColor = Theme.of(context).colorScheme.onSurface;
     Color enabledBorderColor = Theme.of(context).colorScheme.inverseSurface;
     if (widget.role == 'error') {
       backgroundColor = Theme.of(context).colorScheme.errorContainer;
+      // enabledBorderColor = Theme.of(context).colorScheme.surface;
       textColor = Theme.of(context).colorScheme.onErrorContainer;
     }
     if (widget.role == 'warning') {
@@ -43,7 +47,7 @@ class _MwActionButtonState extends State<MwActionButton> {
         widget.onTap();
       },
       child: Ink(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         decoration: BoxDecoration(
           color: backgroundColor,
           borderRadius: BorderRadius.circular(10),
