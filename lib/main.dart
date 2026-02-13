@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:money_warden/pages/instructions.dart';
 import 'package:money_warden/pages/payment_method_list.dart';
 import 'package:money_warden/pages/terms_of_service.dart';
+import 'package:money_warden/pages/transaction_add.dart';
 import 'package:money_warden/pages/transaction_category_list.dart';
 import 'package:money_warden/services/sheets.dart';
 import 'package:money_warden/utils/utils.dart';
@@ -47,7 +48,7 @@ class _MoneyWardenState extends State<MoneyWarden> {
 
   final List pages = [
     const HomePage(),
-    const TransactionsPage(),
+    const TransactionAddPage(initialTransactionType: TransactionType.expense),
     const AnalyticsHomepage(),
     const SettingsPage(),
   ];
@@ -139,21 +140,15 @@ class _MoneyWardenState extends State<MoneyWarden> {
                           bottomNavigationBar: NavigationBar(
                             destinations: const [
                               NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
-                              NavigationDestination(icon: Icon(Icons.monetization_on), label: 'Transactions'),
+                              NavigationDestination(icon: Icon(Icons.payments_outlined), label: 'Add'),
                               NavigationDestination(icon: Icon(Icons.auto_graph), label: 'Analytics'),
                               NavigationDestination(icon: Icon(Icons.settings), label: 'Settings')
                             ],
+                            labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
                             selectedIndex: currentPage,
                             onDestinationSelected: navigateBottomBar,
                             indicatorColor: Theme.of(context).colorScheme.primary,
-                          ),
-                          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-                          floatingActionButton: FloatingActionButton(
-                            backgroundColor: Theme.of(context).colorScheme.primary,
-                            onPressed: () {
-                              showAddTransactionBottomSheet(context: context, transactionType: TransactionType.expense);
-                            },
-                            child: Icon(Icons.payments_outlined, color: Theme.of(context).colorScheme.onSurface),
+                            height: 60,
                           ),
                           body: Material(
                             color: Theme.of(context).colorScheme.surface,

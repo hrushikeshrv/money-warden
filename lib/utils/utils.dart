@@ -22,8 +22,14 @@ List<Color> mwColors = const [
 /// Parses a stored color string and returns a Color
 /// object.
 Color parseStoredColorString(String color) {
-  int value = int.parse(color.split('0x')[1].split(')')[0], radix: 16);
-  return Color(value);
+  try {
+    int value = int.parse(color.split('0x')[1].split(')')[0], radix: 16);
+    return Color(value);
+  }
+  catch (e) {
+    print('Couldn\'t parse color: $color');
+    return mwColors[Random().nextInt(mwColors.length)];
+  }
 }
 
 /// Returns true if the title is a String of the format
@@ -250,6 +256,7 @@ String formatMoney(double amount) {
   if (amount.toString().split('.').length > 1) {
     var cents = amount.toString().split('.')[1];
     if (cents.length > 2) { cents = cents.substring(0, 2); }
+    else if (cents.length < 2) { cents += '0'; }
     stringResult += '.$cents';
   }
   if (negative) stringResult = '-$stringResult';

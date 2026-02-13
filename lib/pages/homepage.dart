@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'package:money_warden/components/heading1.dart';
-import 'package:money_warden/components/mw_action_button.dart';
-import 'package:money_warden/components/transaction_tile.dart';
 import 'package:money_warden/components/budget_initialization_failed_alert.dart';
+import 'package:money_warden/components/mw_action_button.dart';
 import 'package:money_warden/components/mw_app_bar.dart';
+import 'package:money_warden/components/mw_text_field.dart';
+import 'package:money_warden/components/transaction_tile.dart';
 import 'package:money_warden/models/budget_sheet.dart';
 import 'package:money_warden/models/transaction.dart';
-import 'package:money_warden/pages/transaction_add.dart';
+import 'package:money_warden/theme/theme.dart';
 import 'package:money_warden/utils/utils.dart';
 
 
@@ -21,8 +21,12 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final TextEditingController controller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).extension<MwColors>()!;
+
     return Consumer<BudgetSheet>(
       builder: (context, budget, child) {
         double? amountSpent = budget.currentBudgetMonthData?.monthExpenseAmount;
@@ -55,7 +59,7 @@ class _HomePageState extends State<HomePage> {
                               const CircularProgressIndicator()
                                   : Text(
                                       "${budget.defaultCurrencySymbol}${formatMoney(amountSpent)}",
-                                      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600)
+                                      style: GoogleFonts.jetBrainsMono(fontSize: 24, fontWeight: FontWeight.w600)
                                   ),
                               const Text("Spent"),
                             ],
@@ -66,7 +70,7 @@ class _HomePageState extends State<HomePage> {
                             children: [
                               amountEarned == null ?
                               const CircularProgressIndicator()
-                                  : Text("${budget.defaultCurrencySymbol}${formatMoney(amountEarned)}", style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600)),
+                                  : Text("${budget.defaultCurrencySymbol}${formatMoney(amountEarned)}", style: GoogleFonts.jetBrainsMono(fontSize: 24, fontWeight: FontWeight.w600)),
                               const Text("Earned"),
                             ],
                           ),
@@ -84,8 +88,8 @@ class _HomePageState extends State<HomePage> {
                             children: [
                               difference == null ?
                               const CircularProgressIndicator()
-                                  : Text("${difference > 0 ? '+ ' : difference < 0 ? '- ' : ''}${budget.defaultCurrencySymbol}${formatMoney(difference.abs())}",
-                                  style: TextStyle(
+                                  : Text("${difference < 0 ? '-' : ''}${budget.defaultCurrencySymbol}${formatMoney(difference.abs())}",
+                                  style: GoogleFonts.jetBrainsMono(
                                       fontSize: 24,
                                       fontWeight: FontWeight.w600,
                                       color: difference > 0 ? Colors.green.shade500 : Colors.red.shade600
@@ -101,7 +105,7 @@ class _HomePageState extends State<HomePage> {
                               percentSpent == null ?
                               const CircularProgressIndicator()
                                   : Text("$percentSpent %",
-                                  style: TextStyle(
+                                  style: GoogleFonts.jetBrainsMono(
                                       fontSize: 24,
                                       fontWeight: FontWeight.w600,
                                       color: percentSpent < 90.0 ? Colors.green.shade500 : Colors.red.shade600
@@ -114,58 +118,38 @@ class _HomePageState extends State<HomePage> {
                       ]
                     ),
                   ),
-                  const SizedBox(height: 30),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      MwActionButton(
-                        leading: const Icon(Icons.payments_outlined),
-                        text: 'Add Expense',
-                        onTap: () {
-                          showAddTransactionBottomSheet(context: context, transactionType: TransactionType.expense);
-                        }
-                      ),
-                      const SizedBox(width: 30),
-                      MwActionButton(
-                        leading: const Icon(Icons.savings_outlined),
-                        text: 'Add Income',
-                        onTap: () {
-                          showAddTransactionBottomSheet(context: context, transactionType: TransactionType.income);
-                        }
-                      ),
-                    ],
-                  ),
                   const SizedBox(height: 25),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Heading1(text: 'Recent Transactions'),
-                      ],
-                    ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                    child: MwTextField(
+                      labelText: "Filter transactions",
+                      labelIcon: Icon(Icons.search, color: colors.mutedText),
+                      controller: controller,
+                      onChanged: (String query) {
+                        budget.filterTransactions(query);
+                      },
+                    )
                   ),
-              
                   const SizedBox(height: 10),
+
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 5),
-                    child: budget.currentBudgetMonthData != null && budget.currentBudgetMonthData!.recentTransactions.isEmpty
+                    child: budget.currentBudgetMonthData != null && budget.currentBudgetMonthData!.filteredTransactions.isEmpty
                         ? const Padding(
                           padding: EdgeInsets.only(top: 20),
                           child: Center(child: Text('No transactions yet 💸', style: TextStyle(fontSize: 17))),
                         )
                         : ListView.builder(
-                          itemCount: budget.currentBudgetMonthData == null ? 0 : budget.currentBudgetMonthData!.recentTransactions.length,
+                          itemCount: budget.currentBudgetMonthData == null ? 0 : budget.currentBudgetMonthData!.filteredTransactions.length,
                           shrinkWrap: true,
                           physics: const ClampingScrollPhysics(),
                           itemBuilder: (BuildContext context, int index) {
-                            return TransactionTile(transaction: budget.currentBudgetMonthData?.recentTransactions[index]);
+                            return TransactionTile(transaction: budget.currentBudgetMonthData?.filteredTransactions[index]);
                           },
                         ),
                   ),
 
-                  // To make sure content isn't overlapped by the FAB
-                  const SizedBox(height: 70),
+                  const SizedBox(height: 50),
                 ]
               ),
             )
