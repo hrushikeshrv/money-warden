@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:money_warden/components/mw_action_button.dart';
+import 'package:money_warden/components/mw_text_field.dart';
 import 'package:money_warden/exceptions/null_spreadsheet_value_exception.dart';
 import 'package:money_warden/theme/theme.dart';
 import 'package:provider/provider.dart';
@@ -273,7 +274,7 @@ class _TransactionAddPageState extends State<TransactionAddPage> {
                                   controller: amountController,
                                   autofocus: true,
                                   style: const TextStyle(
-                                    fontSize: 24
+                                    fontSize: 32
                                   ),
                                   decoration: InputDecoration(
                                     border: const UnderlineInputBorder(),
@@ -367,10 +368,26 @@ class _TransactionAddPageState extends State<TransactionAddPage> {
                                   expandedInsets: const EdgeInsets.all(0),
                                   controller: categoryController,
                                   dropdownMenuEntries: getTransactionCategoryOptions(budget),
-                                  hintText: 'Category (optional)',
+                                  label: Row(
+                                    children: [
+                                      const Icon(Icons.category_outlined),
+                                      const SizedBox(width: 5,),
+                                      Text("Category", style: TextStyle(color: colors.mutedText),)
+                                    ],
+                                  ),
                                   inputDecorationTheme: InputDecorationTheme(
                                     filled: true,
-                                    fillColor: Colors.grey.shade100
+                                    fillColor: colors.backgroundDark1,
+                                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                                    enabledBorder: OutlineInputBorder(
+                                        borderRadius: const BorderRadius.all(Radius.circular(30)),
+                                        borderSide: BorderSide(color: colors.backgroundDark1, width: 1)
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: const BorderRadius.all(Radius.circular(30)),
+                                      borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
+                                    ),
+                                    contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0)
                                   ),
                                   enabled: !_loading,
                                   onSelected: (category.Category? cat) {
@@ -384,21 +401,11 @@ class _TransactionAddPageState extends State<TransactionAddPage> {
                           ),
 
                           const SizedBox(height: 20),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: TextField(
-                                  controller: descriptionController,
-                                  maxLines: 3,
-                                  decoration: InputDecoration(
-                                    fillColor: Colors.grey.shade100,
-                                    filled: true,
-                                    hintText: 'Description (optional)',
-                                  ),
-                                  enabled: !_loading,
-                                ),
-                              )
-                            ],
+                          MwTextField(
+                            controller: descriptionController,
+                            enabled: !_loading,
+                            labelText: "Description",
+                            labelIcon: const Icon(Icons.description_outlined)
                           ),
 
                           const SizedBox(height: 20),
@@ -409,10 +416,26 @@ class _TransactionAddPageState extends State<TransactionAddPage> {
                                   expandedInsets: const EdgeInsets.all(0),
                                   controller: paymentMethodController,
                                   dropdownMenuEntries: getPaymentMethodOptions(budget),
-                                  hintText: 'Payment Method (optional)',
+                                  label: Row(
+                                    children: [
+                                      const Icon(Icons.payments_outlined),
+                                      const SizedBox(width: 5,),
+                                      Text("Payment Method", style: TextStyle(color: colors.mutedText),)
+                                    ],
+                                  ),
                                   inputDecorationTheme: InputDecorationTheme(
-                                      filled: true,
-                                      fillColor: Colors.grey.shade100
+                                    filled: true,
+                                    fillColor: colors.backgroundDark1,
+                                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                                    enabledBorder: OutlineInputBorder(
+                                        borderRadius: const BorderRadius.all(Radius.circular(30)),
+                                        borderSide: BorderSide(color: colors.backgroundDark1, width: 1)
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: const BorderRadius.all(Radius.circular(30)),
+                                      borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
+                                    ),
+                                    contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0)
                                   ),
                                   enabled: !_loading,
                                   onSelected: (PaymentMethod? method) {

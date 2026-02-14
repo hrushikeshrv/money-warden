@@ -7,13 +7,15 @@ class MwTextField extends StatelessWidget {
   final Function(String)? onChanged;
   final Icon? labelIcon;
   final String? labelText;
+  bool? enabled;
 
-  const MwTextField({
+  MwTextField({
     super.key,
     this.labelText,
     this.controller,
     this.labelIcon,
-    this.onChanged
+    this.onChanged,
+    this.enabled
   });
 
   @override
@@ -35,6 +37,7 @@ class MwTextField extends StatelessWidget {
     }
 
     return TextField(
+      enabled: enabled,
       controller: controller,
       onChanged: onChanged,
       decoration: InputDecoration(
