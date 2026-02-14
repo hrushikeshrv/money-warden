@@ -346,7 +346,7 @@ class BudgetSheet extends ChangeNotifier {
     String key = transactionType == TransactionType.expense
         ? 'expense_${category.name}_color'
         : 'income_${category.name}_color';
-    sharedPreferences!.setString(key, color.toString());
+    sharedPreferences!.setString(key, color.toARGB32().toRadixString(16));
     notifyListeners();
   }
 
@@ -403,7 +403,10 @@ class BudgetSheet extends ChangeNotifier {
           }
         }
         for (int j = 0; j < paymentMethods.length; j++) {
-          if (budgetMonth.income[i].paymentMethod!.name == paymentMethods[j].name) {
+          if (
+            budgetMonth.income[i].paymentMethod != null
+            && budgetMonth.income[i].paymentMethod!.name == paymentMethods[j].name
+          ) {
             budgetMonth.income[i].paymentMethod = paymentMethods[j];
           }
         }

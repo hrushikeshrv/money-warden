@@ -106,7 +106,7 @@ class IncomeVsExpensesPage extends StatelessWidget {
                 ],
               ),
               trailing: Text(
-                budget.defaultCurrencySymbol + formatMoney(spendDiff),
+                (spendDiff < 0 ? "-" : "") + budget.defaultCurrencySymbol + formatMoney(spendDiff.abs()),
                 style: GoogleFonts.poppins(
                     fontSize: 22,
                     fontWeight: FontWeight.w500,

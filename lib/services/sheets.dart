@@ -238,9 +238,10 @@ class SheetsService {
     budgetMonth.sortExpenses();
     for (int i = 0; i < incomes.length; i++) {
       var income = incomes[i];
+      if (income.isEmpty) continue;
       if (
-      income[0] != null && income[0] != ''
-          && income[1] != null && income[1] != ''
+        income[0] != null && income[0] != ''
+        && income[1] != null && income[1] != ''
       ) {
         var txnDate = parseDate(income[0] as String);
         if (txnDate.year == 1970) {

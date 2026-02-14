@@ -23,7 +23,7 @@ List<Color> mwColors = const [
 /// object.
 Color parseStoredColorString(String color) {
   try {
-    int value = int.parse(color.split('0x')[1].split(')')[0], radix: 16);
+    int value = int.parse(color, radix: 16);
     return Color(value);
   }
   catch (e) {
@@ -205,6 +205,12 @@ DateTime parseDate(String date) {
   }
   else {
     var splitDate = date.split(' ');
+    if (splitDate.length == 2) {
+      // year is most likely missing
+      // just add the current year in that case, not much else we can do,
+      // other than raising an exception
+      splitDate.add(DateTime.now().year.toString());
+    }
     formattedDate = '${splitDate[2]}-${months[splitDate[1]]}-';
     if (splitDate[0].length == 1) {
       formattedDate += '0${splitDate[0]}';
