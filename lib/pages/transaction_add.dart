@@ -95,7 +95,7 @@ class _TransactionAddPageState extends State<TransactionAddPage> {
     ).toList();
   }
 
-  void createTransaction(BudgetSheet budget) async {
+  Future<void> createTransaction(BudgetSheet budget) async {
     if (amountController.value.text == '') {
       return;
     }
@@ -154,12 +154,16 @@ class _TransactionAddPageState extends State<TransactionAddPage> {
       );
     }
     finally {
+      if (!context.mounted) return;
       setState(() {
         _loading = false;
       });
+      if (widget.updateTransaction && context.mounted) {
+        // If updating a widget, we show this page as a bottom sheet,
+        // so we can pop it from the navigator when we are done.
+        Navigator.of(context).pop();
+      }
     }
-    if (!context.mounted) return;
-    Navigator.of(context).pop();
   }
 
   /// Returns the first accepted date for the transaction's date picker
@@ -250,9 +254,13 @@ class _TransactionAddPageState extends State<TransactionAddPage> {
                           MwActionButton(
                               leading: const Icon(Icons.check),
                               text: widget.updateTransaction ? 'Save' : 'Add',
-                              onTap: () {
+                              onTap: () async {
                                 if (_loading) return;
-                                createTransaction(budget);
+                                await createTransaction(budget);
+                                amountController.clear();
+                                categoryController.clear();
+                                descriptionController.clear();
+                                paymentMethodController.clear();
                               }
                           )
                         ],
@@ -264,6 +272,20 @@ class _TransactionAddPageState extends State<TransactionAddPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          const SizedBox(height: 10),
+                          if (_loading)
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const SizedBox(
+                                  height: 14,
+                                  width: 14,
+                                  child: CircularProgressIndicator(strokeWidth: 2,),
+                                ),
+                                const SizedBox(width: 10),
+                                Text("${widget.updateTransaction ? "Updating" : "Creating"} transaction"),
+                              ]
+                            ),
                           const SizedBox(height: 10),
                           Row(
                             children: [
@@ -278,6 +300,11 @@ class _TransactionAddPageState extends State<TransactionAddPage> {
                                   ),
                                   decoration: InputDecoration(
                                     border: const UnderlineInputBorder(),
+                                    disabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: colors.mutedText
+                                      )
+                                    ),
                                     hintText: 'Amount',
                                     hintStyle: TextStyle(color: Colors.grey.shade600),
                                     errorText: _amountValid ? null : 'Enter a valid amount'
@@ -379,6 +406,10 @@ class _TransactionAddPageState extends State<TransactionAddPage> {
                                     filled: true,
                                     fillColor: colors.backgroundDark1,
                                     floatingLabelBehavior: FloatingLabelBehavior.never,
+                                    disabledBorder: OutlineInputBorder(
+                                        borderRadius: const BorderRadius.all(Radius.circular(30)),
+                                        borderSide: BorderSide(color: colors.backgroundDark1, width: 1)
+                                    ),
                                     enabledBorder: OutlineInputBorder(
                                         borderRadius: const BorderRadius.all(Radius.circular(30)),
                                         borderSide: BorderSide(color: colors.backgroundDark1, width: 1)
@@ -427,6 +458,10 @@ class _TransactionAddPageState extends State<TransactionAddPage> {
                                     filled: true,
                                     fillColor: colors.backgroundDark1,
                                     floatingLabelBehavior: FloatingLabelBehavior.never,
+                                    disabledBorder: OutlineInputBorder(
+                                      borderRadius: const BorderRadius.all(Radius.circular(30)),
+                                      borderSide: BorderSide(color: colors.backgroundDark1, width: 1)
+                                    ),
                                     enabledBorder: OutlineInputBorder(
                                         borderRadius: const BorderRadius.all(Radius.circular(30)),
                                         borderSide: BorderSide(color: colors.backgroundDark1, width: 1)

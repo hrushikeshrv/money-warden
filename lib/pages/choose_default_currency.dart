@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:money_warden/components/mw_text_field.dart';
 import 'package:provider/provider.dart';
 
 import 'package:money_warden/components/currency_tile.dart';
@@ -42,16 +43,10 @@ class _ChooseDefaultCurrencyPageState extends State<ChooseDefaultCurrencyPage> {
             children: [
               const Heading1(text: 'Choose Default Currency'),
               const SizedBox(height: 20),
-              TextField(
+              MwTextField(
                 controller: controller,
-                decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.search),
-                  hintText: 'Search for currencies',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(width: 2)
-                  )
-                ),
+                labelText: "Search for currencies",
+                labelIcon: const Icon(Icons.search),
                 onChanged: searchCurrencies,
               ),
               Expanded(

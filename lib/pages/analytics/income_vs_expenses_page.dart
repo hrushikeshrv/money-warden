@@ -110,7 +110,7 @@ class IncomeVsExpensesPage extends StatelessWidget {
                 style: GoogleFonts.poppins(
                     fontSize: 22,
                     fontWeight: FontWeight.w500,
-                    color: spendDiff > 0 ? Colors.green.shade500 : Colors.red.shade600
+                    color: Theme.of(context).colorScheme.onSurface
                 ),
               ),
             ));

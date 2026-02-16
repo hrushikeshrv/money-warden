@@ -503,6 +503,8 @@ class BudgetSheet extends ChangeNotifier {
         budgetMonthData!.income.add(transaction);
         budgetMonthData.sortIncome();
       }
+      // Filter transactions by an empty string to cover all transactions
+      filterTransactions("");
     }
     // If updating a transaction, find the Transaction object
     // in the budget month and update its properties
@@ -567,6 +569,8 @@ class BudgetSheet extends ChangeNotifier {
     else if (transaction.transactionType == TransactionType.income) {
       budgetMonth!.income.remove(transaction);
     }
+    // Filter transactions by an empty string to cover all transactions
+    filterTransactions("");
     notifyListeners();
     return true;
   }
@@ -577,7 +581,7 @@ class BudgetSheet extends ChangeNotifier {
   /// transaction description
   void filterTransactions(String query) {
     if (currentBudgetMonthData != null) {
-      currentBudgetMonthData?.filterTransactions(query);
+      currentBudgetMonthData!.filterTransactions(query);
       notifyListeners();
     }
   }

@@ -41,6 +41,10 @@ class MwTextField extends StatelessWidget {
       controller: controller,
       onChanged: onChanged,
       decoration: InputDecoration(
+          disabledBorder: OutlineInputBorder(
+              borderRadius: const BorderRadius.all(Radius.circular(30)),
+              borderSide: BorderSide(color: colors.backgroundDark1, width: 1)
+          ),
           enabledBorder: OutlineInputBorder(
               borderRadius: const BorderRadius.all(Radius.circular(30)),
               borderSide: BorderSide(color: colors.backgroundDark1, width: 1)

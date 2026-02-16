@@ -59,14 +59,17 @@ class BudgetMonth {
   /// Filter `filteredTransactions` to only contain
   /// transactions matching the given query. Searches for the
   /// given query to be in the transaction category,
-  /// transaction description, or payment method name
+  /// transaction description, or payment method name. If the
+  /// query is empty, sets `filteredTransactions` to be the same as
+  /// `orderedTransactions`
   void filterTransactions(String query) {
     query = query.toLowerCase();
     List<Transaction> allTransactions = getOrderedTransactions(null);
     filteredTransactions = [];
     for (int i = 0; i < allTransactions.length; i++) {
       if (
-        (allTransactions[i].category?.name.toLowerCase().contains(query) ?? false)
+        query.isEmpty
+        || (allTransactions[i].category?.name.toLowerCase().contains(query) ?? false)
         || (allTransactions[i].description?.toLowerCase().contains(query) ?? false)
         || (allTransactions[i].paymentMethod?.name.toLowerCase().contains(query) ?? false)
       ) {
