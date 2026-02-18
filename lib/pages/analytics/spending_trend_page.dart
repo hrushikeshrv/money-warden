@@ -25,7 +25,7 @@ class SpendingTrendPage extends StatelessWidget {
                   SizedBox(
                     height: 20,
                     width: 20,
-                    child: CircularProgressIndicator(),
+                    child: CircularProgressIndicator(strokeWidth: 2,),
                   ),
                   SizedBox(width: 15),
                   Text("Loading data from last 6 months")
