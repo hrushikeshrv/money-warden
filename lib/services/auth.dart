@@ -6,61 +6,77 @@ import 'package:googleapis_auth/googleapis_auth.dart' as auth show AuthClient;
 import 'package:money_warden/services/sheets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 class AuthService {
-  static final googleSignIn = GoogleSignIn(
-    scopes: <String>[
-      sheets.SheetsApi.spreadsheetsScope,
-      drive.DriveApi.driveReadonlyScope,
-    ]
-  );
+  static final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
 
-  static Future<bool> isSignedIn() {
-    return googleSignIn.isSignedIn();
+  static bool _initialized = false;
+
+  /// Must be called before any other auth operation
+  static Future<void> _ensureInitialized() async {
+    if (_initialized) return;
+
+    await _googleSignIn.initialize(
+      scopes: <String>[
+        sheets.SheetsApi.spreadsheetsScope,
+        drive.DriveApi.driveReadonlyScope,
+      ],
+    );
+
+    _initialized = true;
+  }
+
+  static Future<bool> isSignedIn() async {
+    await _ensureInitialized();
+    return _googleSignIn.isSignedIn;
   }
 
   static String getUserEmail() {
-      GoogleSignInAccount? account = googleSignIn.currentUser;
-      if (account != null) {
-        return account.email;
-      }
-      return '';
+    final account = _googleSignIn.currentUser;
+    return account?.email ?? '';
   }
 
   static String? getUserPhotoUrl() {
-    GoogleSignInAccount? account = googleSignIn.currentUser;
-    if (account != null) {
-      return account.photoUrl;
-    }
-    return '';
+    return _googleSignIn.currentUser?.photoUrl;
   }
 
-  /// Sign a user in using their Google account
-  static Future<GoogleSignInAccount?> signIn() {
-    return googleSignIn.signIn();
+  /// Sign in with Google
+  static Future<GoogleSignInAccount?> signIn() async {
+    await _ensureInitialized();
+    return await _googleSignIn.authenticate();
   }
 
-  static Future<GoogleSignInAccount?> signOut() {
-    return googleSignIn.signOut();
+  static Future<void> signOut() async {
+    await _ensureInitialized();
+    await _googleSignIn.signOut();
   }
 
   static Future<auth.AuthClient?> getAuthenticatedClient() async {
-    return googleSignIn.authenticatedClient();
+    await _ensureInitialized();
+    return await _googleSignIn.authenticatedClient();
   }
 
   static Future<Map<String, dynamic>> initializeAuth() async {
+    await _ensureInitialized();
+
     Map<String, dynamic> data = {};
-    GoogleSignInAccount? previousUser = await googleSignIn.signInSilently();
+
+    // Silent sign-in replacement
+    GoogleSignInAccount? previousUser =
+        await _googleSignIn.attemptLightweightAuthentication();
+
     final prefs = await SharedPreferences.getInstance();
+
     List<drive.File>? spreadsheets;
+
     if (previousUser != null) {
-      var _ = await SheetsService.getUserSpreadsheets(null);
-      spreadsheets = _!.files;
+      final result = await SheetsService.getUserSpreadsheets(null);
+      spreadsheets = result?.files;
     }
 
     data['user'] = previousUser;
     data['sharedPreferences'] = prefs;
     data['spreadsheets'] = spreadsheets;
+
     return data;
   }
 }
