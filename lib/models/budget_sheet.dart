@@ -29,6 +29,7 @@ class BudgetSheet extends ChangeNotifier {
   Map<String, BudgetMonth?> budgetData = {};
   String _defaultCurrencySymbol = '\$';
   String _defaultCurrencyCode = 'USD';
+  bool manuallyLoggedOut = false;
 
   /// List of spreadsheets the user has in their Google Account
   List<drive.File>? userSpreadsheets = [];
@@ -52,6 +53,20 @@ class BudgetSheet extends ChangeNotifier {
     incomeCategories = [];
     paymentMethods = [];
     budgetData = {};
+  }
+
+  /// Update state to designate that the user manually logged out
+  /// and notify listeners
+  void manualLogOut() {
+    manuallyLoggedOut = true;
+    notifyListeners();
+  }
+
+  /// Update state to designate that the user successfully signed in
+  /// and notify listeners
+  void successfulSignIn() {
+    manuallyLoggedOut = false;
+    notifyListeners();
   }
 
   /// Fetch and parse all budget data from the budget spreadsheet

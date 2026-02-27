@@ -117,6 +117,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       subtitle: 'Log out of your Google account (${AuthService.getUserEmail()})',
                       onTap: () async {
                         await AuthService.signOut();
+                        budget.manualLogOut();
                       },
                       trailing: userPhotoUrl != null ? CircleAvatar(
                           backgroundImage: NetworkImage(userPhotoUrl!),

@@ -73,12 +73,14 @@ class _TransactionTileState extends State<TransactionTile> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                mainTitle,
-                Text(formatDateTime(widget.transaction!.time), style: TextStyle(fontSize: 12, color: Colors.grey.shade600),),
-              ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  mainTitle,
+                  Text(formatDateTime(widget.transaction!.time), style: TextStyle(fontSize: 12, color: Colors.grey.shade600),),
+                ],
+              ),
             ),
             Text(
               '${widget.transaction!.transactionType == TransactionType.expense ? '' : '+'}${budget.defaultCurrencySymbol}${formatMoney(widget.transaction!.amount)}',

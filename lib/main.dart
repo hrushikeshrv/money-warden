@@ -42,7 +42,6 @@ class MoneyWarden extends StatefulWidget {
 }
 
 class _MoneyWardenState extends State<MoneyWarden> {
-  GoogleSignInAccount? _currentUser;
   Future<Map<String, dynamic>>? _previousAuth;
   Future<Map<String, dynamic>>? _spreadsheetPrefs;
 
@@ -66,11 +65,6 @@ class _MoneyWardenState extends State<MoneyWarden> {
     super.initState();
     _previousAuth = AuthService.initializeAuth();
     _spreadsheetPrefs = SheetsService.initializeSpreadsheetPrefs();
-    AuthService.googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) async {
-      setState(() {
-        _currentUser = account;
-      });
-    });
   }
 
   /// First tries to sign the user in silently and shows a splash screen
@@ -108,13 +102,12 @@ class _MoneyWardenState extends State<MoneyWarden> {
               // If silent sign in request was completed, show either the
               // homepage or the login page depending on whether the silent
               // sign in request was successful.
-              if (authSnapshot.hasData) {
+              if (authSnapshot.hasData && !budget.manuallyLoggedOut) {
                 return FutureBuilder(
                   future: _spreadsheetPrefs,
                   builder: (context, spreadsheetSnapshot) {
                     if (spreadsheetSnapshot.hasData) {
-                      final GoogleSignInAccount? user = _currentUser;
-                      if (user != null) {
+                      if (AuthService.currentUser != null) {
                         var prefs = authSnapshot.data!['sharedPreferences'];
                         budget.spreadsheetId = prefs.getString('spreadsheetId');
                         budget.spreadsheetName = prefs.getString('spreadsheetName');
@@ -181,6 +174,9 @@ class _MoneyWardenState extends State<MoneyWarden> {
                     }
                   }
                 );
+              }
+              else if (budget.manuallyLoggedOut) {
+                return LoginPage();
               }
               else {
                 return const SplashScreen(message: "Signing In");

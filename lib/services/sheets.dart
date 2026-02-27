@@ -1,8 +1,7 @@
-import 'package:flutter/material.dart' as material;
 import 'package:googleapis/drive/v3.dart';
 import 'package:googleapis/sheets/v4.dart' hide Request;
 import 'package:googleapis/sheets/v4.dart' as sheets show Request;
-import 'package:http/http.dart';
+import 'package:money_warden/exceptions/authorization_exception.dart';
 import 'package:money_warden/models/category.dart';
 import 'package:money_warden/models/payment_method.dart';
 import 'package:money_warden/models/transaction.dart';
@@ -20,13 +19,20 @@ class SheetsService {
   static const String templateSpreadsheetID = '1HY1205As44sXW4j_QgH5Mp1jWVAfWK1a8xTedWwgyA0';
 
   static Future<SheetsApi> getSheetsApiClient() async {
-    var client = (await AuthService.getAuthenticatedClient())!;
-    return SheetsApi(client as Client);
+    var client = await AuthService.getAuthenticatedClient();
+    if (client == null) {
+      throw AuthorizationException('Money Warden was not authorized to access Google Sheets');
+    }
+    return SheetsApi(client);
   }
 
   static Future<DriveApi> getDriveApiClient() async {
-    var client = (await AuthService.getAuthenticatedClient())!;
-    return DriveApi(client as Client);
+    var client = await AuthService.getAuthenticatedClient();
+    if (client == null) {
+      throw AuthorizationException('Money Warden was not authorized to access Google Drive');
+    }
+    final api = DriveApi(client);
+    return api;
   }
 
   static Future<Map<String, dynamic>> initializeSpreadsheetPrefs() async {
