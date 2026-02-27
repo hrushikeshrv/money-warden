@@ -45,6 +45,14 @@ dependencies:
   markdown_widget: ^2.3.2+6
   url_launcher: ^6.3.1
   google_fonts: ^8.0.1
+  flutter_launcher_icons: ^0.14.4
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path_ios: "assets/images/Logo-512-solid.png"
+  image_path_android: "assets/images/Logo-512.png"
+
 
 dev_dependencies:
   flutter_test:
