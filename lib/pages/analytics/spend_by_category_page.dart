@@ -54,14 +54,14 @@ class SpendByCategoryPage extends StatelessWidget {
                       : ListView(
                     shrinkWrap: true,
                     physics: const ClampingScrollPhysics(),
-                    children: budget.currentBudgetMonthData!.getExpensesByCategory().map(
-                            (CategorySpend spend) {
-                          return TransactionCategorySummaryTile(
-                              categoryName: spend.name,
-                              amount: spend.amount,
-                              percentSpent: (spend.amount / budget.currentBudgetMonthData!.monthExpenseAmount)
-                          );
-                        }
+                    children: budget.currentBudgetMonthData!.getExpensesByCategoryToChart().map(
+                      (CategorySpend spend) {
+                        return TransactionCategorySummaryTile(
+                          categoryName: spend.name,
+                          amount: spend.amount,
+                          percentSpent: (spend.amount / budget.currentBudgetMonthData!.monthExpenseAmount)
+                        );
+                      }
                     ).toList(),
                   ),
 

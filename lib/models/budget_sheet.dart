@@ -258,6 +258,18 @@ class BudgetSheet extends ChangeNotifier {
     return null;
   }
 
+  /// Return a `Category` given its name if it exists
+  /// in the sheet
+  category.Category? getCategoryByName(String name) {
+    for (var cat in expenseCategories) {
+      if (cat.name == name) return cat;
+    }
+    for (var cat in incomeCategories) {
+      if (cat.name == name) return cat;
+    }
+    return null;
+  }
+
   /// Update the icon associated with a payment method.
   /// Purely a local action, SheetsService is not needed.
   Future<void> setPaymentMethodIcon({ required PaymentMethod paymentMethod, required Icon icon }) async {

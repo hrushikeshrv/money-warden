@@ -3,6 +3,7 @@ import 'package:community_charts_common/community_charts_common.dart';
 import 'package:community_charts_flutter/community_charts_flutter.dart' as charts;
 
 import 'package:money_warden/models/transaction.dart';
+import 'package:money_warden/models/category.dart';
 import 'package:money_warden/utils/utils.dart';
 
 /// Global state for a single month's sheet in the chosen budget
@@ -114,11 +115,24 @@ class BudgetMonth {
     return transactions;
   }
 
+  /// Return a list of `Transaction`s for a given `category`.
+  List<Transaction> getTransactionsByCategory(Category category) {
+    List<Transaction> results = [];
+    for (var txn in getOrderedTransactions(null)) {
+      if (txn.category != null && txn.category!.name == category.name) {
+        results.add(txn);
+      }
+    }
+    return results;
+  }
+
+  /// Used only to get graphing data.
+  ///
   /// Returns a list containing information about
   /// expenses for each category in this month. The
   /// returned list is sorted in decreasing order of the
   /// amount spent.
-  List<CategorySpend> getExpensesByCategory() {
+  List<CategorySpend> getExpensesByCategoryToChart() {
     // TODO: add tests
     List<CategorySpend> data = [];
     Map<String, int> indexMap = {};
@@ -153,7 +167,7 @@ class BudgetMonth {
   /// containing different categories of spending and their corresponding
   /// amounts.
   List<charts.Series<CategorySpend, double>> getExpensesByCategorySeriesList() {
-    List<CategorySpend> spends = getExpensesByCategory();
+    List<CategorySpend> spends = getExpensesByCategoryToChart();
     return [
       charts.Series<CategorySpend, double>(
         id: 'Expenses',

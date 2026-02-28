@@ -106,11 +106,9 @@ ThemeData defaultTheme = ThemeData(
         fontSize: 14
     ),
     bodySmall: GoogleFonts.poppins(),
-    labelLarge: GoogleFonts.ibmPlexMono(
-        fontWeight: FontWeight.bold
-    ),
+    labelLarge: GoogleFonts.poppins(),
     labelMedium: GoogleFonts.poppins(),
-    labelSmall: GoogleFonts.ibmPlexMono()
+    labelSmall: GoogleFonts.poppins()
   ),
   extensions: [
     MwColors(

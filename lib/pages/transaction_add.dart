@@ -199,6 +199,7 @@ class _TransactionAddPageState extends State<TransactionAddPage> {
               Expanded(
                 child: ListView(
                   shrinkWrap: true,
+                  physics: ClampingScrollPhysics(),
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
