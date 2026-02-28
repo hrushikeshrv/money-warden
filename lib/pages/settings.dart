@@ -123,6 +123,15 @@ class _SettingsPageState extends State<SettingsPage> {
                           backgroundImage: NetworkImage(userPhotoUrl!),
                           radius: 25) : null,
                     ),
+                    SettingsTile(
+                      leading: const Icon(Icons.cancel),
+                      title: 'Reset Permissions',
+                      subtitle: 'Reset access permissions for Money Warden and log out from ${AuthService.getUserEmail()}',
+                      onTap: () async {
+                        await AuthService.disconnect();
+                        budget.manualLogOut();
+                      },
+                    ),
 
                     const SizedBox(height: 20),
                     const Heading1(text: 'Help & Support'),

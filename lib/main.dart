@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:money_warden/pages/instructions.dart';
 import 'package:money_warden/pages/payment_method_list.dart';
 import 'package:money_warden/pages/terms_of_service.dart';
 import 'package:money_warden/pages/transaction_add.dart';
 import 'package:money_warden/pages/transaction_category_list.dart';
 import 'package:money_warden/services/sheets.dart';
-import 'package:money_warden/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 import 'package:money_warden/models/budget_sheet.dart';
@@ -23,14 +20,8 @@ import 'package:money_warden/pages/privacy_policy.dart';
 import 'package:money_warden/services/auth.dart';
 import 'package:money_warden/theme/theme.dart';
 
-import 'firebase_options.dart';
-
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    name: "MoneyWarden",
-    options:DefaultFirebaseOptions.currentPlatform,
-  );
   runApp(const MoneyWarden());
 }
 

@@ -13,7 +13,8 @@ String kManuallySignedOut = 'manually_signed_out';
 class AuthService {
   static List<String> scopes = [
     sheets.SheetsApi.spreadsheetsScope,
-    sheets.SheetsApi.driveReadonlyScope
+    drive.DriveApi.driveMetadataReadonlyScope,
+    // drive.DriveApi.driveFileScope
   ];
   static GoogleSignIn googleSignIn = GoogleSignIn.instance;
   /// The currently authenticated user object (if any)
@@ -23,6 +24,8 @@ class AuthService {
   /// Previous authentication error message received
   static String authErrorMessage = '';
 
+  /// Listens to events from the authentication event stream and requests authorization
+  /// when the user logs in
   static Future<void> _handleAuthenticationEvent(GoogleSignInAuthenticationEvent event) async {
     final GoogleSignInAccount? user = switch(event) {
       GoogleSignInAuthenticationEventSignIn() => event.user,
@@ -73,19 +76,39 @@ class AuthService {
     }
   }
 
+  /// Signs the user out, but does not revoke authorization from Money
+  /// Warden. Sets a manually signed out boolean flag in shared preferences
+  /// so we don't try to attempt lightweight authentication on next startup
   static Future<void> signOut() async {
     await googleSignIn.signOut();
     final prefs = await SharedPreferences.getInstance();
     prefs.setBool(kManuallySignedOut, true);
   }
 
+  /// Signs the user out and revokes authorization from Money
+  /// Warden. Sets a manually signed out boolean flag in shared preferences
+  //  so we don't try to attempt lightweight authentication on next startup
+  static Future<void> disconnect() async {
+    await googleSignIn.disconnect();
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool(kManuallySignedOut, true);
+  }
+
   static Future<AuthClient?> getAuthenticatedClient() async {
     if (currentUser == null) return null;
-    final authorization = await currentUser!.authorizationClient.authorizationForScopes(scopes);
-    if (authorization == null) return null;
+    GoogleSignInClientAuthorization? authorization = await currentUser!.authorizationClient.authorizationForScopes(scopes);
+    if (authorization == null) {
+      try {
+        authorization = await currentUser!.authorizationClient.authorizeScopes(scopes);
+      }
+      catch (e) {
+        return null;
+      }
+    };
     return authorization.authClient(scopes: scopes);
   }
 
+  /// Initialize authentication and authorization on app startup
   static Future<Map<String, dynamic>> initializeAuth() async {
     await googleSignIn.initialize();
     googleSignIn.authenticationEvents
@@ -110,10 +133,9 @@ class AuthService {
       final authorization = await currentUser!.authorizationClient.authorizationForScopes(scopes);
       if (authorization != null) {
         isAuthorized = true;
+        final result = await SheetsService.getUserSpreadsheets(null);
+        spreadsheets = result?.files;
       }
-
-      final result = await SheetsService.getUserSpreadsheets(null);
-      spreadsheets = result?.files;
     }
 
     data['user'] = currentUser;
