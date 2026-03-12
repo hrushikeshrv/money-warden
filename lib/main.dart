@@ -14,7 +14,6 @@ import 'package:money_warden/pages/analytics/analytics_homepage.dart';
 import 'package:money_warden/pages/homepage.dart';
 import 'package:money_warden/pages/settings.dart';
 import 'package:money_warden/pages/splash_screen.dart';
-import 'package:money_warden/pages/transaction_list.dart';
 import 'package:money_warden/pages/user_sheets_list.dart';
 import 'package:money_warden/pages/privacy_policy.dart';
 import 'package:money_warden/services/auth.dart';
@@ -75,7 +74,6 @@ class _MoneyWardenState extends State<MoneyWarden> {
           routes: {
             'homepage': (context) => const HomePage(),
             'login': (context) => const LoginPage(),
-            'transactions': (context) => const TransactionsPage(),
             'analytics': (context) => const AnalyticsHomepage(),
             'settings': (context) => const SettingsPage(),
             'user_sheets_list': (context) => const UserSheetsList(),

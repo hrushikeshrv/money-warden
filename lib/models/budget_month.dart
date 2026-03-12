@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart' as material;
 import 'package:community_charts_common/community_charts_common.dart';
 import 'package:community_charts_flutter/community_charts_flutter.dart' as charts;
+import 'package:money_warden/models/payment_method.dart';
 
 import 'package:money_warden/models/transaction.dart';
 import 'package:money_warden/models/category.dart';
@@ -54,34 +55,85 @@ class BudgetMonth {
   }
 
   List<Transaction> get orderedTransactions {
-    return getOrderedTransactions(null);
+    return getOrderedTransactions();
+  }
+
+  /// Remove the attached filters and set `filteredTransactions`
+  /// to `orderedTransactions`
+  void resetFilteredTransactions() {
+    filteredTransactions = getOrderedTransactions();
   }
 
   /// Filter `filteredTransactions` to only contain
-  /// transactions matching the given query. Searches for the
+  /// transactions matching the `query` AND having a category
+  /// in one of the passed `categories` AND having a payment method
+  /// in one of the passed `paymentMethods`.
+  void filterTransactions([String query = "", List<Category> categories = const [], List<PaymentMethod> paymentMethods = const []]) {
+    resetFilteredTransactions();
+    if (query.isNotEmpty) {
+      filteredTransactions = filterTransactionsByQuery(filteredTransactions, query);
+    }
+    if (categories.isNotEmpty) {
+      filteredTransactions = filterTransactionsByCategory(filteredTransactions, categories);
+    }
+    if (paymentMethods.isNotEmpty) {
+      filteredTransactions = filterTransactionsByPaymentMethod(filteredTransactions, paymentMethods);
+    }
+  }
+
+  /// Filter the given transactions list to only contain
+  /// transactions matching the given `categories`.
+  List<Transaction> filterTransactionsByCategory(List<Transaction> transactions, List<Category> categories) {
+    List<Transaction> filteredTransactions = [];
+    for (int i = 0; i < transactions.length; i++ ){
+      for (final cat in categories) {
+        if (cat.name == transactions[i].category?.name) {
+          filteredTransactions.add(transactions[i]);
+        }
+      }
+    }
+    return filteredTransactions;
+  }
+
+  /// Filter the given transactions list to only contain
+  /// transactions matching the given `paymentMethods`.
+  List<Transaction> filterTransactionsByPaymentMethod(List<Transaction> transactions, List<PaymentMethod> paymentMethods) {
+    List<Transaction> filteredTransactions = [];
+    for (int i = 0; i < transactions.length; i++ ){
+      for (final paymentMethod in paymentMethods) {
+        if (paymentMethod.name == transactions[i].paymentMethod?.name) {
+          filteredTransactions.add(transactions[i]);
+        }
+      }
+    }
+    return filteredTransactions;
+  }
+
+  /// Filter the given transactions list to only contain
+  /// transactions matching the given `query`. Searches for the
   /// given query to be in the transaction category,
   /// transaction description, or payment method name. If the
   /// query is empty, sets `filteredTransactions` to be the same as
   /// `orderedTransactions`
-  void filterTransactions(String query) {
+  List<Transaction> filterTransactionsByQuery(List<Transaction> transactions, String query) {
     query = query.toLowerCase();
-    List<Transaction> allTransactions = getOrderedTransactions(null);
-    filteredTransactions = [];
-    for (int i = 0; i < allTransactions.length; i++) {
+    List<Transaction> filteredTransactions = [];
+    for (int i = 0; i < transactions.length; i++) {
       if (
         query.isEmpty
-        || (allTransactions[i].category?.name.toLowerCase().contains(query) ?? false)
-        || (allTransactions[i].description?.toLowerCase().contains(query) ?? false)
-        || (allTransactions[i].paymentMethod?.name.toLowerCase().contains(query) ?? false)
+        || (transactions[i].category?.name.toLowerCase().contains(query) ?? false)
+        || (transactions[i].description?.toLowerCase().contains(query) ?? false)
+        || (transactions[i].paymentMethod?.name.toLowerCase().contains(query) ?? false)
       ) {
-        filteredTransactions.add(allTransactions[i]);
+        filteredTransactions.add(transactions[i]);
       }
     }
+    return filteredTransactions;
   }
 
-  /// Returns up to maxTransactions transactions in descending order
-  /// of their date. Includes both expenses and incomes
-  List<Transaction> getOrderedTransactions(int? maxTransactions) {
+  /// Returns transactions in descending order
+  /// of their date. Includes both expenses and incomes.
+  List<Transaction> getOrderedTransactions([int? maxTransactions]) {
     // TODO: add tests
     List<Transaction> transactions = [];
     int expenseIdx = 0;

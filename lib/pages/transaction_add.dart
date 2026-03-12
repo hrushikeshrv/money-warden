@@ -436,8 +436,8 @@ class _TransactionAddPageState extends State<TransactionAddPage> {
                           MwTextField(
                             controller: descriptionController,
                             enabled: !_loading,
-                            labelText: "Description",
-                            labelIcon: const Icon(Icons.description_outlined)
+                            hintText: "Description",
+                            prefixIcon: const Icon(Icons.description_outlined)
                           ),
 
                           const SizedBox(height: 20),

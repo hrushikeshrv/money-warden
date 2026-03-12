@@ -12,4 +12,17 @@ class PaymentMethod {
     this.icon,
     this.isDefault = false
   });
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other)
+        || (
+          other is PaymentMethod
+          && other.name == name
+          && other.cellId == cellId
+        );
+  }
+
+  @override
+  int get hashCode => Object.hash(name, cellId);
 }

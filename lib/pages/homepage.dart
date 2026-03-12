@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:money_warden/components/mw_pill_button.dart';
+import 'package:money_warden/models/payment_method.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -8,7 +10,7 @@ import 'package:money_warden/components/mw_app_bar.dart';
 import 'package:money_warden/components/mw_text_field.dart';
 import 'package:money_warden/components/transaction_tile.dart';
 import 'package:money_warden/models/budget_sheet.dart';
-import 'package:money_warden/models/transaction.dart';
+import 'package:money_warden/models/category.dart';
 import 'package:money_warden/theme/theme.dart';
 import 'package:money_warden/utils/utils.dart';
 
@@ -22,6 +24,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final TextEditingController controller = TextEditingController();
+  final List<Category> filterCategories = [];
+  final List<PaymentMethod> filterPaymentMethods = [];
 
   @override
   Widget build(BuildContext context) {
@@ -44,15 +48,158 @@ class _HomePageState extends State<HomePage> {
           children: [
             const MwAppBar(),
             Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
-                child: MwTextField(
-                  labelText: "Filter transactions",
-                  labelIcon: Icon(Icons.search, color: colors.mutedText),
-                  controller: controller,
-                  onChanged: (String query) {
-                    budget.filterTransactions(query);
-                  },
-                )
+              padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: MwTextField(
+                      hintText: "Filter transactions",
+                      prefixIcon: Icon(Icons.search, color: colors.mutedText),
+                      controller: controller,
+                      onChanged: (String query) {
+                        budget.setTransactionFilters(query: query);
+                        budget.filterTransactions();
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 10,),
+
+                  MwPillButton(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 6),
+                      child: Row(
+                        children: [
+                          Icon(Icons.category_outlined),
+                          const SizedBox(width: 5,),
+                          Text(budget.transactionFilterCategories.length.toString())
+                        ],
+                      ),
+                    ),
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (_) {
+                          List<Category> allCategories = budget.expenseCategories + budget.incomeCategories;
+                          return StatefulBuilder(
+                            builder: (context, setStateDialog) {
+                              return AlertDialog(
+                                title: Text("Filter by Categories"),
+                                content: ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                    maxWidth: double.maxFinite,
+                                    minWidth: double.maxFinite,
+                                    maxHeight: MediaQuery.of(context).size.height * 0.6,
+                                  ),
+                                  child: ListView(
+                                    shrinkWrap: true,
+                                    children: allCategories.map((cat) {
+                                      return ListTile(
+                                        leading: filterCategories.contains(cat) ? Icon(Icons.check_box_outlined) : Icon(Icons.check_box_outline_blank),
+                                        title: Text(cat.name),
+                                        contentPadding: EdgeInsetsGeometry.symmetric(horizontal: 10),
+                                        onTap: () {
+                                          setStateDialog(() {
+                                            if (filterCategories.contains(cat)) {
+                                              filterCategories.remove(cat);
+                                            } else {
+                                              filterCategories.add(cat);
+                                            }
+                                          });
+                                          budget.setTransactionFilters(categories: filterCategories);
+                                        },
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
+                                actions: [
+                                  MwActionButton(
+                                    leading: Icon(Icons.filter_alt_outlined),
+                                    text: "Filter",
+                                    onTap: () {
+                                      budget.filterTransactions();
+                                      Navigator.of(context).pop();
+                                    }
+                                  )
+                                ]
+                              );
+                            }
+                          );
+                        }
+                      );
+                    }
+                  ),
+                  const SizedBox(width: 10,),
+
+                  MwPillButton(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 6),
+                      child: Row(
+                        children: [
+                          Icon(Icons.payments_outlined),
+                          const SizedBox(width: 5,),
+                          Text(budget.transactionFilterPaymentMethods.length.toString())
+                        ],
+                      ),
+                    ),
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (_) {
+                          return StatefulBuilder(
+                            builder: (context, setStateDialog) {
+                              return AlertDialog(
+                                title: Text("Filter by Payment Method", style: TextStyle(overflow: TextOverflow.ellipsis),),
+                                content: ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                    maxWidth: double.maxFinite,
+                                    minWidth: double.maxFinite,
+                                    maxHeight: MediaQuery.of(context).size.height * 0.6,
+                                  ),
+                                  child: ListView(
+                                    shrinkWrap: true,
+                                    children: budget.paymentMethods.map((cat) {
+                                      return ListTile(
+                                        leading: filterPaymentMethods.contains(cat) ? Icon(Icons.check_box_outlined) : Icon(Icons.check_box_outline_blank),
+                                        title: Text(cat.name),
+                                        contentPadding: EdgeInsetsGeometry.symmetric(horizontal: 10),
+                                        onTap: () {
+                                          if (filterPaymentMethods.contains(cat)) {
+                                            setStateDialog(() {
+                                              filterPaymentMethods.remove(cat);
+                                          });
+                                          }
+                                          else {
+                                            setStateDialog(() {
+                                              filterPaymentMethods.add(cat);
+                                            });
+                                          }
+                                          budget.setTransactionFilters(paymentMethods: filterPaymentMethods);
+                                        },
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
+                                actions: [
+                                  MwActionButton(
+                                    leading: Icon(Icons.filter_alt_outlined),
+                                    text: "Filter",
+                                    onTap: () {
+                                      budget.filterTransactions();
+                                      Navigator.of(context).pop();
+                                    }
+                                  )
+                                ]
+                              );
+                            }
+                          );
+                        }
+                      );
+                    }
+                  ),
+                ],
+              )
             ),
             Expanded(
               child: ListView(

@@ -31,6 +31,11 @@ class BudgetSheet extends ChangeNotifier {
   String _defaultCurrencyCode = 'USD';
   bool manuallyLoggedOut = false;
 
+  /// Filters to be applied to the current month's transactions
+  List<category.Category> transactionFilterCategories = [];
+  List<PaymentMethod> transactionFilterPaymentMethods = [];
+  String transactionFilterQuery = '';
+
   /// List of spreadsheets the user has in their Google Account
   List<drive.File>? userSpreadsheets = [];
 
@@ -42,6 +47,29 @@ class BudgetSheet extends ChangeNotifier {
       return budgetData[currentBudgetMonthName];
     }
     return null;
+  }
+
+  // Return the current budget month's name
+  String get currentBudgetMonthName => _currentBudgetMonthName;
+  /// Set the current budget month without notifying listeners
+  set currentBudgetMonthName(month) => _currentBudgetMonthName = month;
+
+  /// Get the default currency symbol
+  String get defaultCurrencySymbol {
+    // We are currently only storing the currency symbol,
+    // but we may want to create a separate Currency model
+    // in the future.
+    if (sharedPreferences == null) {
+      return '\$';
+    }
+    return sharedPreferences!.getString('defaultCurrencySymbol') ?? '\$';
+  }
+  /// Get the default currency symbol
+  String get defaultCurrencyCode {
+    if (sharedPreferences == null) {
+      return 'USD';
+    }
+    return sharedPreferences!.getString('defaultCurrencyCode') ?? 'USD';
   }
 
   /// Resets the value of all relevant properties where state is maintained
@@ -190,40 +218,17 @@ class BudgetSheet extends ChangeNotifier {
     }
   }
 
-  /// Return the current budget month's name
-  String get currentBudgetMonthName => _currentBudgetMonthName;
-  /// Set the current budget month without notifying listeners
-  set currentBudgetMonthName(month) => _currentBudgetMonthName = month;
-
   /// Set the current budget month and notify listeners
   void setCurrentBudgetMonth(month) {
     // First remove the filter on the current budget month's
     // transactions (if any)
-    filterTransactions('');
+    resetTransactionFilters();
     _currentBudgetMonthName = month;
     if (!budgetData.containsKey(month)) {
       budgetData[month] = null;
       getBudgetMonthData(month: month);
     }
     notifyListeners();
-  }
-
-  /// Get the default currency symbol
-  String get defaultCurrencySymbol {
-    // We are currently only storing the currency symbol,
-    // but we may want to create a separate Currency model
-    // in the future.
-    if (sharedPreferences == null) {
-      return '\$';
-    }
-    return sharedPreferences!.getString('defaultCurrencySymbol') ?? '\$';
-  }
-  /// Get the default currency symbol
-  String get defaultCurrencyCode {
-    if (sharedPreferences == null) {
-      return 'USD';
-    }
-    return sharedPreferences!.getString('defaultCurrencyCode') ?? 'USD';
   }
 
   /// Set the default currency symbol and notify listeners
@@ -531,7 +536,7 @@ class BudgetSheet extends ChangeNotifier {
         budgetMonthData.sortIncome();
       }
       // Filter transactions by an empty string to cover all transactions
-      filterTransactions("");
+      resetTransactionFilters();
     }
     // If updating a transaction, find the Transaction object
     // in the budget month and update its properties
@@ -597,19 +602,50 @@ class BudgetSheet extends ChangeNotifier {
       budgetMonth!.income.remove(transaction);
     }
     // Filter transactions by an empty string to cover all transactions
-    filterTransactions("");
+    resetTransactionFilters();
     notifyListeners();
     return true;
   }
 
-  /// Filter the current budget month's transactions to only contain
-  /// transactions matching the given query. Searches for the
-  /// given query to be in the transaction category or the
-  /// transaction description
-  void filterTransactions(String query) {
+  /// Reset any filters applied to the current
+  /// budget month's transactions
+  void resetTransactionFilters() {
+    transactionFilterCategories.clear();
+    transactionFilterPaymentMethods.clear();
+    transactionFilterQuery = '';
+
     if (currentBudgetMonthData != null) {
-      currentBudgetMonthData!.filterTransactions(query);
+      currentBudgetMonthData!.resetFilteredTransactions();
       notifyListeners();
+    }
+  }
+
+  /// Filter the current budget month's transactions to only contain
+  /// transactions matching the current query, categories, and payment
+  /// methods.
+  void filterTransactions() {
+    if (currentBudgetMonthData != null) {
+      currentBudgetMonthData!.filterTransactions(
+        transactionFilterQuery,
+        transactionFilterCategories,
+        transactionFilterPaymentMethods
+      );
+      notifyListeners();
+    }
+  }
+
+  /// Set the transaction filter query, categories, and payment methods.
+  /// Only sets the parameters that are supplied.
+  /// Parameters not supplied are ignored.
+  void setTransactionFilters({String? query, List<category.Category>? categories, List<PaymentMethod>? paymentMethods}) {
+    if (query != null && query.isNotEmpty) {
+      transactionFilterQuery = query;
+    }
+    if (categories != null) {
+      transactionFilterCategories = categories;
+    }
+    if (paymentMethods != null) {
+      transactionFilterPaymentMethods = paymentMethods;
     }
   }
 

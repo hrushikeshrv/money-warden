@@ -45,8 +45,8 @@ class _ChooseDefaultCurrencyPageState extends State<ChooseDefaultCurrencyPage> {
               const SizedBox(height: 20),
               MwTextField(
                 controller: controller,
-                labelText: "Search for currencies",
-                labelIcon: const Icon(Icons.search),
+                hintText: "Search for currencies",
+                prefixIcon: const Icon(Icons.search),
                 onChanged: searchCurrencies,
               ),
               Expanded(

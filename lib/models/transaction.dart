@@ -14,6 +14,24 @@ class Transaction {
   final TransactionType transactionType;
   final int rowIndex;
 
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other)
+        || (
+          other is Transaction
+          && other.time == time
+          && other.amount == amount
+          && other.description == description
+          && other.category == category
+          && other.paymentMethod == paymentMethod
+          && other.transactionType == transactionType
+          && other.rowIndex == rowIndex
+        );
+  }
+
+  @override
+  int get hashCode => Object.hash(time, amount, description, category, paymentMethod);
+
   Transaction({
     required this.time,
     required this.amount,

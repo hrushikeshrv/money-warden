@@ -5,15 +5,15 @@ import 'package:money_warden/theme/theme.dart';
 class MwTextField extends StatelessWidget {
   final TextEditingController? controller;
   final Function(String)? onChanged;
-  final Icon? labelIcon;
-  final String? labelText;
+  final Icon? prefixIcon;
+  final String? hintText;
   bool? enabled;
 
   MwTextField({
     super.key,
-    this.labelText,
+    this.hintText,
     this.controller,
-    this.labelIcon,
+    this.prefixIcon,
     this.onChanged,
     this.enabled
   });
@@ -21,20 +21,6 @@ class MwTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<MwColors>()!;
-    Widget? label;
-    if (labelText != null || labelIcon != null) {
-      List<Widget> children = [];
-      if (labelIcon != null) {
-        children.add(labelIcon!);
-        children.add(const SizedBox(width: 5));
-      }
-      if (labelText != null) {
-        children.add(Text(labelText!, style: TextStyle(color: colors.mutedText)));
-      }
-      label = Row(
-        children: children,
-      );
-    }
 
     return TextField(
       enabled: enabled,
@@ -53,7 +39,12 @@ class MwTextField extends StatelessWidget {
             borderRadius: const BorderRadius.all(Radius.circular(30)),
             borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
           ),
-          label: label,
+          prefixIcon: prefixIcon,
+          hintStyle: TextStyle(
+            color: colors.mutedText,
+            overflow: TextOverflow.ellipsis
+          ),
+          hintText: hintText,
           floatingLabelBehavior: FloatingLabelBehavior.never,
           filled: true,
           fillColor: colors.backgroundDark1,
