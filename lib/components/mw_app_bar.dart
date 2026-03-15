@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:money_warden/components/budget_month_dropdown.dart';
+import 'package:money_warden/components/budget_month_selector.dart';
 import 'package:money_warden/models/budget_sheet.dart';
 
 class MwAppBar extends StatefulWidget {
@@ -35,6 +35,7 @@ class _MwAppBarState extends State<MwAppBar> {
             ],
           )
         );
+
         return Material(
           color: Theme.of(context).colorScheme.surface,
           child: Padding(
@@ -46,7 +47,7 @@ class _MwAppBarState extends State<MwAppBar> {
                   children: [
                     Image.asset('assets/images/logo.png', height: 45,),
                     const SizedBox(width: 5),
-                    const BudgetMonthDropdown(),
+                    const BudgetMonthSelector(),
                   ],
                 ),
                 InkWell(
