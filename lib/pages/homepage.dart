@@ -188,9 +188,9 @@ class _HomePageState extends State<HomePage> {
                 ],
               )
             ),
+
             Expanded(
               child: ListView(
-                shrinkWrap: true,
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
@@ -265,23 +265,37 @@ class _HomePageState extends State<HomePage> {
                   ),
                   const SizedBox(height: 25),
 
+                  if (budget.currentBudgetMonthData != null && budget.currentBudgetMonthData!.filteredTransactions.isEmpty)
+                    const Padding(
+                      padding: EdgeInsets.only(top: 20),
+                      child: Center(child: Text('No transactions yet 💸', style: TextStyle(fontSize: 17))),
+                    ),
 
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                    child: budget.currentBudgetMonthData != null && budget.currentBudgetMonthData!.filteredTransactions.isEmpty
-                        ? const Padding(
-                          padding: EdgeInsets.only(top: 20),
-                          child: Center(child: Text('No transactions yet 💸', style: TextStyle(fontSize: 17))),
-                        )
-                        : ListView.builder(
-                          itemCount: budget.currentBudgetMonthData == null ? 0 : budget.currentBudgetMonthData!.filteredTransactions.length,
-                          shrinkWrap: true,
-                          physics: const ClampingScrollPhysics(),
-                          itemBuilder: (BuildContext context, int index) {
-                            return TransactionTile(transaction: budget.currentBudgetMonthData?.filteredTransactions[index]);
-                          },
-                        ),
-                  ),
+                  if (budget.currentBudgetMonthData != null && budget.currentBudgetMonthData!.filteredTransactions.isNotEmpty)
+                    ...List.generate(
+                      budget.currentBudgetMonthData!.filteredTransactions.length,
+                      (index) => Padding(
+                        padding: EdgeInsetsGeometry.symmetric(horizontal: 5),
+                        child: TransactionTile(transaction: budget.currentBudgetMonthData?.filteredTransactions[index]),
+                      )
+                    ),
+
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(horizontal: 5),
+                  //   child: budget.currentBudgetMonthData != null && budget.currentBudgetMonthData!.filteredTransactions.isEmpty
+                  //       ? const Padding(
+                  //         padding: EdgeInsets.only(top: 20),
+                  //         child: Center(child: Text('No transactions yet 💸', style: TextStyle(fontSize: 17))),
+                  //       )
+                  //       : ListView.builder(
+                  //         itemCount: budget.currentBudgetMonthData == null ? 0 : budget.currentBudgetMonthData!.filteredTransactions.length,
+                  //         shrinkWrap: true,
+                  //         physics: const ClampingScrollPhysics(),
+                  //         itemBuilder: (BuildContext context, int index) {
+                  //           return TransactionTile(transaction: budget.currentBudgetMonthData?.filteredTransactions[index]);
+                  //         },
+                  //       ),
+                  // ),
 
                   const SizedBox(height: 50),
                 ]
