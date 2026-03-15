@@ -8,6 +8,7 @@ import 'package:money_warden/components/budget_initialization_failed_alert.dart'
 import 'package:money_warden/components/mw_action_button.dart';
 import 'package:money_warden/components/mw_app_bar.dart';
 import 'package:money_warden/components/mw_text_field.dart';
+import 'package:money_warden/components/mw_alert_dialog.dart';
 import 'package:money_warden/components/transaction_tile.dart';
 import 'package:money_warden/models/budget_sheet.dart';
 import 'package:money_warden/models/category.dart';
@@ -83,34 +84,27 @@ class _HomePageState extends State<HomePage> {
                           List<Category> allCategories = budget.expenseCategories + budget.incomeCategories;
                           return StatefulBuilder(
                             builder: (context, setStateDialog) {
-                              return AlertDialog(
+                              return MwAlertDialog(
                                 title: Text("Filter by Categories"),
-                                content: ConstrainedBox(
-                                  constraints: BoxConstraints(
-                                    maxWidth: double.maxFinite,
-                                    minWidth: double.maxFinite,
-                                    maxHeight: MediaQuery.of(context).size.height * 0.6,
-                                  ),
-                                  child: ListView(
-                                    shrinkWrap: true,
-                                    children: allCategories.map((cat) {
-                                      return ListTile(
-                                        leading: filterCategories.contains(cat) ? Icon(Icons.check_box_outlined) : Icon(Icons.check_box_outline_blank),
-                                        title: Text(cat.name),
-                                        contentPadding: EdgeInsetsGeometry.symmetric(horizontal: 10),
-                                        onTap: () {
-                                          setStateDialog(() {
-                                            if (filterCategories.contains(cat)) {
-                                              filterCategories.remove(cat);
-                                            } else {
-                                              filterCategories.add(cat);
-                                            }
-                                          });
-                                          budget.setTransactionFilters(categories: filterCategories);
-                                        },
-                                      );
-                                    }).toList(),
-                                  ),
+                                content: ListView(
+                                  shrinkWrap: true,
+                                  children: allCategories.map((cat) {
+                                    return ListTile(
+                                      leading: filterCategories.contains(cat) ? Icon(Icons.check_box_outlined) : Icon(Icons.check_box_outline_blank),
+                                      title: Text(cat.name),
+                                      contentPadding: EdgeInsetsGeometry.symmetric(horizontal: 10),
+                                      onTap: () {
+                                        setStateDialog(() {
+                                          if (filterCategories.contains(cat)) {
+                                            filterCategories.remove(cat);
+                                          } else {
+                                            filterCategories.add(cat);
+                                          }
+                                        });
+                                        budget.setTransactionFilters(categories: filterCategories);
+                                      },
+                                    );
+                                  }).toList(),
                                 ),
                                 actions: [
                                   MwActionButton(
@@ -149,37 +143,30 @@ class _HomePageState extends State<HomePage> {
                         builder: (_) {
                           return StatefulBuilder(
                             builder: (context, setStateDialog) {
-                              return AlertDialog(
+                              return MwAlertDialog(
                                 title: Text("Filter by Payment Method", style: TextStyle(overflow: TextOverflow.ellipsis),),
-                                content: ConstrainedBox(
-                                  constraints: BoxConstraints(
-                                    maxWidth: double.maxFinite,
-                                    minWidth: double.maxFinite,
-                                    maxHeight: MediaQuery.of(context).size.height * 0.6,
-                                  ),
-                                  child: ListView(
-                                    shrinkWrap: true,
-                                    children: budget.paymentMethods.map((cat) {
-                                      return ListTile(
-                                        leading: filterPaymentMethods.contains(cat) ? Icon(Icons.check_box_outlined) : Icon(Icons.check_box_outline_blank),
-                                        title: Text(cat.name),
-                                        contentPadding: EdgeInsetsGeometry.symmetric(horizontal: 10),
-                                        onTap: () {
-                                          if (filterPaymentMethods.contains(cat)) {
-                                            setStateDialog(() {
-                                              filterPaymentMethods.remove(cat);
+                                content: ListView(
+                                  shrinkWrap: true,
+                                  children: budget.paymentMethods.map((cat) {
+                                    return ListTile(
+                                      leading: filterPaymentMethods.contains(cat) ? Icon(Icons.check_box_outlined) : Icon(Icons.check_box_outline_blank),
+                                      title: Text(cat.name),
+                                      contentPadding: EdgeInsetsGeometry.symmetric(horizontal: 10),
+                                      onTap: () {
+                                        if (filterPaymentMethods.contains(cat)) {
+                                          setStateDialog(() {
+                                            filterPaymentMethods.remove(cat);
+                                        });
+                                        }
+                                        else {
+                                          setStateDialog(() {
+                                            filterPaymentMethods.add(cat);
                                           });
-                                          }
-                                          else {
-                                            setStateDialog(() {
-                                              filterPaymentMethods.add(cat);
-                                            });
-                                          }
-                                          budget.setTransactionFilters(paymentMethods: filterPaymentMethods);
-                                        },
-                                      );
-                                    }).toList(),
-                                  ),
+                                        }
+                                        budget.setTransactionFilters(paymentMethods: filterPaymentMethods);
+                                      },
+                                    );
+                                  }).toList(),
                                 ),
                                 actions: [
                                   MwActionButton(

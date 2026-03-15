@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:money_warden/components/mw_action_button.dart';
+import 'package:money_warden/components/mw_alert_dialog.dart';
 import 'package:money_warden/pages/add_budget_month_to_spreadsheet.dart';
 import 'package:provider/provider.dart';
 
@@ -36,28 +37,21 @@ class _BudgetMonthSelectorState extends State<BudgetMonthSelector> {
             showDialog(
               context: context,
               builder: (_) {
-                return AlertDialog(
+                return MwAlertDialog(
                   title: Text("Choose month"),
-                  content: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      maxWidth: double.maxFinite,
-                      minWidth: double.maxFinite,
-                      maxHeight: MediaQuery.of(context).size.height * 0.6
-                    ),
-                    child: ListView(
-                      shrinkWrap: true,
-                      children: budgetMonths.map((month) {
-                        return ListTile(
-                          leading: month == budgetSheet.currentBudgetMonthName ? Icon(Icons.check) : Icon(Icons.calendar_month_outlined),
-                          title: Text(month),
-                          contentPadding: EdgeInsetsGeometry.symmetric(horizontal: 10),
-                          onTap: () {
-                            budgetSheet.setCurrentBudgetMonth(month);
-                            Navigator.of(context).pop();
-                          }
-                        );
-                      }).toList(),
-                    )
+                  content: ListView(
+                    shrinkWrap: true,
+                    children: budgetMonths.map((month) {
+                      return ListTile(
+                        leading: month == budgetSheet.currentBudgetMonthName ? Icon(Icons.check) : Icon(Icons.calendar_month_outlined),
+                        title: Text(month),
+                        contentPadding: EdgeInsetsGeometry.symmetric(horizontal: 10),
+                        onTap: () {
+                          budgetSheet.setCurrentBudgetMonth(month);
+                          Navigator.of(context).pop();
+                        }
+                      );
+                    }).toList(),
                   ),
                   actions: [
                     MwActionButton(
@@ -82,26 +76,6 @@ class _BudgetMonthSelectorState extends State<BudgetMonthSelector> {
             );
           }
         );
-
-        // return Padding(
-        //   padding: const EdgeInsets.symmetric(horizontal: 10),
-        //   child: DropdownButton<String>(
-        //     items: budgetMonths.map<DropdownMenuItem<String>>((String value) {
-        //       return DropdownMenuItem(value: value,
-        //           child: Text(value, style: const TextStyle(
-        //             fontSize: 26, fontWeight: FontWeight.bold
-        //           )));
-        //     }).toList(),
-        //     value: budgetSheet.currentBudgetMonthName,
-        //     onChanged: budgetSheet.setCurrentBudgetMonth,
-        //     iconEnabledColor: Theme
-        //         .of(context)
-        //         .colorScheme
-        //         .primary,
-        //     // isExpanded: true,
-        //     underline: Container(),
-        //   ),
-        // );
       }
     );
   }

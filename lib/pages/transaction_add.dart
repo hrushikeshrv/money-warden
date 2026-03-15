@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:money_warden/components/mw_action_button.dart';
 import 'package:money_warden/components/mw_text_field.dart';
+import 'package:money_warden/components/mw_alert_dialog.dart';
 import 'package:money_warden/exceptions/null_spreadsheet_value_exception.dart';
 import 'package:money_warden/theme/theme.dart';
 import 'package:provider/provider.dart';
@@ -157,6 +158,8 @@ class _TransactionAddPageState extends State<TransactionAddPage> {
       if (!context.mounted) return;
       setState(() {
         _loading = false;
+        transactionCategory = null;
+        paymentMethod = null;
       });
       if (widget.updateTransaction && context.mounted) {
         // If updating a widget, we show this page as a bottom sheet,
@@ -239,6 +242,7 @@ class _TransactionAddPageState extends State<TransactionAddPage> {
                               onSelectionChanged: (Set<TransactionType> newSelection) {
                                 setState(() {
                                   transactionType = newSelection.first;
+                                  transactionCategory = null;
                                 });
                               },
                               showSelectedIcon: false,
@@ -253,16 +257,16 @@ class _TransactionAddPageState extends State<TransactionAddPage> {
                             ),
                           ),
                           MwActionButton(
-                              leading: const Icon(Icons.check),
-                              text: widget.updateTransaction ? 'Save' : 'Add',
-                              onTap: () async {
-                                if (_loading) return;
-                                await createTransaction(budget);
-                                amountController.clear();
-                                categoryController.clear();
-                                descriptionController.clear();
-                                paymentMethodController.clear();
-                              }
+                            leading: const Icon(Icons.check),
+                            text: widget.updateTransaction ? 'Save' : 'Add',
+                            onTap: () async {
+                              if (_loading) return;
+                              await createTransaction(budget);
+                              amountController.clear();
+                              categoryController.clear();
+                              descriptionController.clear();
+                              paymentMethodController.clear();
+                            }
                           )
                         ],
                       ),
@@ -389,96 +393,132 @@ class _TransactionAddPageState extends State<TransactionAddPage> {
                           ),
 
                           const SizedBox(height: 30),
+                          MwTextField(
+                              controller: descriptionController,
+                              enabled: !_loading,
+                              hintText: "Description",
+                              prefixIcon: const Icon(Icons.description_outlined)
+                          ),
+
+                          const SizedBox(height: 20),
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Expanded(
-                                child: DropdownMenu<category.Category>(
-                                  expandedInsets: const EdgeInsets.all(0),
-                                  controller: categoryController,
-                                  dropdownMenuEntries: getTransactionCategoryOptions(budget),
-                                  label: Row(
-                                    children: [
-                                      const Icon(Icons.category_outlined),
-                                      const SizedBox(width: 5,),
-                                      Text("Category", style: TextStyle(color: colors.mutedText),)
-                                    ],
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(30),
+                                    color: colors.backgroundDark1
                                   ),
-                                  inputDecorationTheme: InputDecorationTheme(
-                                    filled: true,
-                                    fillColor: colors.backgroundDark1,
-                                    floatingLabelBehavior: FloatingLabelBehavior.never,
-                                    disabledBorder: OutlineInputBorder(
-                                        borderRadius: const BorderRadius.all(Radius.circular(30)),
-                                        borderSide: BorderSide(color: colors.backgroundDark1, width: 1)
+                                  padding: EdgeInsetsGeometry.symmetric(horizontal: 15, vertical: 12),
+                                  child: InkWell(
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(Icons.category_outlined),
+                                        const SizedBox(width: 5,),
+                                        Expanded(child: Text(
+                                          transactionCategory?.name ?? "Category",
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            color: transactionCategory == null ? colors.mutedText : Theme.of(context).colorScheme.onSurface
+                                          )
+                                        ))
+                                      ],
                                     ),
-                                    enabledBorder: OutlineInputBorder(
-                                        borderRadius: const BorderRadius.all(Radius.circular(30)),
-                                        borderSide: BorderSide(color: colors.backgroundDark1, width: 1)
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: const BorderRadius.all(Radius.circular(30)),
-                                      borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
-                                    ),
-                                    contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0)
+                                    onTap: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (_) {
+                                          List<category.Category> currentCategories = transactionType == TransactionType.expense ? budget.expenseCategories : budget.incomeCategories;
+
+                                          return StatefulBuilder(
+                                            builder: (context, setStateDialog) {
+                                              return MwAlertDialog(
+                                                title: Text("Choose category"),
+                                                content: ListView(
+                                                  shrinkWrap: true,
+                                                  children: currentCategories.map((cat) {
+                                                    return ListTile(
+                                                      leading: transactionCategory?.name == cat.name ? Icon(Icons.check) : Icon(Icons.category_outlined),
+                                                      title: Text(cat.name),
+                                                      contentPadding: EdgeInsetsGeometry.symmetric(horizontal: 10),
+                                                      onTap: () {
+                                                        setState(() {
+                                                          transactionCategory = cat;
+                                                        });
+                                                        Navigator.of(context).pop();
+                                                      }
+                                                    );
+                                                  }).toList(),
+                                                ),
+                                                actions: [],
+                                              );
+                                            },
+                                          );
+                                        }
+                                      );
+                                    }
                                   ),
-                                  enabled: !_loading,
-                                  onSelected: (category.Category? cat) {
-                                    setState(() {
-                                      transactionCategory = cat;
-                                    });
-                                  },
                                 ),
                               ),
-                            ],
-                          ),
 
-                          const SizedBox(height: 20),
-                          MwTextField(
-                            controller: descriptionController,
-                            enabled: !_loading,
-                            hintText: "Description",
-                            prefixIcon: const Icon(Icons.description_outlined)
-                          ),
+                              const SizedBox(width: 15,),
 
-                          const SizedBox(height: 20),
-                          Row(
-                            children: [
                               Expanded(
-                                child: DropdownMenu<PaymentMethod>(
-                                  expandedInsets: const EdgeInsets.all(0),
-                                  controller: paymentMethodController,
-                                  dropdownMenuEntries: getPaymentMethodOptions(budget),
-                                  label: Row(
-                                    children: [
-                                      const Icon(Icons.payments_outlined),
-                                      const SizedBox(width: 5,),
-                                      Text("Payment Method", style: TextStyle(color: colors.mutedText),)
-                                    ],
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(30),
+                                      color: colors.backgroundDark1
                                   ),
-                                  inputDecorationTheme: InputDecorationTheme(
-                                    filled: true,
-                                    fillColor: colors.backgroundDark1,
-                                    floatingLabelBehavior: FloatingLabelBehavior.never,
-                                    disabledBorder: OutlineInputBorder(
-                                      borderRadius: const BorderRadius.all(Radius.circular(30)),
-                                      borderSide: BorderSide(color: colors.backgroundDark1, width: 1)
+                                  padding: EdgeInsetsGeometry.symmetric(horizontal: 15, vertical: 12),
+                                  child: InkWell(
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(Icons.payments_outlined),
+                                        const SizedBox(width: 5,),
+                                        Expanded(child: Text(
+                                          paymentMethod?.name ?? "Payment Method",
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                              color: paymentMethod == null ? colors.mutedText : Theme.of(context).colorScheme.onSurface
+                                          )
+                                        ))
+                                      ],
                                     ),
-                                    enabledBorder: OutlineInputBorder(
-                                        borderRadius: const BorderRadius.all(Radius.circular(30)),
-                                        borderSide: BorderSide(color: colors.backgroundDark1, width: 1)
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: const BorderRadius.all(Radius.circular(30)),
-                                      borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
-                                    ),
-                                    contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0)
+                                    onTap: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (_) {
+                                          return StatefulBuilder(
+                                            builder: (context, setStateDialog) {
+                                              return MwAlertDialog(
+                                                title: Text("Choose payment method"),
+                                                content: ListView(
+                                                  shrinkWrap: true,
+                                                  children: budget.paymentMethods.map((method) {
+                                                    return ListTile(
+                                                        leading: paymentMethod?.name == method.name ? Icon(Icons.check) : method.icon,
+                                                        title: Text(method.name),
+                                                        contentPadding: EdgeInsetsGeometry.symmetric(horizontal: 10),
+                                                        onTap: () {
+                                                          setState(() {
+                                                            paymentMethod = method;
+                                                          });
+                                                          Navigator.of(context).pop();
+                                                        }
+                                                    );
+                                                  }).toList(),
+                                                ),
+                                                actions: [],
+                                              );
+                                            },
+                                          );
+                                        }
+                                      );
+                                    }
                                   ),
-                                  enabled: !_loading,
-                                  onSelected: (PaymentMethod? method) {
-                                    setState(() {
-                                      paymentMethod = method;
-                                    });
-                                  },
                                 ),
                               ),
                             ],
