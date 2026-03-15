@@ -114,14 +114,20 @@ class AuthService {
     googleSignIn.authenticationEvents
         .listen(_handleAuthenticationEvent)
         .onError(_handleAuthenticationError);
-
     final prefs = await SharedPreferences.getInstance();
     bool manuallySignedOut = prefs.getBool(kManuallySignedOut) ?? false;
     // Only attempt lightweight authentication if the user did not manually
     // sign out last time. If they did, do nothing, and we should display the
     // log in screen.
     if (!manuallySignedOut) {
-      currentUser = await googleSignIn.attemptLightweightAuthentication();
+      try {
+        currentUser = await googleSignIn
+            .attemptLightweightAuthentication(reportAllExceptions: true)
+            ?.timeout(const Duration(seconds: 10));
+      }
+      catch (e) {
+        print('Authentication timed out');
+      }
     }
 
     Map<String, dynamic> data = {};
